@@ -1,0 +1,54 @@
+ITB 2.0 v0.8 — VERSIÓN DINÁMICA
+
+ARCHIVOS
+- index.html: plataforma.
+- assets/: imágenes institucionales.
+- app-config.js: URL del backend.
+- Code.gs: backend para Google Apps Script.
+
+PASO 1 — BASE DE DATOS
+Subí ITB_BaseDatos_v2.xlsx a Google Drive y abrilo como Google Sheets
+(o copiá la hoja "configuracion" al Google Sheets que ya estés usando).
+
+PASO 2 — CREAR EL BACKEND
+En el Google Sheets:
+Extensiones > Apps Script.
+Borrá el contenido inicial y pegá todo el contenido de Code.gs.
+Guardá el proyecto.
+
+PASO 3 — DESPLEGAR
+En Apps Script:
+Implementar > Nueva implementación > Aplicación web.
+Ejecutar como: vos / propietario del script.
+Acceso: elegí la opción que permita entrar a los alumnos que usarán la plataforma.
+Implementá y copiá la URL que termina en /exec.
+
+PASO 4 — CONECTAR LA WEB
+Abrí app-config.js y pegá la URL entre comillas:
+window.ITB_API_URL = "https://script.google.com/macros/s/....../exec";
+
+PASO 5 — PROBAR
+Una vez publicada la web en un servidor (en la siguiente etapa podemos usar GitHub Pages),
+la cabecera mostrará:
+"Datos conectados a Google Sheets"
+
+Si la API no está configurada o falla, la v0.8 conserva automáticamente los datos embebidos
+para que la plataforma siga funcionando.
+
+PRUEBA DE API
+Abrí en el navegador:
+TU_URL_DE_APPS_SCRIPT?action=health
+
+Deberías ver una respuesta JSON con "ok": true.
+
+
+ESTADO ACTUAL
+- Backend configurado.
+- URL de producción:
+  https://script.google.com/macros/s/AKfycbx5rjJuerIcltRdcU934ncFm7JNSpWylluCWjka3rtIIuSBV-rdNZRNYVrfVFWq8v4/exec
+
+PRUEBA MANUAL
+Abrí en el navegador:
+https://script.google.com/macros/s/AKfycbx5rjJuerIcltRdcU934ncFm7JNSpWylluCWjka3rtIIuSBV-rdNZRNYVrfVFWq8v4/exec?action=health
+
+Deberías ver un JSON con "ok": true.

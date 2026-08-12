@@ -1,0 +1,10 @@
+ITB 2.0 v0.7
+
+Corrección principal:
+- Se corrigió una etiqueta HTML mal formada en la sección Videoteca.
+- Ese error hacía que TODOS los videos siguieran visibles debajo de la página principal.
+- También impedía que Biblioteca y Equipo navegaran correctamente, porque la estructura del DOM quedaba alterada.
+- En Inicio permanece únicamente la selección compacta de 4 videos.
+- La videoteca completa solo aparece al ingresar a 'Videos' o pulsar 'Ver todos los videos'.
+
+Abrir index.html con Chrome o Edge.
