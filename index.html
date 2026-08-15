@@ -1172,6 +1172,78 @@ body.app-loading .guest-loading{display:grid}
   .guest-footer-copy{display:block;margin:0}
 }
 
+
+/* ===== v0.20 Imágenes de unidades + navegación móvil ===== */
+.course-unit-cover{
+  height:118px;
+  background:#111820 center/cover no-repeat;
+  border-bottom:1px solid var(--line);
+  position:relative;
+}
+.course-unit-cover:after{
+  content:"";
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(5,8,11,.02),rgba(5,8,11,.20));
+}
+#course .course-grid .card{overflow:hidden}
+#course .course-grid .card .card-body{padding-top:12px}
+
+.mobile-nav{
+  overflow-x:auto;
+  scrollbar-width:none;
+  gap:3px;
+  padding:7px;
+  border-radius:22px;
+  background:rgba(17,24,32,.97);
+  border-color:#34404d;
+}
+.mobile-nav::-webkit-scrollbar{display:none}
+.mobile-nav button{
+  position:relative;
+  min-width:68px;
+  min-height:62px;
+  flex:1 0 68px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:7px 5px 8px;
+  border:1px solid transparent;
+  border-radius:15px;
+  color:#aeb8c3;
+  font-size:10px;
+  font-weight:650;
+  transition:.18s ease;
+}
+.mobile-nav button .mobile-nav-icon{
+  width:23px;height:23px;
+  display:grid;place-items:center;
+  margin:0;
+  color:#aeb8c3;
+}
+.mobile-nav button .mobile-nav-icon svg{
+  width:22px;height:22px;
+  fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.mobile-nav button.active{
+  background:linear-gradient(180deg,#202b38,#1b2530);
+  color:#fff;
+  border-color:#394654;
+  box-shadow:0 7px 18px rgba(0,0,0,.22), inset 0 2px 0 rgba(225,31,38,.7);
+}
+.mobile-nav button.active .mobile-nav-icon{color:#f0474d}
+.mobile-nav button.active:after{
+  content:"";position:absolute;bottom:4px;width:26px;height:3px;
+  border-radius:999px;background:#f0474d;
+}
+@media(max-width:680px){
+  .course-unit-cover{height:132px}
+  .mobile-nav{left:8px;right:8px;bottom:8px}
+  .mobile-nav button{font-size:10px;padding:6px 4px 9px}
+}
+
 </style></head>
 <body class="guest-mode app-loading"><div class="app">
 <header class="topbar">
@@ -1483,15 +1555,15 @@ body.app-loading .guest-loading{display:grid}
 </section>
 </main>
 <nav class="mobile-nav">
- <button class="active" data-page="home" onclick="setPage('home')"><span>⌂</span>Inicio</button>
- <button data-page="course" onclick="setPage('course')"><span>▦</span>Curso</button>
- <button class="teacher-only" data-page="teacherPage" onclick="openTeacherPanel()"><span>▥</span>Docente</button>
- <button data-page="schedulePage" onclick="setPage('schedulePage')"><span>◷</span>Agenda</button>
- <button data-page="newsPage" onclick="setPage('newsPage')"><span>◆</span>Noticias</button>
- <button data-page="library" onclick="setPage('library')"><span>▤</span>Biblioteca</button>
- <button data-page="team" onclick="setPage('team')"><span>●</span>Equipo</button>
+ <button class="active" data-page="home" onclick="setPage('home')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V21h14V10.5"/><path d="M9.5 21v-6h5v6"/></svg></span>Inicio</button>
+ <button data-page="course" onclick="setPage('course')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Curso</button>
+ <button class="teacher-only" data-page="teacherPage" onclick="openTeacherPanel()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v13H4z"/><path d="M8 21h8M12 18v3"/><path d="M8 9h8M8 13h5"/></svg></span>Docente</button>
+ <button data-page="schedulePage" onclick="setPage('schedulePage')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></span>Agenda</button>
+ <button data-page="newsPage" onclick="setPage('newsPage')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h11a2 2 0 0 1 2 2v14H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M18 8h3v10a2 2 0 0 1-2 2h-1"/><path d="M7 8h7M7 12h7M7 16h4"/></svg></span>Noticias</button>
+ <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
+ <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.19.4 login background fix + videos embebidos</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.20 imágenes de unidades + navegación móvil</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -1622,6 +1694,15 @@ function renderCourseDashboard(){
   }
 }
 
+
+function unitImageAsset(unit){
+  const n=Number(unit?.numero);
+  if(Number.isInteger(n) && n>=1 && n<=17){
+    return `assets/units/unit-${String(n).padStart(2,'0')}.png`;
+  }
+  return unit?.cover || '';
+}
+
 function renderUnits(filter=''){
   const target=$('#unitsGrid'); target.innerHTML='';
   const q=filter.trim().toLowerCase();
@@ -1636,7 +1717,9 @@ function renderUnits(filter=''){
         ${pi.total?`<div class="unit-progress-mini"><span style="width:${pi.percent}%"></span></div>`:''}` : '';
 
     if(target.id==='unitsGrid'){
+      const unitImg=unitImageAsset(u);
       el.innerHTML=`
+        ${unitImg?`<div class="course-unit-cover" style="background-image:url('${esc(unitImg)}')"></div>`:''}
         <div class="card-body">
           <div class="course-unit-row">
             <div class="course-unit-num">${esc(u.numero)}</div>
@@ -1650,7 +1733,7 @@ function renderUnits(filter=''){
         </div>`;
     }else{
       el.innerHTML=`
-        ${u.cover?`<div class="card-img" ${imgStyle(u.cover)}></div>`:`<div class="empty-cover">${esc(u.numero)}</div>`}
+        ${unitImageAsset(u)?`<div class="card-img" ${imgStyle(unitImageAsset(u))}></div>`:`<div class="empty-cover">${esc(u.numero)}</div>`}
         <div class="card-body">
           <div class="eyebrow">Unidad ${String(u.numero).padStart(2,'0')}</div>
           <h3>${esc(u.titulo)}</h3>
@@ -3225,7 +3308,7 @@ function renderHome(){
   $('#featuredUnits').innerHTML=featured.map(u=>{
     const c=unitCounts(u.id);
     return `<article class="card" onclick="openUnit('${u.id}')">
-      ${u.cover?`<div class="card-img" ${imgStyle(u.cover)}></div>`:`<div class="empty-cover">${esc(u.numero)}</div>`}
+      ${unitImageAsset(u)?`<div class="card-img" ${imgStyle(unitImageAsset(u))}></div>`:`<div class="empty-cover">${esc(u.numero)}</div>`}
       <div class="card-body"><div class="eyebrow">Unidad ${String(u.numero).padStart(2,'0')}</div><h3>${esc(u.titulo)}</h3>
       <div class="meta"><span>📄 ${c.docs}</span><span>▶ ${c.videos}</span><span>🎯 ${c.games}</span><span>✓ ${c.tests}</span></div></div></article>`;
   }).join('');
