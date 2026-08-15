@@ -1080,17 +1080,17 @@ body.guest-mode{background:#080c10}
   flex:1;
   min-height:calc(100vh - 62px);
   display:grid;
-  grid-template-columns:minmax(0,1.35fr) minmax(390px,.65fr);
+  grid-template-columns:minmax(0,1.42fr) minmax(420px,.58fr);
   position:relative;
   overflow:hidden;
 }
 .guest-hero{
   position:relative;
-  min-height:760px;
+  min-height:700px;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:42px 54px 42px 15vw;
+  padding:28px 38px 26px 13vw;
   isolation:isolate;
   background:
     linear-gradient(90deg,rgba(4,6,8,.18) 0%,rgba(4,6,8,.50) 42%,rgba(4,6,8,.92) 93%),
@@ -1102,10 +1102,10 @@ body.guest-mode{background:#080c10}
   position:absolute;inset:0;z-index:-1;
   background:radial-gradient(circle at 62% 37%,rgba(210,20,28,.08),transparent 30%);
 }
-.guest-hero-inner{width:min(640px,100%);text-align:center}
-.guest-main-logo{width:175px;max-height:245px;object-fit:contain;margin:0 auto 18px;display:block}
+.guest-hero-inner{width:min(690px,100%);text-align:center}
+.guest-main-logo{width:190px;max-height:255px;object-fit:contain;margin:0 auto 18px;display:block}
 .guest-academy-title{
-  font-size:clamp(52px,5.2vw,80px);
+  font-size:clamp(54px,5.5vw,84px);
   line-height:.98;
   font-weight:950;
   letter-spacing:-.045em;
@@ -1147,21 +1147,21 @@ body.guest-mode{background:#080c10}
   line-height:1.65;
 }
 .guest-login-zone{
-  min-height:760px;
+  min-height:700px;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:42px 5vw 42px 24px;
+  padding:30px 4.3vw 28px 20px;
   background:linear-gradient(90deg,#080c10 0%,#090d11 100%);
 }
 .guest-access{
-  width:min(510px,100%);
-  min-height:660px;
+  width:min(535px,100%);
+  min-height:650px;
   box-sizing:border-box;
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
-  padding:48px 46px 38px;
+  padding:42px 42px 34px;
   background:linear-gradient(145deg,#111820,#0d1319);
   border:1px solid #3a444e;
   border-radius:22px;
@@ -1605,7 +1605,7 @@ body.app-loading .guest-loading{display:grid}
  <button data-page="library" onclick="setPage('library')"><span>▤</span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span>●</span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.19 portal Academia TED</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.19.1 login corregido</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3710,12 +3710,7 @@ async function loadPublicLanding(){
       document.title='Academia TED - Plataforma ITB';
     }
     // El texto institucional de la portada se mantiene fijo por diseño.
-    if(cfg.hero_imagen_url && $('#guestVisual')){
-      $('#guestVisual').style.backgroundImage=
-        `linear-gradient(90deg,rgba(4,6,8,.18) 0%,rgba(4,6,8,.50) 42%,rgba(4,6,8,.92) 93%),`+
-        `linear-gradient(0deg,rgba(4,6,8,.90) 0%,rgba(4,6,8,.12) 55%,rgba(4,6,8,.25) 100%),`+
-        `url('${cfg.hero_imagen_url}')`;
-    }
+    // La portada utiliza el fondo local aprobado del portal Academia TED.
   }catch(e){
     console.warn('No se pudo cargar la portada pública.',e);
   }
