@@ -1055,7 +1055,8 @@ body.teacher-mode .teacher-only{display:inline-flex!important}
 
 
 
-/* ===== v0.19 Portal Academia TED ===== */
+
+/* ===== v0.19.2 Portal final Academia TED ===== */
 #guestGate{display:none}
 body.guest-mode #guestGate{display:block}
 body.guest-mode main{display:none!important}
@@ -1063,11 +1064,7 @@ body.guest-mode .topbar{display:none!important}
 body.guest-mode .mobile-nav{display:none!important}
 body.guest-mode{background:#080c10}
 
-.brandmark-logo{
-  padding:3px!important;
-  background:#fff!important;
-  overflow:hidden;
-}
+.brandmark-logo{padding:3px!important;background:#fff!important;overflow:hidden}
 .brandmark-logo img{width:100%;height:100%;object-fit:contain;display:block}
 
 .guest-shell{
@@ -1078,107 +1075,44 @@ body.guest-mode{background:#080c10}
 }
 .guest-stage{
   flex:1;
-  min-height:calc(100vh - 62px);
+  min-height:calc(100vh - 64px);
   display:grid;
-  grid-template-columns:minmax(0,1.42fr) minmax(420px,.58fr);
-  position:relative;
-  overflow:hidden;
+  grid-template-columns:minmax(0,1.48fr) minmax(420px,.52fr);
+  background:#080c10;
 }
 .guest-hero{
-  position:relative;
-  min-height:700px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:28px 38px 26px 13vw;
-  isolation:isolate;
-  background:
-    linear-gradient(90deg,rgba(4,6,8,.18) 0%,rgba(4,6,8,.50) 42%,rgba(4,6,8,.92) 93%),
-    linear-gradient(0deg,rgba(4,6,8,.90) 0%,rgba(4,6,8,.12) 55%,rgba(4,6,8,.25) 100%),
-    url('assets/login-bg.jpg') left center/cover no-repeat;
-}
-.guest-hero:before{
-  content:"";
-  position:absolute;inset:0;z-index:-1;
-  background:radial-gradient(circle at 62% 37%,rgba(210,20,28,.08),transparent 30%);
-}
-.guest-hero-inner{width:min(690px,100%);text-align:center}
-.guest-main-logo{width:190px;max-height:255px;object-fit:contain;margin:0 auto 18px;display:block}
-.guest-academy-title{
-  font-size:clamp(54px,5.5vw,84px);
-  line-height:.98;
-  font-weight:950;
-  letter-spacing:-.045em;
-  margin:0;
-  color:#f7f7f7;
-  text-shadow:0 5px 22px rgba(0,0,0,.42)
-}
-.guest-academy-title span{color:#df171d}
-.guest-red-rule{height:2px;background:#d51a21;width:88%;margin:18px auto 17px}
-.guest-motto{
-  font-size:clamp(15px,1.45vw,22px);
-  letter-spacing:.22em;
-  color:#e0e3e6;
-  font-weight:700;
-  margin:0 0 24px;
-}
-.guest-values{
-  border-top:1px solid rgba(255,255,255,.12);
-  border-bottom:1px solid rgba(255,255,255,.12);
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  padding:24px 4px 22px;
-}
-.guest-value{display:grid;gap:8px;justify-items:center;color:#f1f3f5}
-.guest-value-icon{
-  width:48px;height:48px;
-  display:grid;place-items:center;
-  color:#e21d24;
-}
-.guest-value-icon svg{width:43px;height:43px;stroke:currentColor;fill:none;stroke-width:1.8}
-.guest-value strong{font-size:11px;line-height:1.35;font-weight:700}
-.guest-description{
-  max-width:610px;
-  text-align:left;
-  margin:22px auto 0;
-  color:#eff2f5;
-  font-size:14px;
-  line-height:1.65;
+  min-height:760px;
+  background:#05080b url('assets/login-visual-final.jpg') center center/100% 100% no-repeat;
 }
 .guest-login-zone{
-  min-height:700px;
+  min-height:760px;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:30px 4.3vw 28px 20px;
-  background:linear-gradient(90deg,#080c10 0%,#090d11 100%);
+  padding:38px 5vw 38px 24px;
+  background:#080c10;
 }
 .guest-access{
-  width:min(535px,100%);
+  width:min(510px,100%);
   min-height:650px;
   box-sizing:border-box;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-  padding:42px 42px 34px;
+  padding:48px 46px 38px;
   background:linear-gradient(145deg,#111820,#0d1319);
   border:1px solid #3a444e;
   border-radius:22px;
   box-shadow:0 30px 80px rgba(0,0,0,.34);
 }
-.guest-welcome{color:#ec1e25;font-size:16px;font-weight:800;margin-bottom:10px}
+.guest-welcome{color:#ef1d24;font-size:16px;font-weight:900;margin-bottom:10px}
 .guest-access h2{font-size:38px;margin:0 0 8px;letter-spacing:-.025em}
-.guest-access>p{margin:0;color:#c5cbd1;font-size:14px;line-height:1.5}
-.guest-login-rule{height:1px;background:#e01920;margin:25px 0 28px}
+.guest-access>p{margin:0;color:#c6ccd2;font-size:14px;line-height:1.5}
+.guest-login-rule{height:1px;background:#df161d;margin:25px 0 28px}
 .guest-login-field{display:grid;gap:8px;margin-bottom:21px}
-.guest-login-field label{font-size:12px;font-weight:800;color:#f1f3f5;text-transform:uppercase}
+.guest-login-field label{font-size:12px;font-weight:900;color:#f1f3f5;text-transform:uppercase}
 .guest-input-wrap{
-  min-height:58px;
-  display:flex;align-items:center;gap:12px;
+  min-height:58px;display:flex;align-items:center;gap:12px;
   background:#0a1016;border:1px solid #37414a;border-radius:10px;padding:0 16px
 }
-.guest-input-wrap:focus-within{border-color:#687784}
+.guest-input-wrap:focus-within{border-color:#697985}
 .guest-input-icon{width:22px;height:22px;color:#c8d0d7;display:grid;place-items:center}
 .guest-input-icon svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
 .guest-input-wrap input{
@@ -1190,16 +1124,10 @@ body.guest-mode{background:#080c10}
 .pin-toggle svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
 .guest-error{min-height:18px;color:#ef8f93;font-size:10px;margin:-7px 0 5px}
 .guest-login-btn{
-  width:100%;
-  min-height:62px;
-  display:flex!important;
-  justify-content:center;align-items:center;
-  position:relative;
-  margin-top:2px;
-  border-radius:10px!important;
-  background:linear-gradient(90deg,#c60e15,#e1131b)!important;
-  font-size:15px!important;
-  letter-spacing:.02em;
+  width:100%;min-height:62px;display:flex!important;justify-content:center;align-items:center;
+  position:relative;margin-top:2px;border-radius:10px!important;
+  background:linear-gradient(90deg,#c70e15,#e1131b)!important;
+  font-size:15px!important;letter-spacing:.02em
 }
 .guest-login-btn .arrow{position:absolute;right:22px;font-size:28px;font-weight:300}
 .guest-help{
@@ -1208,21 +1136,17 @@ body.guest-mode{background:#080c10}
 }
 .guest-card-bottom{margin-top:34px;border-top:1px solid #313a43}
 .guest-footer{
-  min-height:62px;
-  border-top:1px solid #ca151b;
-  display:grid;
-  grid-template-columns:1fr auto;
-  align-items:center;
-  gap:20px;
-  padding:0 5.2vw;
-  background:#0b1117;
-  color:#cbd1d7;
-  font-size:12px;
+  min-height:64px;border-top:1px solid #ca151b;
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;
+  padding:0 3.2vw;background:#0b1117;color:#cbd1d7;font-size:12px
 }
+.guest-footer-left{display:flex;align-items:center;gap:12px}
+.guest-footer-logo{width:34px;height:42px;object-fit:contain}
 .guest-footer-brand{font-weight:900;font-size:15px;color:#f0f2f4;letter-spacing:.015em}
 .guest-footer-brand span{color:#e01a21}
-.guest-footer-copy{margin-left:14px;font-weight:400;color:#c9cfd5}
+.guest-footer-copy{margin-left:6px;font-weight:400;color:#c9cfd5}
 .guest-footer-version{white-space:nowrap}
+
 .guest-loading{
   position:fixed;inset:0;z-index:15000;display:none;place-items:center;
   background:#0b1016;color:#bfc9d3;font-size:12px
@@ -1231,21 +1155,17 @@ body.app-loading .guest-loading{display:grid}
 
 @media(max-width:1100px){
   .guest-stage{grid-template-columns:1fr}
-  .guest-hero{min-height:620px;padding:36px 22px}
+  .guest-hero{min-height:620px;background-size:cover}
   .guest-login-zone{min-height:auto;padding:30px 20px 42px}
   .guest-access{min-height:auto}
 }
 @media(max-width:620px){
-  .guest-hero{min-height:560px;padding:28px 18px}
-  .guest-main-logo{width:125px}
-  .guest-academy-title{font-size:44px}
-  .guest-motto{font-size:12px;letter-spacing:.14em}
-  .guest-values{grid-template-columns:repeat(2,1fr);row-gap:20px}
-  .guest-description{font-size:12px;text-align:center}
+  .guest-hero{min-height:440px;background-size:cover;background-position:center top}
   .guest-access{padding:32px 22px}
   .guest-access h2{font-size:30px}
   .guest-footer{grid-template-columns:1fr;text-align:center;padding:14px 12px}
-  .guest-footer-copy{display:block;margin:3px 0 0}
+  .guest-footer-left{justify-content:center;flex-wrap:wrap}
+  .guest-footer-copy{display:block;margin:0}
 }
 
 </style></head>
@@ -1268,46 +1188,7 @@ body.app-loading .guest-loading{display:grid}
 <section id="guestGate" aria-label="Acceso al curso">
   <div class="guest-shell">
     <div class="guest-stage">
-      <section id="guestVisual" class="guest-hero">
-        <div class="guest-hero-inner">
-          <img class="guest-main-logo" src="assets/ted-logo.png" alt="Logo Academia TED">
-
-          <h1 class="guest-academy-title">ACADEMIA <span>TED</span></h1>
-          <div class="guest-red-rule"></div>
-          <p class="guest-motto">FORMACIÓN. DISCIPLINA. EXCELENCIA.</p>
-
-          <div class="guest-values">
-            <div class="guest-value">
-              <div class="guest-value-icon">
-                <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="15"/><circle cx="24" cy="24" r="6"/><path d="M24 2v9M24 37v9M2 24h9M37 24h9"/></svg>
-              </div>
-              <strong>FORMACIÓN<br>ESPECIALIZADA</strong>
-            </div>
-            <div class="guest-value">
-              <div class="guest-value-icon">
-                <svg viewBox="0 0 48 48"><path d="M24 3l15 6v11c0 11-6.4 19-15 24-8.6-5-15-13-15-24V9z"/><path d="M17 24l5 5 10-11"/></svg>
-              </div>
-              <strong>RIGOR<br>PROFESIONAL</strong>
-            </div>
-            <div class="guest-value">
-              <div class="guest-value-icon">
-                <svg viewBox="0 0 48 48"><path d="M14 39c-8-5-10-15-5-23M34 39c8-5 10-15 5-23M10 34l-4 1M8 28l-4-1M8 21l-3-2M38 34l4 1M40 28l4-1M40 21l3-2"/><path d="M18 40h12"/></svg>
-              </div>
-              <strong>COMPROMISO<br>INSTITUCIONAL</strong>
-            </div>
-            <div class="guest-value">
-              <div class="guest-value-icon">
-                <svg viewBox="0 0 48 48"><path d="M5 8c8-2 14 0 19 5v29c-5-5-11-7-19-5zM43 8c-8-2-14 0-19 5v29c5-5 11-7 19-5z"/></svg>
-              </div>
-              <strong>CONOCIMIENTO<br>APLICADO</strong>
-            </div>
-          </div>
-
-          <p id="guestCourseMessage" class="guest-description">
-            Plataforma académica del Curso de Instructores de Tiro en Armas Cortas y Largas (ITB), un espacio para el aprendizaje, la práctica y el desarrollo profesional.
-          </p>
-        </div>
-      </section>
+      <section id="guestVisual" class="guest-hero" aria-label="Academia TED"></section>
 
       <section class="guest-login-zone">
         <div class="guest-access">
@@ -1351,7 +1232,8 @@ body.app-loading .guest-loading{display:grid}
     </div>
 
     <footer class="guest-footer">
-      <div>
+      <div class="guest-footer-left">
+        <img class="guest-footer-logo" src="assets/ted-logo.png" alt="Academia TED">
         <span class="guest-footer-brand">ACADEMIA <span>TED</span></span>
         <span class="guest-footer-copy">© 2026 - Todos los derechos reservados.</span>
       </div>
@@ -1605,7 +1487,7 @@ body.app-loading .guest-loading{display:grid}
  <button data-page="library" onclick="setPage('library')"><span>▤</span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span>●</span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.19.1 login corregido</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.19.2 login final aprobado</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
