@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<head><meta charset="utf-8"/><link rel="icon" type="image/png" href="assets/ted-favicon.png"/><link rel="apple-touch-icon" href="assets/ted-favicon.png"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="theme-color" content="#0d1117"/>
-<title>TED · Curso de Instructores de Tiro en Armas Cortas y Largas (ITB)</title>
+<title>Academia TED - Plataforma ITB</title>
 <style>
 :root{
   --bg:#0d1117; --panel:#141a22; --panel2:#1a212b; --text:#f4f5f7; --muted:#aab2bd;
@@ -1054,146 +1054,204 @@ body.teacher-mode .teacher-only{display:inline-flex!important}
 }
 
 
-/* ===== v0.18 Acceso restringido ===== */
+
+/* ===== v0.19 Portal Academia TED ===== */
 #guestGate{display:none}
 body.guest-mode #guestGate{display:block}
 body.guest-mode main{display:none!important}
-body.guest-mode .desktop-nav{display:none!important}
+body.guest-mode .topbar{display:none!important}
 body.guest-mode .mobile-nav{display:none!important}
-body.guest-mode .brand{cursor:default}
-body.guest-mode .brand #userPill{display:none!important}
+body.guest-mode{background:#080c10}
+
+.brandmark-logo{
+  padding:3px!important;
+  background:#fff!important;
+  overflow:hidden;
+}
+.brandmark-logo img{width:100%;height:100%;object-fit:contain;display:block}
 
 .guest-shell{
-  min-height:calc(100vh - 76px);
-  display:grid;
-  place-items:center;
-  padding:34px 22px 46px;
-}
-.guest-portal{
-  width:min(1180px,100%);
-  display:grid;
-  grid-template-columns:minmax(0,1.45fr) minmax(330px,.55fr);
-  overflow:hidden;
-  border:1px solid var(--line);
-  border-radius:26px;
-  background:#111820;
-  box-shadow:var(--shadow);
-}
-.guest-visual{
-  min-height:600px;
-  position:relative;
-  background:
-    linear-gradient(90deg,rgba(7,10,14,.20) 0%,rgba(7,10,14,.38) 45%,rgba(7,10,14,.92) 100%),
-    url('assets/hero.jpg') center/cover;
-}
-.guest-visual-content{
-  position:absolute;left:38px;right:38px;bottom:38px;
-  max-width:690px;
-}
-.guest-visual .kicker{margin-bottom:10px}
-.guest-title{
-  font-size:clamp(40px,5.6vw,68px);
-  line-height:.98;
-  letter-spacing:-.04em;
-  margin:0 0 16px;
-  font-weight:900;
-}
-.guest-title span{color:#f0c97d}
-.guest-description{
-  color:#d6dce3;
-  font-size:14px;
-  line-height:1.6;
-  max-width:650px;
-}
-.guest-access{
+  min-height:100vh;
   display:flex;
   flex-direction:column;
+  background:#080c10;
+}
+.guest-stage{
+  flex:1;
+  min-height:calc(100vh - 62px);
+  display:grid;
+  grid-template-columns:minmax(0,1.35fr) minmax(390px,.65fr);
+  position:relative;
+  overflow:hidden;
+}
+.guest-hero{
+  position:relative;
+  min-height:760px;
+  display:flex;
+  align-items:center;
   justify-content:center;
-  padding:38px 34px;
-  background:linear-gradient(155deg,#161e27,#10161d);
-  border-left:1px solid var(--line);
+  padding:42px 54px 42px 15vw;
+  isolation:isolate;
+  background:
+    linear-gradient(90deg,rgba(4,6,8,.18) 0%,rgba(4,6,8,.50) 42%,rgba(4,6,8,.92) 93%),
+    linear-gradient(0deg,rgba(4,6,8,.90) 0%,rgba(4,6,8,.12) 55%,rgba(4,6,8,.25) 100%),
+    url('assets/login-bg.jpg') left center/cover no-repeat;
 }
-.guest-access-mark{
-  width:54px;height:54px;border-radius:15px;
+.guest-hero:before{
+  content:"";
+  position:absolute;inset:0;z-index:-1;
+  background:radial-gradient(circle at 62% 37%,rgba(210,20,28,.08),transparent 30%);
+}
+.guest-hero-inner{width:min(640px,100%);text-align:center}
+.guest-main-logo{width:175px;max-height:245px;object-fit:contain;margin:0 auto 18px;display:block}
+.guest-academy-title{
+  font-size:clamp(52px,5.2vw,80px);
+  line-height:.98;
+  font-weight:950;
+  letter-spacing:-.045em;
+  margin:0;
+  color:#f7f7f7;
+  text-shadow:0 5px 22px rgba(0,0,0,.42)
+}
+.guest-academy-title span{color:#df171d}
+.guest-red-rule{height:2px;background:#d51a21;width:88%;margin:18px auto 17px}
+.guest-motto{
+  font-size:clamp(15px,1.45vw,22px);
+  letter-spacing:.22em;
+  color:#e0e3e6;
+  font-weight:700;
+  margin:0 0 24px;
+}
+.guest-values{
+  border-top:1px solid rgba(255,255,255,.12);
+  border-bottom:1px solid rgba(255,255,255,.12);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  padding:24px 4px 22px;
+}
+.guest-value{display:grid;gap:8px;justify-items:center;color:#f1f3f5}
+.guest-value-icon{
+  width:48px;height:48px;
   display:grid;place-items:center;
-  background:var(--red);
-  font-weight:900;
-  font-size:19px;
-  margin-bottom:24px;
-  box-shadow:0 10px 28px rgba(194,35,43,.20);
+  color:#e21d24;
 }
-.guest-access h2{font-size:27px;margin:0 0 8px}
-.guest-access>p{margin:0 0 24px;color:var(--muted);font-size:12px;line-height:1.5}
-.guest-login-field{display:grid;gap:6px;margin-bottom:13px}
-.guest-login-field label{
-  font-size:10px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.07em;
-  color:#bec8d2;
+.guest-value-icon svg{width:43px;height:43px;stroke:currentColor;fill:none;stroke-width:1.8}
+.guest-value strong{font-size:11px;line-height:1.35;font-weight:700}
+.guest-description{
+  max-width:610px;
+  text-align:left;
+  margin:22px auto 0;
+  color:#eff2f5;
+  font-size:14px;
+  line-height:1.65;
 }
-.guest-login-field input{
-  width:100%;
+.guest-login-zone{
+  min-height:760px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:42px 5vw 42px 24px;
+  background:linear-gradient(90deg,#080c10 0%,#090d11 100%);
+}
+.guest-access{
+  width:min(510px,100%);
+  min-height:660px;
   box-sizing:border-box;
-  background:#0c1218;
-  border:1px solid var(--line);
-  border-radius:11px;
-  padding:12px 13px;
-  color:#fff;
-  outline:none;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  padding:48px 46px 38px;
+  background:linear-gradient(145deg,#111820,#0d1319);
+  border:1px solid #3a444e;
+  border-radius:22px;
+  box-shadow:0 30px 80px rgba(0,0,0,.34);
 }
-.guest-login-field input:focus{border-color:#617184}
+.guest-welcome{color:#ec1e25;font-size:16px;font-weight:800;margin-bottom:10px}
+.guest-access h2{font-size:38px;margin:0 0 8px;letter-spacing:-.025em}
+.guest-access>p{margin:0;color:#c5cbd1;font-size:14px;line-height:1.5}
+.guest-login-rule{height:1px;background:#e01920;margin:25px 0 28px}
+.guest-login-field{display:grid;gap:8px;margin-bottom:21px}
+.guest-login-field label{font-size:12px;font-weight:800;color:#f1f3f5;text-transform:uppercase}
+.guest-input-wrap{
+  min-height:58px;
+  display:flex;align-items:center;gap:12px;
+  background:#0a1016;border:1px solid #37414a;border-radius:10px;padding:0 16px
+}
+.guest-input-wrap:focus-within{border-color:#687784}
+.guest-input-icon{width:22px;height:22px;color:#c8d0d7;display:grid;place-items:center}
+.guest-input-icon svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
+.guest-input-wrap input{
+  flex:1;min-width:0;background:transparent;border:0;outline:0;color:#fff;
+  font:inherit;font-size:14px;padding:0
+}
+.guest-input-wrap input::placeholder{color:#919aa4}
+.pin-toggle{border:0;background:transparent;color:#d0d6dc;cursor:pointer;padding:6px;display:grid;place-items:center}
+.pin-toggle svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
+.guest-error{min-height:18px;color:#ef8f93;font-size:10px;margin:-7px 0 5px}
 .guest-login-btn{
   width:100%;
-  justify-content:center;
-  margin-top:5px;
-  padding:13px 16px;
+  min-height:62px;
+  display:flex!important;
+  justify-content:center;align-items:center;
+  position:relative;
+  margin-top:2px;
+  border-radius:10px!important;
+  background:linear-gradient(90deg,#c60e15,#e1131b)!important;
+  font-size:15px!important;
+  letter-spacing:.02em;
 }
-.guest-error{
-  min-height:18px;
-  color:#ef8f93;
-  font-size:10px;
-  margin:5px 0 3px;
+.guest-login-btn .arrow{position:absolute;right:22px;font-size:28px;font-weight:300}
+.guest-help{
+  display:block;text-align:center;color:#d6dade;text-decoration:underline;
+  font-size:12px;margin:23px auto 0;cursor:pointer
 }
-.guest-secure{
-  display:flex;
-  gap:8px;
-  align-items:flex-start;
-  margin-top:20px;
-  padding-top:17px;
-  border-top:1px solid var(--line);
-  color:var(--muted);
-  font-size:9px;
-  line-height:1.45;
-}
-.guest-secure strong{color:#cfd7df}
-.guest-loading{
-  position:fixed;inset:0;z-index:15000;
-  display:none;place-items:center;
-  background:#0b1016;
-  color:#bfc9d3;
+.guest-card-bottom{margin-top:34px;border-top:1px solid #313a43}
+.guest-footer{
+  min-height:62px;
+  border-top:1px solid #ca151b;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:20px;
+  padding:0 5.2vw;
+  background:#0b1117;
+  color:#cbd1d7;
   font-size:12px;
+}
+.guest-footer-brand{font-weight:900;font-size:15px;color:#f0f2f4;letter-spacing:.015em}
+.guest-footer-brand span{color:#e01a21}
+.guest-footer-copy{margin-left:14px;font-weight:400;color:#c9cfd5}
+.guest-footer-version{white-space:nowrap}
+.guest-loading{
+  position:fixed;inset:0;z-index:15000;display:none;place-items:center;
+  background:#0b1016;color:#bfc9d3;font-size:12px
 }
 body.app-loading .guest-loading{display:grid}
 
-@media(max-width:860px){
-  .guest-shell{padding:16px 12px 88px}
-  .guest-portal{grid-template-columns:1fr}
-  .guest-visual{min-height:390px}
-  .guest-access{border-left:0;border-top:1px solid var(--line);padding:28px 24px}
-  .guest-visual-content{left:24px;right:24px;bottom:24px}
-  .guest-title{font-size:42px}
+@media(max-width:1100px){
+  .guest-stage{grid-template-columns:1fr}
+  .guest-hero{min-height:620px;padding:36px 22px}
+  .guest-login-zone{min-height:auto;padding:30px 20px 42px}
+  .guest-access{min-height:auto}
 }
-@media(max-width:520px){
-  .guest-visual{min-height:330px}
-  .guest-title{font-size:34px}
-  .guest-description{font-size:12px}
+@media(max-width:620px){
+  .guest-hero{min-height:560px;padding:28px 18px}
+  .guest-main-logo{width:125px}
+  .guest-academy-title{font-size:44px}
+  .guest-motto{font-size:12px;letter-spacing:.14em}
+  .guest-values{grid-template-columns:repeat(2,1fr);row-gap:20px}
+  .guest-description{font-size:12px;text-align:center}
+  .guest-access{padding:32px 22px}
+  .guest-access h2{font-size:30px}
+  .guest-footer{grid-template-columns:1fr;text-align:center;padding:14px 12px}
+  .guest-footer-copy{display:block;margin:3px 0 0}
 }
 
 </style></head>
 <body class="guest-mode app-loading"><div class="app">
 <header class="topbar">
- <div class="brand" onclick="setPage('home')"><div class="brandmark">TED</div>
+ <div class="brand" onclick="setPage('home')"><div class="brandmark brandmark-logo"><img src="assets/ted-logo.png" alt="Academia TED"></div>
  <div class="brandtext"><strong>PLATAFORMA ITB</strong><span>Academia TED · <em id="dataStatus">Conectando…</em></span></div><div id="userPill" class="user-pill"><span id="userLabel">Invitado</span><button onclick="openLogin()">Ingresar</button></div></div>
  <nav class="desktop-nav">
   <button class="navbtn active" data-page="home" onclick="setPage('home')">Inicio</button>
@@ -1209,39 +1267,96 @@ body.app-loading .guest-loading{display:grid}
 
 <section id="guestGate" aria-label="Acceso al curso">
   <div class="guest-shell">
-    <div class="guest-portal">
-      <div id="guestVisual" class="guest-visual">
-        <div class="guest-visual-content">
-          <div class="kicker">TED · Plataforma académica</div>
-          <h1 id="guestCourseTitle" class="guest-title">Curso de Instructores de Tiro<br>en Armas Cortas y Largas <span>(ITB)</span></h1>
-          <p id="guestCourseMessage" class="guest-description">Plataforma académica de acceso exclusivo para alumnos y docentes habilitados.</p>
+    <div class="guest-stage">
+      <section id="guestVisual" class="guest-hero">
+        <div class="guest-hero-inner">
+          <img class="guest-main-logo" src="assets/ted-logo.png" alt="Logo Academia TED">
+
+          <h1 class="guest-academy-title">ACADEMIA <span>TED</span></h1>
+          <div class="guest-red-rule"></div>
+          <p class="guest-motto">FORMACIÓN. DISCIPLINA. EXCELENCIA.</p>
+
+          <div class="guest-values">
+            <div class="guest-value">
+              <div class="guest-value-icon">
+                <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="15"/><circle cx="24" cy="24" r="6"/><path d="M24 2v9M24 37v9M2 24h9M37 24h9"/></svg>
+              </div>
+              <strong>FORMACIÓN<br>ESPECIALIZADA</strong>
+            </div>
+            <div class="guest-value">
+              <div class="guest-value-icon">
+                <svg viewBox="0 0 48 48"><path d="M24 3l15 6v11c0 11-6.4 19-15 24-8.6-5-15-13-15-24V9z"/><path d="M17 24l5 5 10-11"/></svg>
+              </div>
+              <strong>RIGOR<br>PROFESIONAL</strong>
+            </div>
+            <div class="guest-value">
+              <div class="guest-value-icon">
+                <svg viewBox="0 0 48 48"><path d="M14 39c-8-5-10-15-5-23M34 39c8-5 10-15 5-23M10 34l-4 1M8 28l-4-1M8 21l-3-2M38 34l4 1M40 28l4-1M40 21l3-2"/><path d="M18 40h12"/></svg>
+              </div>
+              <strong>COMPROMISO<br>INSTITUCIONAL</strong>
+            </div>
+            <div class="guest-value">
+              <div class="guest-value-icon">
+                <svg viewBox="0 0 48 48"><path d="M5 8c8-2 14 0 19 5v29c-5-5-11-7-19-5zM43 8c-8-2-14 0-19 5v29c5-5 11-7 19-5z"/></svg>
+              </div>
+              <strong>CONOCIMIENTO<br>APLICADO</strong>
+            </div>
+          </div>
+
+          <p id="guestCourseMessage" class="guest-description">
+            Plataforma académica del Curso de Instructores de Tiro en Armas Cortas y Largas (ITB), un espacio para el aprendizaje, la práctica y el desarrollo profesional.
+          </p>
         </div>
-      </div>
+      </section>
 
-      <div class="guest-access">
-        <div class="guest-access-mark">TED</div>
-        <h2>Ingresar al curso</h2>
-        <p>Identificate con tu código de usuario y PIN para acceder al contenido académico.</p>
+      <section class="guest-login-zone">
+        <div class="guest-access">
+          <div class="guest-welcome">BIENVENIDO</div>
+          <h2>Iniciar sesión</h2>
+          <p>Ingresá tu usuario y PIN para acceder.</p>
+          <div class="guest-login-rule"></div>
 
-        <div class="guest-login-field">
-          <label for="guestAlumnoId">Usuario</label>
-          <input id="guestAlumnoId" autocomplete="username" placeholder="ALU_001">
+          <div class="guest-login-field">
+            <label for="guestAlumnoId">Usuario</label>
+            <div class="guest-input-wrap">
+              <span class="guest-input-icon">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+              </span>
+              <input id="guestAlumnoId" autocomplete="username" placeholder="Ingresá tu usuario">
+            </div>
+          </div>
+
+          <div class="guest-login-field">
+            <label for="guestPin">PIN</label>
+            <div class="guest-input-wrap">
+              <span class="guest-input-icon">
+                <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+              </span>
+              <input id="guestPin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Ingresá tu PIN">
+              <button class="pin-toggle" type="button" onclick="toggleGuestPin()" aria-label="Mostrar u ocultar PIN">
+                <svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="guestLoginError" class="guest-error"></div>
+          <button class="btn primary guest-login-btn" onclick="loginFromGate()">
+            ACCEDER <span class="arrow">→</span>
+          </button>
+
+          <span class="guest-help" onclick="showITBToast('Consultá con el equipo docente para recuperar tus datos de acceso.')">¿Problemas para ingresar?</span>
+          <div class="guest-card-bottom"></div>
         </div>
-
-        <div class="guest-login-field">
-          <label for="guestPin">PIN</label>
-          <input id="guestPin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••">
-        </div>
-
-        <div id="guestLoginError" class="guest-error"></div>
-        <button class="btn primary guest-login-btn" onclick="loginFromGate()">Ingresar →</button>
-
-        <div class="guest-secure">
-          <span>🔒</span>
-          <span><strong>Acceso restringido.</strong><br>Los contenidos, materiales, evaluaciones y recursos del curso están disponibles únicamente para usuarios autenticados.</span>
-        </div>
-      </div>
+      </section>
     </div>
+
+    <footer class="guest-footer">
+      <div>
+        <span class="guest-footer-brand">ACADEMIA <span>TED</span></span>
+        <span class="guest-footer-copy">© 2026 - Todos los derechos reservados.</span>
+      </div>
+      <div class="guest-footer-version">Versión 2.0</div>
+    </footer>
   </div>
 </section>
 <div class="guest-loading">Ingresando a Plataforma ITB…</div>
@@ -1490,7 +1605,7 @@ body.app-loading .guest-loading{display:grid}
  <button data-page="library" onclick="setPage('library')"><span>▤</span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span>●</span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.18 acceso restringido</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.19 portal Academia TED</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3592,13 +3707,14 @@ async function loadPublicLanding(){
     const cfg=r.config||{};
     if(cfg.nombre_curso){
       const clean=String(cfg.nombre_curso).replace(/\s*\(ITB\)\s*$/i,'');
-      const title=$('#guestCourseTitle');
-      if(title) title.innerHTML=esc(clean)+' <span>(ITB)</span>';
-      document.title='TED · '+cfg.nombre_curso;
+      document.title='Academia TED - Plataforma ITB';
     }
-    if(cfg.mensaje_inicio && $('#guestCourseMessage')) $('#guestCourseMessage').textContent=cfg.mensaje_inicio;
+    // El texto institucional de la portada se mantiene fijo por diseño.
     if(cfg.hero_imagen_url && $('#guestVisual')){
-      $('#guestVisual').style.backgroundImage=`linear-gradient(90deg,rgba(7,10,14,.20) 0%,rgba(7,10,14,.38) 45%,rgba(7,10,14,.92) 100%),url('${cfg.hero_imagen_url}')`;
+      $('#guestVisual').style.backgroundImage=
+        `linear-gradient(90deg,rgba(4,6,8,.18) 0%,rgba(4,6,8,.50) 42%,rgba(4,6,8,.92) 93%),`+
+        `linear-gradient(0deg,rgba(4,6,8,.90) 0%,rgba(4,6,8,.12) 55%,rgba(4,6,8,.25) 100%),`+
+        `url('${cfg.hero_imagen_url}')`;
     }
   }catch(e){
     console.warn('No se pudo cargar la portada pública.',e);
@@ -3626,6 +3742,14 @@ function showPrivateApp(){
   document.body.classList.remove('guest-mode');
   setPage('home');
 }
+
+
+function toggleGuestPin(){
+  const input=$('#guestPin');
+  if(!input)return;
+  input.type=input.type==='password'?'text':'password';
+}
+window.toggleGuestPin=toggleGuestPin;
 
 async function loginFromGate(){
   const alumno_id=String($('#guestAlumnoId')?.value||'').trim();
