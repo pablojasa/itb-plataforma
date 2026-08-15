@@ -1082,7 +1082,11 @@ body.guest-mode{background:#080c10}
 }
 .guest-hero{
   min-height:760px;
-  background:#05080b url('assets/login-visual-final.jpg') center center/100% 100% no-repeat;
+  background-color:#05080b;
+  background-image:url('assets/login-visual-final.jpg');
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:contain;
 }
 .guest-login-zone{
   min-height:760px;
@@ -1487,7 +1491,7 @@ body.app-loading .guest-loading{display:grid}
  <button data-page="library" onclick="setPage('library')"><span>▤</span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span>●</span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.19.2 login final aprobado</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.19.4 login background fix + videos embebidos</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -1760,14 +1764,34 @@ function youtubeEmbed(url){
   const id=extractYouTubeId(url);
   return id ? `https://www.youtube.com/embed/${id}?autoplay=1&rel=0` : '';
 }
+function googleDriveVideoEmbed(url){
+  const s=String(url||'').trim();
+  if(!s || !/drive\.google\.com|docs\.google\.com/i.test(s)) return '';
+  return googleDrivePreviewUrl(s);
+}
+function videoEmbedUrl(url){
+  return youtubeEmbed(url) || googleDriveVideoEmbed(url);
+}
+function ensureVideoIframe(){
+  let frame=$('#videoModalFrame');
+  if(!frame) return null;
+  if(frame.tagName!=='IFRAME'){
+    frame.outerHTML=`<iframe id="videoModalFrame" src="" title="Reproductor de video"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen></iframe>`;
+    frame=$('#videoModalFrame');
+  }
+  return frame;
+}
 function openVideoModal(url,title){
-  const embed=youtubeEmbed(url);
+  const embed=videoEmbedUrl(url);
   if(!embed){
     window.open(url,'_blank','noopener');
     return;
   }
   $('#videoModalTitle').textContent=title||'Video';
-  $('#videoModalFrame').src=embed;
+  const frame=ensureVideoIframe();
+  if(frame) frame.src=embed;
   $('#videoModal').classList.add('open');
   document.body.style.overflow='hidden';
 }
@@ -1962,7 +1986,25 @@ function loadYouTubeAPI(){
 }
 async function openTrackedVideo(url,title,unitId,resourceId){
   const id=extractYouTubeId(url);
-  if(!id){ openVideoModal(url,title); return; }
+
+  // Google Drive no expone el avance de reproducción al sitio contenedor.
+  // Por eso, cuando el video es de Drive, se registra al abrirlo.
+  if(!id){
+    const driveEmbed=googleDriveVideoEmbed(url);
+    if(driveEmbed){
+      const already=!!progressRecord(unitId,'VIDEO',resourceId);
+      if(!already && getSession()?.token){
+        const ok=await markProgressSilent(unitId,'VIDEO',resourceId);
+        if(ok) showITBToast('Video registrado como completado.');
+      }
+      openVideoModal(url,title);
+      if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
+      return;
+    }
+
+    openVideoModal(url,title);
+    return;
+  }
 
   $('#videoModalTitle').textContent=title||'Video';
   $('#videoModal').classList.add('open');
@@ -2921,7 +2963,7 @@ function renderVideos(filter=''){
     const hay=[v.nombre,v.clase,v.detalle].join(' ').toLowerCase();
     return !q || hay.includes(q);
   }).forEach(v=>{
-    const el=document.createElement('article'); el.className='card'; el.onclick=()=>window.open(v.videos,'_blank','noopener');
+    const el=document.createElement('article'); el.className='card'; el.onclick=()=>openVideoModal(v.videos,v.nombre||'Video');
     el.innerHTML=`${v.imagen?`<div class="card-img" ${imgStyle(v.imagen)}></div>`:`<div class="empty-cover">▶</div>`}
       <div class="card-body"><div class="eyebrow">${esc(v.clase||'Video')}</div><h3>${esc(v.nombre)}</h3>
       <div class="meta"><span>${v.unidad_id?'Vinculado al curso':'Recurso general'}</span></div></div>`;
@@ -2936,7 +2978,7 @@ function renderHomeVideos(){
   if(!target) return;
   const selected=(DB.videos||[]).slice(0,4);
   target.innerHTML=selected.map(v=>`
-    <article class="home-video-card" onclick="window.open('${esc(v.videos||'#')}','_blank','noopener')">
+    <article class="home-video-card" onclick="openVideoModal('${esc(v.videos||'#')}','${esc(v.nombre||'Video')}')">
       ${v.imagen
         ? `<div class="home-video-thumb" ${imgStyle(v.imagen)}></div>`
         : `<div class="home-video-thumb"></div>`}
@@ -3785,7 +3827,7 @@ boot();
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen></iframe>
     </div>
-    <div class="video-modal-foot">El video se reproduce dentro de la plataforma.</div>
+    <div class="video-modal-foot">Reproducción integrada en Academia TED · compatible con YouTube y Google Drive.</div>
   </div>
 </div>
 
