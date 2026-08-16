@@ -1244,6 +1244,55 @@ body.app-loading .guest-loading{display:grid}
   .mobile-nav button{font-size:10px;padding:6px 4px 9px}
 }
 
+
+/* ===== Panel ADMIN - Inscripciones (solo lectura) ===== */
+.admin-only{display:none!important}
+body.admin-mode .admin-only{display:inline-flex!important}
+.admin-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin-bottom:18px}
+.admin-head h2{margin:4px 0 4px;font-size:30px}
+.admin-controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.admin-controls select,.admin-controls input{background:var(--panel);border:1px solid var(--line);border-radius:11px;color:var(--text);padding:10px 12px}
+.admin-controls input{min-width:240px}
+.admin-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:16px 0}
+.admin-kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.admin-kpi b{display:block;font-size:24px;color:#fff}.admin-kpi span{font-size:11px;color:var(--muted)}
+.admin-kpi.total{border-color:#596575}.admin-kpi.received{border-color:#4b77a7}.admin-kpi.review{border-color:#b88b38}.admin-kpi.observed{border-color:#d16f36}.admin-kpi.admitted{border-color:#3c9660}.admin-kpi.rejected{border-color:#a94950}
+.admin-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:15px;background:var(--panel)}
+.admin-table{width:100%;border-collapse:collapse;min-width:1000px}
+.admin-table th,.admin-table td{padding:12px 13px;border-bottom:1px solid var(--line);text-align:left;font-size:12px;vertical-align:middle}
+.admin-table th{color:#aeb8c3;font-size:10px;text-transform:uppercase;letter-spacing:.05em;background:#111820;position:sticky;top:0;z-index:1}
+.admin-table tr:hover td{background:#171f29}
+.admin-person{font-weight:850;color:#fff}.admin-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.admin-status{display:inline-flex;padding:5px 8px;border-radius:999px;border:1px solid var(--line);font-size:9px;font-weight:850;white-space:nowrap}
+.admin-status.received{color:#8cbbea;border-color:#355b82;background:#102033}
+.admin-status.review{color:#edc475;border-color:#70572b;background:#282010}
+.admin-status.observed{color:#f1a46f;border-color:#7b4828;background:#2c1b11}
+.admin-status.admitted{color:#8bdda9;border-color:#346846;background:#112419}
+.admin-status.rejected{color:#ef959b;border-color:#743840;background:#291316}
+.admin-status.withdrawn{color:#c5a2d9;border-color:#614673;background:#211628}
+.admin-status.student{color:#83d6d1;border-color:#346d68;background:#102423}
+.admin-doc{font-weight:800}.admin-doc.ok{color:#7ed89c}.admin-doc.pending{color:#e7ad69}
+.admin-empty{text-align:center!important;padding:30px!important;color:var(--muted)}
+.admin-view-btn{border:1px solid var(--line);background:#1b2530;color:#fff;border-radius:9px;padding:7px 10px;cursor:pointer;font-weight:800}
+
+.admin-detail-backdrop{position:fixed;inset:0;background:rgba(3,7,11,.82);z-index:12000;display:none;align-items:center;justify-content:center;padding:18px}
+.admin-detail-backdrop.open{display:flex}
+.admin-detail-card{width:min(1080px,97vw);max-height:92vh;overflow:auto;background:#0f151c;border:1px solid var(--line);border-radius:18px;box-shadow:0 28px 90px rgba(0,0,0,.58)}
+.admin-detail-head{position:sticky;top:0;background:#0f151c;border-bottom:1px solid var(--line);padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start;gap:18px;z-index:2}
+.admin-detail-head h3{margin:4px 0;font-size:23px}.admin-detail-close{border:1px solid var(--line);background:#1a222c;color:#fff;border-radius:9px;width:36px;height:36px;cursor:pointer}
+.admin-detail-body{padding:18px 20px 24px}
+.admin-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.admin-detail-section{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:15px}
+.admin-detail-section.full{grid-column:1/-1}.admin-detail-section h4{margin:0 0 12px;color:#fff;font-size:14px}
+.admin-fields{display:grid;grid-template-columns:1fr 1fr;gap:9px 16px}
+.admin-field span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:3px}.admin-field b{font-size:12px;color:#e8edf2;font-weight:700;word-break:break-word}
+.admin-doc-links{display:flex;gap:9px;flex-wrap:wrap}.admin-doc-link{display:inline-flex;align-items:center;gap:6px;padding:9px 11px;border:1px solid #3b546a;border-radius:9px;background:#13202b;color:#a9d2f4;text-decoration:none;font-size:11px;font-weight:800}
+.admin-doc-link:hover{border-color:#6494bb;color:#fff}
+.admin-readonly-note{margin-top:14px;padding:10px 12px;border:1px solid #684d25;background:#261e10;border-radius:10px;color:#e4c27f;font-size:10px}
+
+@media(max-width:900px){.admin-kpis{grid-template-columns:repeat(3,1fr)}.admin-head{align-items:stretch;flex-direction:column}.admin-controls{width:100%}.admin-controls input{min-width:0;flex:1}}
+@media(max-width:680px){.admin-kpis{grid-template-columns:repeat(2,1fr)}.admin-detail-grid{grid-template-columns:1fr}.admin-detail-section.full{grid-column:auto}.admin-fields{grid-template-columns:1fr}.admin-controls>*{width:100%}}
+
 </style></head>
 <body class="guest-mode app-loading"><div class="app">
 <header class="topbar">
@@ -1253,6 +1302,7 @@ body.app-loading .guest-loading{display:grid}
   <button class="navbtn active" data-page="home" onclick="setPage('home')">Inicio</button>
   <button class="navbtn" data-page="course" onclick="setPage('course')">Curso</button>
   <button class="navbtn teacher-only" data-page="teacherPage" onclick="openTeacherPanel()">Panel docente</button>
+  <button class="navbtn admin-only" data-page="adminPage" onclick="openAdminPanel()">Inscripciones</button>
   <button class="navbtn" data-page="schedulePage" onclick="setPage('schedulePage')">Cronograma</button>
   <button class="navbtn" data-page="newsPage" onclick="setPage('newsPage')">Noticias</button>
   <button class="navbtn" data-page="videosPage" onclick="setPage('videosPage')">Videos</button>
@@ -1489,6 +1539,70 @@ body.app-loading .guest-loading{display:grid}
 
 </section>
 
+
+<section id="adminPage" class="page">
+  <div class="admin-head">
+    <div>
+      <div class="kicker">Administración · Academia TED</div>
+      <h2>Inscripciones</h2>
+      <p class="note">Consulta de postulantes y documentación. Esta primera versión es de solo lectura.</p>
+    </div>
+    <div class="admin-controls">
+      <select id="adminCourse" onchange="loadAdminRegistrations()">
+        <option value="">Todos los cursos</option>
+      </select>
+      <select id="adminStatus" onchange="loadAdminRegistrations()">
+        <option value="">Todos los estados</option>
+        <option value="INSCRIPCION_RECIBIDA">Inscripción recibida</option>
+        <option value="EN_REVISION">En revisión</option>
+        <option value="OBSERVADA">Observada</option>
+        <option value="ADMITIDA">Admitida</option>
+        <option value="NO_ADMITIDA">No admitida</option>
+        <option value="DESISTIDA">Desistida</option>
+        <option value="ALUMNO_CREADO">Alumno creado</option>
+      </select>
+      <input id="adminSearch" placeholder="Buscar apellido, DNI, código…" oninput="renderAdminRows()">
+      <button class="btn ghost" onclick="loadAdminRegistrations()">Actualizar</button>
+    </div>
+  </div>
+
+  <div id="adminKpis" class="admin-kpis"></div>
+
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Postulante</th>
+          <th>Código</th>
+          <th>Curso</th>
+          <th>Fecha</th>
+          <th>Fuerza</th>
+          <th>Documentación</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="adminRows">
+        <tr><td colspan="8" class="admin-empty">Ingresá como ADMIN para consultar las inscripciones.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div id="adminDetailBackdrop" class="admin-detail-backdrop" onclick="if(event.target===this)closeAdminDetail()">
+  <div class="admin-detail-card">
+    <div class="admin-detail-head">
+      <div>
+        <div id="adminDetailCode" class="kicker"></div>
+        <h3 id="adminDetailName">Postulante</h3>
+        <div id="adminDetailStatus"></div>
+      </div>
+      <button class="admin-detail-close" onclick="closeAdminDetail()">✕</button>
+    </div>
+    <div id="adminDetailBody" class="admin-detail-body"></div>
+  </div>
+</div>
+
 <section id="schedulePage" class="page">
  <div class="section-head">
    <div>
@@ -1558,12 +1672,13 @@ body.app-loading .guest-loading{display:grid}
  <button class="active" data-page="home" onclick="setPage('home')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V21h14V10.5"/><path d="M9.5 21v-6h5v6"/></svg></span>Inicio</button>
  <button data-page="course" onclick="setPage('course')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Curso</button>
  <button class="teacher-only" data-page="teacherPage" onclick="openTeacherPanel()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v13H4z"/><path d="M8 21h8M12 18v3"/><path d="M8 9h8M8 13h5"/></svg></span>Docente</button>
+ <button class="admin-only" data-page="adminPage" onclick="openAdminPanel()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="M17.5 15.5v4M15.5 17.5h4"/></svg></span>Admin</button>
  <button data-page="schedulePage" onclick="setPage('schedulePage')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></span>Agenda</button>
  <button data-page="newsPage" onclick="setPage('newsPage')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h11a2 2 0 0 1 2 2v14H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M18 8h3v10a2 2 0 0 1-2 2h-1"/><path d="M7 8h7M7 12h7M7 16h4"/></svg></span>Noticias</button>
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.20.2 imágenes U12-U21 corregidas + navegación móvil</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.23.0 Panel ADMIN de inscripciones</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -1952,6 +2067,7 @@ function logoutStudent(){
   ITB_PROGRESS=[];
   ITB_QUIZ_STATUS={};
   TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
+  ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
   localStorage.removeItem('itb_session');
   resetPrivateDB();
   refreshUserUI();
@@ -2145,13 +2261,221 @@ window.openLogin=openLogin; window.closeLogin=closeLogin; window.loginStudent=lo
 
 
 
+
+let ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
+
+function adminStatusMeta(st){
+  const s=String(st||'INSCRIPCION_RECIBIDA').toUpperCase();
+  const map={
+    INSCRIPCION_RECIBIDA:['Inscripción recibida','received'],
+    EN_REVISION:['En revisión','review'],
+    OBSERVADA:['Observada','observed'],
+    ADMITIDA:['Admitida','admitted'],
+    NO_ADMITIDA:['No admitida','rejected'],
+    DESISTIDA:['Desistida','withdrawn'],
+    ALUMNO_CREADO:['Alumno creado','student']
+  };
+  return map[s]||[s,'received'];
+}
+
+function adminFmtDate(v,withTime=false){
+  if(!v)return '—';
+  const d=new Date(v);
+  if(Number.isNaN(d.getTime()))return esc(v);
+  return new Intl.DateTimeFormat('es-AR',{
+    day:'2-digit',month:'2-digit',year:'numeric',
+    ...(withTime?{hour:'2-digit',minute:'2-digit'}:{})
+  }).format(d);
+}
+
+function adminYesNo(v){return v?'Sí':'No'}
+
+async function openAdminPanel(){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN') return;
+  setPage('adminPage');
+  await loadAdminRegistrations();
+}
+
+async function loadAdminRegistrations(){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN') return;
+  const sess=getSession(); if(!sess?.token)return;
+  const curso=$('#adminCourse')?.value||'';
+  const estado=$('#adminStatus')?.value||'';
+  if($('#adminRows')) $('#adminRows').innerHTML='<tr><td colspan="8" class="admin-empty">Cargando inscripciones…</td></tr>';
+
+  try{
+    const r=await apiJsonp({action:'adminRegistrations',token:sess.token,curso_id:curso,estado});
+    ADMIN_REG_DATA={courses:r.courses||[],counts:r.counts||{},registrations:r.registrations||[]};
+
+    const courseSel=$('#adminCourse');
+    if(courseSel){
+      const current=curso;
+      courseSel.innerHTML='<option value="">Todos los cursos</option>'+
+        ADMIN_REG_DATA.courses.map(c=>`<option value="${esc(c.curso_id)}" ${c.curso_id===current?'selected':''}>${esc(c.nombre_corto||c.curso_id)}${c.cohorte?` · ${esc(c.cohorte)}`:''}</option>`).join('');
+    }
+    renderAdminKpis();
+    renderAdminRows();
+  }catch(e){
+    if($('#adminRows')) $('#adminRows').innerHTML=`<tr><td colspan="8" class="admin-empty">${esc(e.message||'No se pudo cargar el panel ADMIN.')}</td></tr>`;
+  }
+}
+
+function renderAdminKpis(){
+  const c=ADMIN_REG_DATA.counts||{};
+  const cards=[
+    ['Total',c.TOTAL||0,'total'],
+    ['Recibidas',c.INSCRIPCION_RECIBIDA||0,'received'],
+    ['En revisión',c.EN_REVISION||0,'review'],
+    ['Observadas',c.OBSERVADA||0,'observed'],
+    ['Admitidas',c.ADMITIDA||0,'admitted'],
+    ['No admitidas',c.NO_ADMITIDA||0,'rejected']
+  ];
+  $('#adminKpis').innerHTML=cards.map(x=>`<div class="admin-kpi ${x[2]}"><b>${x[1]}</b><span>${x[0]}</span></div>`).join('');
+}
+
+function renderAdminRows(){
+  const q=String($('#adminSearch')?.value||'').trim().toLowerCase();
+  let rows=[...(ADMIN_REG_DATA.registrations||[])];
+  if(q){
+    rows=rows.filter(r=>[
+      r.inscripcion_id,r.apellido,r.nombres,r.dni,r.email,r.fuerza,r.curso_nombre
+    ].some(v=>String(v||'').toLowerCase().includes(q)));
+  }
+
+  if(!rows.length){
+    $('#adminRows').innerHTML='<tr><td colspan="8" class="admin-empty">No hay inscripciones que coincidan con los filtros.</td></tr>';
+    return;
+  }
+
+  $('#adminRows').innerHTML=rows.map(r=>{
+    const sm=adminStatusMeta(r.estado_inscripcion);
+    const d=r.documentacion||{};
+    const docClass=d.completa?'ok':'pending';
+    return `<tr>
+      <td><div class="admin-person">${esc(r.apellido)}, ${esc(r.nombres)}</div><div class="admin-sub">DNI ${esc(r.dni||'—')} · ${esc(r.email||'')}</div></td>
+      <td><b>${esc(r.inscripcion_id)}</b></td>
+      <td>${esc(r.curso_nombre||r.curso_id||'—')}</td>
+      <td>${adminFmtDate(r.fecha_inscripcion,true)}</td>
+      <td>${r.pertenece_fuerza?esc(r.fuerza||r.otra_fuerza||'Fuerza informada'):'No pertenece'}</td>
+      <td><span class="admin-doc ${docClass}">${Number(d.recibidos||0)}/${Number(d.esperados||0)} ${d.completa?'✓':'pend.'}</span></td>
+      <td><span class="admin-status ${sm[1]}">${sm[0]}</span></td>
+      <td><button class="admin-view-btn" onclick="openAdminDetail('${esc(r.inscripcion_id)}')">Ver ficha</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function adminField(label,value){
+  const v=(value===null||value===undefined||value==='')?'—':value;
+  return `<div class="admin-field"><span>${esc(label)}</span><b>${esc(v)}</b></div>`;
+}
+
+function openAdminDetail(id){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN') return;
+  const r=(ADMIN_REG_DATA.registrations||[]).find(x=>String(x.inscripcion_id)===String(id));
+  if(!r)return;
+
+  const sm=adminStatusMeta(r.estado_inscripcion);
+  $('#adminDetailCode').textContent=`${r.inscripcion_id} · ${r.curso_nombre||r.curso_id||''}`;
+  $('#adminDetailName').textContent=`${r.apellido}, ${r.nombres}`;
+  $('#adminDetailStatus').innerHTML=`<span class="admin-status ${sm[1]}">${sm[0]}</span>`;
+
+  const docs=(r.docs||[]).map(d=>
+    d.url
+      ? `<a class="admin-doc-link" href="${esc(d.url)}" target="_blank" rel="noopener">▣ ${esc(d.label)} ↗</a>`
+      : `<span class="admin-doc-link" style="opacity:.45;pointer-events:none">▣ ${esc(d.label)} · pendiente</span>`
+  ).join('');
+
+  $('#adminDetailBody').innerHTML=`
+    <div class="admin-detail-grid">
+      <section class="admin-detail-section">
+        <h4>Datos personales</h4>
+        <div class="admin-fields">
+          ${adminField('DNI',r.dni)}
+          ${adminField('CUIL',r.cuil_completo)}
+          ${adminField('Fecha de nacimiento',adminFmtDate(r.fecha_nacimiento))}
+          ${adminField('Edad',r.edad)}
+          ${adminField('Género',r.genero)}
+          ${adminField('Grupo y factor',r.grupo_factor_sanguineo)}
+          ${adminField('Teléfono / WhatsApp',r.telefono_whatsapp)}
+          ${adminField('Correo electrónico',r.email)}
+        </div>
+      </section>
+
+      <section class="admin-detail-section">
+        <h4>Condición institucional</h4>
+        <div class="admin-fields">
+          ${adminField('Pertenece a fuerza',adminYesNo(r.pertenece_fuerza))}
+          ${adminField('Fuerza',r.fuerza||r.otra_fuerza)}
+          ${adminField('Situación de revista',r.situacion_revista)}
+          ${adminField('Destino',r.destino_servicio)}
+          ${adminField('Armamento asignado',adminYesNo(r.armamento_asignado))}
+          ${adminField('Marca / Modelo',[r.armamento_marca,r.armamento_modelo].filter(Boolean).join(' '))}
+        </div>
+      </section>
+
+      <section class="admin-detail-section">
+        <h4>Legítimo usuario</h4>
+        <div class="admin-fields">
+          ${adminField('LU vigente',adminYesNo(r.legitimo_usuario))}
+          ${adminField('Vencimiento CLU',adminFmtDate(r.vencimiento_clu))}
+          ${adminField('Pistola registrada propia',r.legitimo_usuario?adminYesNo(r.pistola_registrada_propia):'—')}
+        </div>
+      </section>
+
+      <section class="admin-detail-section">
+        <h4>Indumentaria y emergencia</h4>
+        <div class="admin-fields">
+          ${adminField('Talle de remera',r.talle_remera)}
+          ${adminField('Contacto de emergencia',r.contacto_emergencia_nombre)}
+          ${adminField('Teléfono',r.contacto_emergencia_telefono)}
+          ${adminField('Parentesco',r.contacto_emergencia_parentesco)}
+        </div>
+      </section>
+
+      <section class="admin-detail-section full">
+        <h4>Documentación</h4>
+        <div class="admin-doc-links">${docs||'<span class="note">Sin documentación esperada.</span>'}</div>
+      </section>
+
+      <section class="admin-detail-section full">
+        <h4>Información administrativa</h4>
+        <div class="admin-fields">
+          ${adminField('Estado',sm[0])}
+          ${adminField('Documentación validada',adminYesNo(r.documentacion_validada))}
+          ${adminField('Revisado por',r.revisado_por)}
+          ${adminField('Fecha de revisión',adminFmtDate(r.fecha_revision,true))}
+          ${adminField('Fecha de admisión',adminFmtDate(r.fecha_admision,true))}
+          ${adminField('Alumno ID',r.alumno_id)}
+          ${adminField('Mail de confirmación',r.mail_confirmacion_enviado?'Enviado':'No enviado')}
+          ${adminField('Fecha del mail',adminFmtDate(r.fecha_mail_confirmacion,true))}
+        </div>
+        ${r.observaciones_admin?`<div class="note" style="margin-top:12px"><b>Observaciones:</b> ${esc(r.observaciones_admin)}</div>`:''}
+        <div class="admin-readonly-note">Panel de consulta. En esta versión no se modifican estados ni datos de la inscripción.</div>
+      </section>
+    </div>`;
+
+  $('#adminDetailBackdrop').classList.add('open');
+}
+
+function closeAdminDetail(){
+  $('#adminDetailBackdrop')?.classList.remove('open');
+}
+
+window.openAdminPanel=openAdminPanel;
+window.openAdminDetail=openAdminDetail;
+window.closeAdminDetail=closeAdminDetail;
+
+
 let TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
 let TEACHER_FILTER='all';
 let TEACHER_SORT='name';
 
 function applyRoleUI(){
-  const isTeacher=String(ITB_USER?.rol||'').toUpperCase()==='DOCENTE';
+  const role=String(ITB_USER?.rol||'').toUpperCase();
+  const isTeacher=role==='DOCENTE';
+  const isAdmin=role==='ADMIN';
   document.body.classList.toggle('teacher-mode',isTeacher);
+  document.body.classList.toggle('admin-mode',isAdmin);
 }
 
 function teacherStudentMetrics(student){
@@ -3734,7 +4058,7 @@ function resetPrivateDB(){
 
 function showGuestGate(){
   document.body.classList.add('guest-mode');
-  document.body.classList.remove('teacher-mode');
+  document.body.classList.remove('teacher-mode','admin-mode');
   $$('.page').forEach(p=>p.classList.remove('active'));
   const home=$('#home'); if(home) home.classList.add('active');
   window.scrollTo({top:0,behavior:'instant'});
