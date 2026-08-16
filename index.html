@@ -1293,6 +1293,34 @@ body.admin-mode .admin-only{display:inline-flex!important}
 @media(max-width:900px){.admin-kpis{grid-template-columns:repeat(3,1fr)}.admin-head{align-items:stretch;flex-direction:column}.admin-controls{width:100%}.admin-controls input{min-width:0;flex:1}}
 @media(max-width:680px){.admin-kpis{grid-template-columns:repeat(2,1fr)}.admin-detail-grid{grid-template-columns:1fr}.admin-detail-section.full{grid-column:auto}.admin-fields{grid-template-columns:1fr}.admin-controls>*{width:100%}}
 
+
+/* ===== Visor flotante de documentación ADMIN ===== */
+.doc-modal-backdrop{
+  position:fixed;inset:0;background:rgba(2,6,10,.88);z-index:13000;
+  display:none;align-items:center;justify-content:center;padding:18px
+}
+.doc-modal-backdrop.open{display:flex}
+.doc-modal{
+  width:min(1180px,98vw);height:min(88vh,900px);
+  background:#0d141b;border:1px solid var(--line);border-radius:18px;
+  box-shadow:0 30px 100px rgba(0,0,0,.65);display:flex;flex-direction:column;overflow:hidden
+}
+.doc-modal-head{
+  display:flex;justify-content:space-between;align-items:center;gap:14px;
+  padding:14px 16px;border-bottom:1px solid var(--line);background:#111820
+}
+.doc-modal-title{font-size:14px;font-weight:850;color:#fff}
+.doc-modal-actions{display:flex;gap:8px;align-items:center}
+.doc-modal-actions a,.doc-modal-actions button{
+  border:1px solid var(--line);background:#1a2530;color:#fff;border-radius:9px;
+  padding:8px 10px;font-size:11px;font-weight:800;text-decoration:none;cursor:pointer
+}
+.doc-modal-body{flex:1;min-height:0;background:#080c10}
+.doc-modal-body iframe{width:100%;height:100%;border:0;background:#fff}
+.doc-modal-loading{
+  height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px
+}
+
 </style></head>
 <body class="guest-mode app-loading"><div class="app">
 <header class="topbar">
@@ -1603,6 +1631,23 @@ body.admin-mode .admin-only{display:inline-flex!important}
   </div>
 </div>
 
+
+<div id="docModalBackdrop" class="doc-modal-backdrop" onclick="if(event.target===this)closeAdminDocument()">
+  <div class="doc-modal">
+    <div class="doc-modal-head">
+      <div id="docModalTitle" class="doc-modal-title">Documento</div>
+      <div class="doc-modal-actions">
+        <a id="docModalExternal" href="#" target="_blank" rel="noopener">Abrir en Drive</a>
+        <button onclick="closeAdminDocument()">Cerrar</button>
+      </div>
+    </div>
+    <div class="doc-modal-body">
+      <div id="docModalLoading" class="doc-modal-loading">Cargando documento…</div>
+      <iframe id="docModalFrame" title="Vista previa del documento" style="display:none"></iframe>
+    </div>
+  </div>
+</div>
+
 <section id="schedulePage" class="page">
  <div class="section-head">
    <div>
@@ -1678,7 +1723,7 @@ body.admin-mode .admin-only{display:inline-flex!important}
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.23.0 Panel ADMIN de inscripciones</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.23.1 Panel ADMIN · visor documental</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2381,7 +2426,7 @@ function openAdminDetail(id){
 
   const docs=(r.docs||[]).map(d=>
     d.url
-      ? `<a class="admin-doc-link" href="${esc(d.url)}" target="_blank" rel="noopener">▣ ${esc(d.label)} ↗</a>`
+      ? `<button class="admin-doc-link" type="button" onclick="openAdminDocument('${esc(d.url)}','${esc(d.label)}')">▣ ${esc(d.label)}</button>`
       : `<span class="admin-doc-link" style="opacity:.45;pointer-events:none">▣ ${esc(d.label)} · pendiente</span>`
   ).join('');
 
@@ -2460,6 +2505,44 @@ function openAdminDetail(id){
 function closeAdminDetail(){
   $('#adminDetailBackdrop')?.classList.remove('open');
 }
+
+
+function drivePreviewUrl(url){
+  const s=String(url||'');
+  let m=s.match(/\/file\/d\/([^/]+)/);
+  if(!m) m=s.match(/[?&]id=([^&]+)/);
+  if(!m) return s;
+  return `https://drive.google.com/file/d/${m[1]}/preview`;
+}
+
+function openAdminDocument(url,label){
+  const raw=String(url||'');
+  if(!raw)return;
+
+  $('#docModalTitle').textContent=label||'Documento';
+  $('#docModalExternal').href=raw;
+
+  const frame=$('#docModalFrame');
+  const loading=$('#docModalLoading');
+  frame.style.display='none';
+  loading.style.display='flex';
+  frame.onload=()=>{
+    loading.style.display='none';
+    frame.style.display='block';
+  };
+  frame.src=drivePreviewUrl(raw);
+
+  $('#docModalBackdrop').classList.add('open');
+}
+
+function closeAdminDocument(){
+  const frame=$('#docModalFrame');
+  if(frame) frame.src='about:blank';
+  $('#docModalBackdrop')?.classList.remove('open');
+}
+
+window.openAdminDocument=openAdminDocument;
+window.closeAdminDocument=closeAdminDocument;
 
 window.openAdminPanel=openAdminPanel;
 window.openAdminDetail=openAdminDetail;
