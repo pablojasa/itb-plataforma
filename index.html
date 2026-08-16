@@ -1294,6 +1294,32 @@ body.admin-mode .admin-only{display:inline-flex!important}
 @media(max-width:680px){.admin-kpis{grid-template-columns:repeat(2,1fr)}.admin-detail-grid{grid-template-columns:1fr}.admin-detail-section.full{grid-column:auto}.admin-fields{grid-template-columns:1fr}.admin-controls>*{width:100%}}
 
 
+
+/* ===== Acciones administrativas de inscripción ===== */
+.admin-actions{
+  margin-top:14px;border:1px solid var(--line);background:#0c1218;border-radius:14px;padding:14px
+}
+.admin-actions h4{margin:0 0 10px;font-size:14px}
+.admin-actions textarea{
+  width:100%;min-height:84px;resize:vertical;background:#081017;color:#fff;
+  border:1px solid #33404d;border-radius:10px;padding:11px;font:inherit;font-size:12px
+}
+.admin-actions-note{font-size:10px;color:var(--muted);margin:7px 0 11px}
+.admin-action-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.admin-action-btn{
+  border:1px solid var(--line);border-radius:9px;padding:9px 12px;color:#fff;
+  font-weight:850;font-size:11px;cursor:pointer;background:#1a2530
+}
+.admin-action-btn.review{border-color:#70572b;background:#282010;color:#edc475}
+.admin-action-btn.observe{border-color:#7b4828;background:#2c1b11;color:#f1a46f}
+.admin-action-btn.admit{border-color:#346846;background:#112419;color:#8bdda9}
+.admin-action-btn.reject{border-color:#743840;background:#291316;color:#ef959b}
+.admin-action-btn.withdraw{border-color:#614673;background:#211628;color:#c5a2d9}
+.admin-action-btn:disabled{opacity:.45;cursor:wait}
+.admin-action-feedback{margin-top:10px;padding:9px 11px;border-radius:9px;font-size:10px;display:none}
+.admin-action-feedback.ok{display:block;background:#10251a;color:#8ae1a7;border:1px solid #285e3d}
+.admin-action-feedback.err{display:block;background:#2b1114;color:#f6a2a6;border:1px solid #693136}
+
 </style></head>
 <body class="guest-mode app-loading"><div class="app">
 <header class="topbar">
@@ -1680,7 +1706,7 @@ body.admin-mode .admin-only{display:inline-flex!important}
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.23.3 Panel ADMIN · visor documental en primer plano</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.24.0 Panel ADMIN · gestión de inscripciones</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2452,12 +2478,89 @@ function openAdminDetail(id){
           ${adminField('Fecha del mail',adminFmtDate(r.fecha_mail_confirmacion,true))}
         </div>
         ${r.observaciones_admin?`<div class="note" style="margin-top:12px"><b>Observaciones:</b> ${esc(r.observaciones_admin)}</div>`:''}
-        <div class="admin-readonly-note">Panel de consulta. En esta versión no se modifican estados ni datos de la inscripción.</div>
+      </section>
+
+      <section class="admin-detail-section full">
+        <div class="admin-actions">
+          <h4>Acciones administrativas</h4>
+          <textarea id="adminActionNote" placeholder="Observación o motivo. Es obligatorio para Observar, No admitir y Desistimiento."></textarea>
+          <div class="admin-actions-note">Cada cambio registra administrador, fecha/hora y observación en la planilla.</div>
+          <div class="admin-action-buttons">
+            <button class="admin-action-btn review" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','EN_REVISION')">Tomar para revisión</button>
+            <button class="admin-action-btn observe" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','OBSERVADA')">Observar</button>
+            <button class="admin-action-btn admit" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','ADMITIDA')">Admitir</button>
+            <button class="admin-action-btn reject" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','NO_ADMITIDA')">No admitir</button>
+            <button class="admin-action-btn withdraw" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','DESISTIDA')">Registrar desistimiento</button>
+          </div>
+          <div id="adminActionFeedback" class="admin-action-feedback"></div>
+        </div>
       </section>
     </div>`;
 
   $('#adminDetailBackdrop').classList.add('open');
 }
+
+
+async function updateAdminRegistration(id,newState){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN') return;
+
+  const note=String($('#adminActionNote')?.value||'').trim();
+  const required=['OBSERVADA','NO_ADMITIDA','DESISTIDA'].includes(newState);
+  if(required && !note){
+    const fb=$('#adminActionFeedback');
+    fb.className='admin-action-feedback err';
+    fb.textContent='Ingresá una observación o motivo antes de continuar.';
+    return;
+  }
+
+  const labels={
+    EN_REVISION:'pasar esta inscripción a EN REVISIÓN',
+    OBSERVADA:'marcar esta inscripción como OBSERVADA',
+    ADMITIDA:'ADMITIR esta inscripción',
+    NO_ADMITIDA:'marcar esta inscripción como NO ADMITIDA',
+    DESISTIDA:'registrar el DESISTIMIENTO'
+  };
+
+  if(!confirm(`¿Confirmás ${labels[newState]||'este cambio'}?`)) return;
+
+  const buttons=[...document.querySelectorAll('.admin-action-btn')];
+  buttons.forEach(b=>b.disabled=true);
+
+  const fb=$('#adminActionFeedback');
+  fb.className='admin-action-feedback';
+  fb.textContent='';
+
+  try{
+    const sess=getSession();
+    if(!sess?.token) throw new Error('Sesión vencida.');
+
+    await apiJsonp({
+      action:'adminUpdateRegistration',
+      token:sess.token,
+      inscripcion_id:id,
+      estado:newState,
+      observacion:note
+    });
+
+    fb.className='admin-action-feedback ok';
+    fb.textContent='Estado actualizado correctamente.';
+
+    await loadAdminRegistrations();
+
+    const updated=(ADMIN_REG_DATA.registrations||[]).find(x=>String(x.inscripcion_id)===String(id));
+    if(updated){
+      setTimeout(()=>openAdminDetail(id),150);
+    }else{
+      closeAdminDetail();
+    }
+  }catch(e){
+    fb.className='admin-action-feedback err';
+    fb.textContent=e.message||'No se pudo actualizar la inscripción.';
+    buttons.forEach(b=>b.disabled=false);
+  }
+}
+
+window.updateAdminRegistration=updateAdminRegistration;
 
 function closeAdminDetail(){
   $('#adminDetailBackdrop')?.classList.remove('open');
