@@ -2112,6 +2112,24 @@ function apiJsonp(params,timeoutMs){
     sc.src=api+(api.includes('?')?'&':'?')+qs.toString(); sc.async=true; document.head.appendChild(sc);
   });
 }
+
+function isTransientBackendError(err){
+  const msg=String(err?.message||err||'');
+  return /Hojas de c[aá]lculo|Spreadsheets|Spreadsheet service|documento con ID|document with id|Tiempo agotado|No se pudo conectar/i.test(msg);
+}
+async function retryTransient(task,attempts=2,delayMs=700){
+  let lastErr;
+  for(let i=0;i<attempts;i++){
+    try{return await task();}
+    catch(e){
+      lastErr=e;
+      if(!isTransientBackendError(e)||i===attempts-1) throw e;
+      await new Promise(r=>setTimeout(r,delayMs*(i+1)));
+    }
+  }
+  throw lastErr;
+}
+
 async function sha256(text){
   const bytes=new TextEncoder().encode(text);
   const hash=await crypto.subtle.digest('SHA-256',bytes);
@@ -2126,13 +2144,13 @@ async function loginStudent(){
   $('#loginError').textContent='Validando…';
   try{
     const pin_hash=await sha256(pin);
-    const r=await apiJsonp({action:'login',alumno_id,pin_hash});
+    const r=await retryTransient(()=>apiJsonp({action:'login',alumno_id,pin_hash}),2,650);
     ITB_USER=r.user;
     localStorage.setItem('itb_session',JSON.stringify({token:r.token,user:r.user}));
     $('#loginModal').classList.remove('open');
     // Progreso y contenido no dependen entre sí: cargarlos en paralelo
     // reduce sensiblemente el tiempo total del ingreso.
-    await Promise.all([loadMyProgress(),loadRemoteData()]);
+    await Promise.all([loadMyProgress(),retryTransient(()=>loadRemoteData(),2,700)]);
     refreshUserUI();
     applyRoleUI();
     renderApp();
@@ -2177,10 +2195,16 @@ function refreshUserUI(){
 async function loadMyProgress(){
   const s=getSession(); if(!s?.token){ITB_PROGRESS=[];ITB_QUIZ_STATUS={};return;}
   try{
-    const r=await apiJsonp({action:'myProgress',token:s.token});
+    const r=await retryTransient(()=>apiJsonp({action:'myProgress',token:s.token}),2,700);
     ITB_PROGRESS=r.progress||[]; ITB_QUIZ_STATUS=r.quiz_status||{}; ITB_USER=r.user||s.user;
   }catch(e){
-    ITB_PROGRESS=[]; ITB_QUIZ_STATUS={}; ITB_USER=null; localStorage.removeItem('itb_session');
+    const msg=String(e?.message||e||'');
+    // Sólo eliminamos la sesión ante errores reales de autenticación.
+    // Un fallo transitorio de Google Sheets ya no desloguea al alumno.
+    if(/Token inv[aá]lido|token vencido|sesión vencida|Alumno no encontrado|Alumno no habilitado/i.test(msg)){
+      ITB_PROGRESS=[]; ITB_QUIZ_STATUS={}; ITB_USER=null; localStorage.removeItem('itb_session');
+    }
+    throw e;
   }
 }
 function progressRecord(unitId,type,resourceId){
@@ -4506,12 +4530,12 @@ async function loginFromGate(){
 
   try{
     const pin_hash=await sha256(pin);
-    const r=await apiJsonp({action:'login',alumno_id,pin_hash});
+    const r=await retryTransient(()=>apiJsonp({action:'login',alumno_id,pin_hash}),2,650);
     ITB_USER=r.user;
     localStorage.setItem('itb_session',JSON.stringify({token:r.token,user:r.user}));
 
     // Carga paralela para evitar sumar latencias de dos ejecuciones Apps Script.
-    await Promise.all([loadMyProgress(),loadRemoteData()]);
+    await Promise.all([loadMyProgress(),retryTransient(()=>loadRemoteData(),2,700)]);
 
     const status=$('#dataStatus');
     if(status){
@@ -4607,7 +4631,7 @@ async function boot(){
     await loadMyProgress();
     if(!ITB_USER) throw new Error('Sesión vencida');
 
-    await loadRemoteData();
+    await retryTransient(()=>loadRemoteData(),2,700);
 
     if(status){
       status.textContent='Datos conectados a Google Sheets';
