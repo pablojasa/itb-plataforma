@@ -690,10 +690,20 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
 
 
 .teacher-only{display:none!important}
-body.teacher-mode .teacher-only{display:inline-flex!important}
+body.teacher-mode .teacher-only,body.admin-mode .teacher-only{display:inline-flex!important}
 #teacherPage .teacher-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px}
 #teacherPage .teacher-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 #teacherPage select,#teacherPage input{background:#101720;border:1px solid var(--line);color:#fff;border-radius:10px;padding:10px 11px}
+#teacherPage .teacher-controls select{max-width:220px}
+#teacherPage .teacher-controls input{min-width:210px}
+.teacher-filter-summary{margin:0 0 12px;color:var(--muted);font-size:10px}
+.teacher-filter-summary b{color:#dfe5ec}
+@media(max-width:760px){
+  #teacherPage .teacher-controls{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  #teacherPage .teacher-controls select,#teacherPage .teacher-controls input,#teacherPage .teacher-controls button{width:100%;max-width:none;min-width:0}
+  #teacherPage #teacherSearch{grid-column:1/-1}
+}
+@media(max-width:520px){#teacherPage .teacher-controls{grid-template-columns:1fr}}
 .teacher-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
 .teacher-kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
 .teacher-kpi b{display:block;font-size:22px;margin-bottom:3px}.teacher-kpi span{font-size:10px;color:var(--muted)}
@@ -1528,8 +1538,24 @@ body.admin-mode .admin-only{display:inline-flex!important}
       <p class="note">Seguimiento de avance por cohorte.</p>
     </div>
     <div class="teacher-controls">
-      <select id="teacherCohort" onchange="loadTeacherPanel(this.value)"></select>
+      <select id="teacherCohort" title="Cohorte" onchange="loadTeacherPanel(this.value)"></select>
+      <select id="teacherUnit" title="Unidad" onchange="renderTeacherRows()"><option value="">Todas las unidades</option></select>
+      <select id="teacherUnitState" title="Estado en unidad" onchange="renderTeacherRows()">
+        <option value="">Estado en unidad: todos</option>
+        <option value="notstarted">Sin iniciar</option>
+        <option value="progress">En progreso</option>
+        <option value="done">Completada</option>
+      </select>
+      <select id="teacherProgressRange" title="Progreso global" onchange="renderTeacherRows()">
+        <option value="">Progreso global: todos</option>
+        <option value="zero">0% · sin avance</option>
+        <option value="low">1–24%</option>
+        <option value="mid">25–74%</option>
+        <option value="high">75–99%</option>
+        <option value="done">100% · completo</option>
+      </select>
       <input id="teacherSearch" placeholder="Buscar alumno…" oninput="renderTeacherRows()">
+      <button class="btn ghost" onclick="resetTeacherFilters()">Limpiar</button>
       <button class="btn ghost" onclick="loadTeacherPanel($('#teacherCohort').value)">Actualizar</button>
     </div>
   </div>
@@ -1543,6 +1569,7 @@ body.admin-mode .admin-only{display:inline-flex!important}
   </div>
 
   <div id="teacherKpis" class="teacher-kpis"></div>
+  <div id="teacherFilterSummary" class="teacher-filter-summary"></div>
   <div class="teacher-table-wrap">
     <table class="teacher-table">
       <thead>
@@ -1755,7 +1782,7 @@ body.admin-mode .admin-only{display:inline-flex!important}
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.25.4.6 · Viewport móvil corregido</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.26.0 · Panel docente consolidado</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2930,9 +2957,9 @@ let TEACHER_SORT='name';
 
 function applyRoleUI(){
   const role=String(ITB_USER?.rol||'').toUpperCase();
-  const isTeacher=role==='DOCENTE';
   const isAdmin=role==='ADMIN';
-  document.body.classList.toggle('teacher-mode',isTeacher);
+  const canTeacher=role==='DOCENTE'||isAdmin;
+  document.body.classList.toggle('teacher-mode',canTeacher);
   document.body.classList.toggle('admin-mode',isAdmin);
 }
 
@@ -2964,25 +2991,65 @@ function teacherStudentMetrics(student){
 }
 
 async function openTeacherPanel(){
-  if(String(ITB_USER?.rol||'').toUpperCase()!=='DOCENTE') return;
+  if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase())) return;
   setPage('teacherPage');
   if(!TEACHER_DATA.students.length) await loadTeacherPanel('');
   else renderTeacherRows();
 }
 
 async function loadTeacherPanel(cohorte){
-  if(String(ITB_USER?.rol||'').toUpperCase()!=='DOCENTE') return;
+  if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase())) return;
   const sess=getSession(); if(!sess?.token)return;
   $('#teacherRows').innerHTML='<tr><td colspan="8">Cargando…</td></tr>';
   try{
     const r=await apiJsonp({action:'teacherPanel',token:sess.token,cohorte:cohorte||''});
-    TEACHER_DATA={cohorts:r.cohorts||[],cohorte:r.cohorte||'',students:r.students||[]};
+    TEACHER_DATA={cohorts:r.cohorts||[],cohorte:r.cohorte||'',students:r.students||[],diagnostico:r.diagnostico||{}};
     $('#teacherCohort').innerHTML=TEACHER_DATA.cohorts.map(c=>`<option value="${esc(c)}" ${c===TEACHER_DATA.cohorte?'selected':''}>${esc(c)}</option>`).join('');
+    syncTeacherUnitFilter();
     renderTeacherRows();
     await loadTeacherQuizStats('');
   }catch(e){
     $('#teacherRows').innerHTML=`<tr><td colspan="8" class="teacher-empty">${esc(e.message||'No se pudo cargar el panel.')}</td></tr>`;
   }
+}
+
+function syncTeacherUnitFilter(){
+  const el=$('#teacherUnit'); if(!el)return;
+  const current=String(el.value||'');
+  const units=(DB.units||[]);
+  el.innerHTML='<option value="">Todas las unidades</option>'+units.map(u=>`<option value="${esc(u.id)}">Unidad ${esc(u.numero)} · ${esc(u.titulo||u.id)}</option>`).join('');
+  if(units.some(u=>String(u.id)===current))el.value=current;
+}
+
+function resetTeacherFilters(){
+  TEACHER_FILTER='all'; TEACHER_SORT='name';
+  document.querySelectorAll('.teacher-filter').forEach(x=>x.classList.toggle('active',x.dataset.filter==='all'));
+  if($('#teacherUnit'))$('#teacherUnit').value='';
+  if($('#teacherUnitState'))$('#teacherUnitState').value='';
+  if($('#teacherProgressRange'))$('#teacherProgressRange').value='';
+  if($('#teacherSearch'))$('#teacherSearch').value='';
+  renderTeacherRows();
+}
+
+function teacherUnitFilterMatch(s,unitId,state){
+  if(!unitId)return true;
+  const found=(s.metrics.infos||[]).find(x=>String(x.u.id)===String(unitId));
+  const pi=found?found.info:{total:0,completed:0,percent:0};
+  if(!state)return true;
+  if(state==='done')return pi.total>0&&pi.percent===100;
+  if(state==='progress')return pi.total>0&&pi.percent>0&&pi.percent<100;
+  if(state==='notstarted')return pi.total>0&&pi.percent===0;
+  return true;
+}
+
+function teacherProgressRangeMatch(percent,range){
+  if(!range)return true;
+  if(range==='zero')return percent===0;
+  if(range==='low')return percent>0&&percent<25;
+  if(range==='mid')return percent>=25&&percent<75;
+  if(range==='high')return percent>=75&&percent<100;
+  if(range==='done')return percent===100;
+  return true;
 }
 
 function setTeacherFilter(filter,btn){
@@ -3036,6 +3103,9 @@ function inactivityLabel(days,last){
 
 function renderTeacherRows(){
   const q=String($('#teacherSearch')?.value||'').trim().toLowerCase();
+  const unitId=String($('#teacherUnit')?.value||'');
+  const unitState=String($('#teacherUnitState')?.value||'');
+  const progressRange=String($('#teacherProgressRange')?.value||'');
   const all=(TEACHER_DATA.students||[]).map(x=>({...x,metrics:teacherStudentMetrics(x)}));
 
   const avg=all.length?Math.round(all.reduce((n,s)=>n+s.metrics.percent,0)/all.length):0;
@@ -3050,9 +3120,21 @@ function renderTeacherRows(){
 
   let rows=all.filter(s=>{
     const hay=[s.apellido,s.nombre,s.email,s.alumno_id].filter(Boolean).join(' ').toLowerCase();
-    return (!q||hay.includes(q)) && teacherFilterMatch(s);
+    return (!q||hay.includes(q))
+      && teacherFilterMatch(s)
+      && teacherUnitFilterMatch(s,unitId,unitState)
+      && teacherProgressRangeMatch(s.metrics.percent,progressRange);
   });
   rows=teacherSortRows(rows);
+
+  const unit=(DB.units||[]).find(u=>String(u.id)===unitId);
+  const parts=[];
+  if(unit)parts.push(`Unidad ${unit.numero} · ${unit.titulo||unit.id}`);
+  if(unitState)parts.push({notstarted:'Sin iniciar',progress:'En progreso',done:'Completada'}[unitState]||unitState);
+  if(progressRange)parts.push('Progreso global filtrado');
+  if(q)parts.push(`Búsqueda: “${q}”`);
+  const ds=TEACHER_DATA.diagnostico||{};
+  $('#teacherFilterSummary').innerHTML=`Mostrando <b>${rows.length}</b> de <b>${all.length}</b> alumnos${parts.length?' · '+esc(parts.join(' · ')):''}${ds.total_ms!=null?` · carga servidor ${esc(ds.total_ms)} ms`:''}`;
 
   if(!rows.length){
     $('#teacherRows').innerHTML='<tr><td colspan="8" class="teacher-empty">No hay alumnos para mostrar.</td></tr>';
@@ -3364,6 +3446,7 @@ window.closeStudentDetail=closeStudentDetail;
 window.studentModalBackdrop=studentModalBackdrop;
 
 window.openTeacherPanel=openTeacherPanel;
+window.resetTeacherFilters=resetTeacherFilters;
 window.loadTeacherPanel=loadTeacherPanel;
 window.renderTeacherRows=renderTeacherRows;
 window.showTeacherStudent=showTeacherStudent;
