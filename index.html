@@ -1592,13 +1592,13 @@ body.admin-mode .admin-only{display:inline-flex!important}
     <div>
       <div class="kicker">Administración · Academia TED</div>
       <h2>Inscripciones</h2>
-      <p class="note">Consulta de postulantes y documentación. Esta primera versión es de solo lectura.</p>
+      <p class="note">Gestión de postulantes, documentación, estados e incorporación de alumnos.</p>
     </div>
     <div class="admin-controls">
-      <select id="adminCourse" onchange="loadAdminRegistrations()">
+      <select id="adminCourse" onchange="applyAdminFiltersLocal()">
         <option value="">Todos los cursos</option>
       </select>
-      <select id="adminStatus" onchange="loadAdminRegistrations()">
+      <select id="adminStatus" onchange="applyAdminFiltersLocal()">
         <option value="">Todos los estados</option>
         <option value="INSCRIPCION_RECIBIDA">Inscripción recibida</option>
         <option value="EN_REVISION">En revisión</option>
@@ -1609,7 +1609,7 @@ body.admin-mode .admin-only{display:inline-flex!important}
         <option value="ALUMNO_CREADO">Alumno creado</option>
       </select>
       <input id="adminSearch" placeholder="Buscar apellido, DNI, código…" oninput="renderAdminRows()">
-      <button class="btn ghost" onclick="loadAdminRegistrations()">Actualizar</button>
+      <button class="btn ghost" onclick="loadAdminRegistrations(true)">Actualizar</button>
     </div>
   </div>
 
@@ -2144,13 +2144,10 @@ async function loginStudent(){
   $('#loginError').textContent='Validando…';
   try{
     const pin_hash=await sha256(pin);
-    const r=await retryTransient(()=>apiJsonp({action:'login',alumno_id,pin_hash}),2,650);
-    ITB_USER=r.user;
-    localStorage.setItem('itb_session',JSON.stringify({token:r.token,user:r.user}));
+    // v0.25.3: login + contenido + progreso en un único viaje al backend.
+    const r=await retryTransient(()=>apiJsonp({action:'loginInit',alumno_id,pin_hash}),2,650);
+    applyInitResponse(r,true);
     $('#loginModal').classList.remove('open');
-    // Progreso y contenido no dependen entre sí: cargarlos en paralelo
-    // reduce sensiblemente el tiempo total del ingreso.
-    await Promise.all([loadMyProgress(),retryTransient(()=>loadRemoteData(),2,700)]);
     refreshUserUI();
     applyRoleUI();
     renderApp();
@@ -2164,6 +2161,7 @@ function logoutStudent(){
   ITB_PROGRESS=[];
   ITB_QUIZ_STATUS={};
   TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
+  ADMIN_REG_ALL={courses:[],registrations:[]};
   ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
   localStorage.removeItem('itb_session');
   resetPrivateDB();
@@ -2367,6 +2365,7 @@ window.openLogin=openLogin; window.closeLogin=closeLogin; window.loginStudent=lo
 
 
 
+let ADMIN_REG_ALL={courses:[],registrations:[]};
 let ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
 let ADMIN_LAST_CREDENTIALS=[];
 
@@ -2399,29 +2398,80 @@ function adminYesNo(v){return v?'Sí':'No'}
 async function openAdminPanel(){
   if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN') return;
   setPage('adminPage');
-  await loadAdminRegistrations();
+  if(ADMIN_REG_ALL.registrations.length){
+    applyAdminFiltersLocal();
+  }else{
+    await loadAdminRegistrations(true);
+  }
 }
 
-async function loadAdminRegistrations(){
+function adminCountsForRows(rows){
+  const counts={
+    TOTAL:rows.length,
+    INSCRIPCION_RECIBIDA:0,
+    EN_REVISION:0,
+    OBSERVADA:0,
+    ADMITIDA:0,
+    NO_ADMITIDA:0,
+    DESISTIDA:0,
+    ALUMNO_CREADO:0
+  };
+  rows.forEach(x=>{
+    const st=String(x.estado_inscripcion||'INSCRIPCION_RECIBIDA').toUpperCase();
+    if(Object.prototype.hasOwnProperty.call(counts,st))counts[st]++;
+  });
+  return counts;
+}
+
+function applyAdminFiltersLocal(){
+  const curso=String($('#adminCourse')?.value||'');
+  const estado=String($('#adminStatus')?.value||'').toUpperCase();
+
+  const courseRows=(ADMIN_REG_ALL.registrations||[]).filter(r=>
+    !curso || String(r.curso_id||'')===curso
+  );
+  const counts=adminCountsForRows(courseRows);
+  const rows=estado
+    ? courseRows.filter(r=>String(r.estado_inscripcion||'INSCRIPCION_RECIBIDA').toUpperCase()===estado)
+    : courseRows;
+
+  ADMIN_REG_DATA={
+    courses:ADMIN_REG_ALL.courses||[],
+    counts,
+    registrations:rows
+  };
+
+  renderAdminCourseManagement();
+  renderAdminKpis();
+  renderAdminRows();
+}
+
+async function loadAdminRegistrations(force=false){
   if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN') return;
   const sess=getSession(); if(!sess?.token)return;
-  const curso=$('#adminCourse')?.value||'';
-  const estado=$('#adminStatus')?.value||'';
+
+  if(!force && ADMIN_REG_ALL.registrations.length){
+    applyAdminFiltersLocal();
+    return;
+  }
+
+  const currentCourse=$('#adminCourse')?.value||'';
   if($('#adminRows')) $('#adminRows').innerHTML='<tr><td colspan="8" class="admin-empty">Cargando inscripciones…</td></tr>';
 
   try{
-    const r=await apiJsonp({action:'adminRegistrations',token:sess.token,curso_id:curso,estado});
-    ADMIN_REG_DATA={courses:r.courses||[],counts:r.counts||{},registrations:r.registrations||[]};
+    // v0.25.3: se descarga el padrón completo UNA vez.
+    // Los cambios de curso/estado se filtran localmente, sin otra llamada a Apps Script.
+    const r=await apiJsonp({action:'adminRegistrations',token:sess.token,curso_id:'',estado:''});
+    ADMIN_REG_ALL={courses:r.courses||[],registrations:r.registrations||[]};
 
     const courseSel=$('#adminCourse');
     if(courseSel){
-      const current=curso;
       courseSel.innerHTML='<option value="">Todos los cursos</option>'+
-        ADMIN_REG_DATA.courses.map(c=>`<option value="${esc(c.curso_id)}" ${c.curso_id===current?'selected':''}>${esc(c.nombre_corto||c.curso_id)}${c.cohorte?` · ${esc(c.cohorte)}`:''}</option>`).join('');
+        ADMIN_REG_ALL.courses.map(c=>`<option value="${esc(c.curso_id)}">${esc(c.nombre_corto||c.curso_id)}${c.cohorte?` · ${esc(c.cohorte)}`:''}</option>`).join('');
+      courseSel.value=ADMIN_REG_ALL.courses.some(c=>String(c.curso_id)===String(currentCourse))?currentCourse:'';
     }
-    renderAdminCourseManagement();
-    renderAdminKpis();
-    renderAdminRows();
+
+    applyAdminFiltersLocal();
   }catch(e){
     if($('#adminRows')) $('#adminRows').innerHTML=`<tr><td colspan="8" class="admin-empty">${esc(e.message||'No se pudo cargar el panel ADMIN.')}</td></tr>`;
   }
@@ -2563,7 +2613,7 @@ async function finalizeSelectedCourse(){
     const sess=getSession(); if(!sess?.token)throw new Error('Sesión vencida.');
     const r=await apiJsonp({action:'adminFinalizeCourse',token:sess.token,curso_id:c.curso_id,observacion:note});
     alert(`Curso finalizado. Alumnos actualizados: ${r.alumnos_finalizados||0}`);
-    await loadAdminRegistrations();
+    await loadAdminRegistrations(true);
   }catch(e){alert(e.message||'No se pudo finalizar el curso.');}
 }
 
@@ -2748,27 +2798,15 @@ function adminActionButtons(r){
 }
 
 function applyAdminRegistrationUpdateLocal(id,response,oldState,newState){
-  const rows=ADMIN_REG_DATA.registrations||[];
-  const idx=rows.findIndex(x=>String(x.inscripcion_id)===String(id));
-  const row=idx>=0?rows[idx]:null;
-
-  // Los KPI siempre representan todos los estados del curso filtrado.
-  const counts=ADMIN_REG_DATA.counts||{};
-  if(oldState && Object.prototype.hasOwnProperty.call(counts,oldState)){
-    counts[oldState]=Math.max(0,Number(counts[oldState]||0)-1);
-  }
-  if(newState && Object.prototype.hasOwnProperty.call(counts,newState)){
-    counts[newState]=Number(counts[newState]||0)+1;
-  }
-
+  const row=(ADMIN_REG_ALL.registrations||[]).find(x=>String(x.inscripcion_id)===String(id));
   if(row){
     row.estado_inscripcion=newState;
     row.revisado_por=response.revisado_por||row.revisado_por||'';
     row.fecha_revision=response.fecha_revision||row.fecha_revision||'';
     row.observaciones_admin=response.observaciones_admin||row.observaciones_admin||'';
-    if(newState==='ADMITIDA') row.fecha_admision=response.fecha_revision||row.fecha_admision||'';
+    if(newState==='ADMITIDA')row.fecha_admision=response.fecha_revision||row.fecha_admision||'';
 
-    const c=(ADMIN_REG_DATA.courses||[]).find(x=>String(x.curso_id)===String(row.curso_id));
+    const c=(ADMIN_REG_ALL.courses||[]).find(x=>String(x.curso_id)===String(row.curso_id));
     if(c && !String(row.alumno_id||'').trim()){
       if(oldState==='ADMITIDA' && newState!=='ADMITIDA'){
         c.pendientes_incorporacion=Math.max(0,Number(c.pendientes_incorporacion||0)-1);
@@ -2776,16 +2814,8 @@ function applyAdminRegistrationUpdateLocal(id,response,oldState,newState){
         c.pendientes_incorporacion=Number(c.pendientes_incorporacion||0)+1;
       }
     }
-
-    const stateFilter=String($('#adminStatus')?.value||'').toUpperCase();
-    if(stateFilter && newState!==stateFilter){
-      ADMIN_REG_DATA.registrations.splice(idx,1);
-    }
   }
-
-  renderAdminCourseManagement();
-  renderAdminKpis();
-  renderAdminRows();
+  applyAdminFiltersLocal();
 }
 
 function applyBulkCreateLocal(result){
@@ -2795,7 +2825,7 @@ function applyBulkCreateLocal(result){
   const ids=new Map(credentials.map(x=>[String(x.inscripcion_id||''),String(x.alumno_id||'')]));
   let changed=0;
 
-  (ADMIN_REG_DATA.registrations||[]).forEach(r=>{
+  (ADMIN_REG_ALL.registrations||[]).forEach(r=>{
     const aid=ids.get(String(r.inscripcion_id||''));
     if(!aid)return;
     if(String(r.estado_inscripcion||'').toUpperCase()==='ADMITIDA'){
@@ -2805,27 +2835,14 @@ function applyBulkCreateLocal(result){
     }
   });
 
-  const counts=ADMIN_REG_DATA.counts||{};
-  if(changed){
-    counts.ADMITIDA=Math.max(0,Number(counts.ADMITIDA||0)-changed);
-    counts.ALUMNO_CREADO=Number(counts.ALUMNO_CREADO||0)+changed;
-  }
-
-  const course=(ADMIN_REG_DATA.courses||[]).find(c=>String(c.curso_id)===String(result.curso_id));
+  const course=(ADMIN_REG_ALL.courses||[]).find(c=>String(c.curso_id)===String(result.curso_id));
   if(course){
     course.pendientes_incorporacion=Math.max(0,Number(course.pendientes_incorporacion||0)-credentials.length);
     course.alumnos_activos=Number(course.alumnos_activos||0)+credentials.length;
     course.anio=result.anio||course.anio;
   }
 
-  const stateFilter=String($('#adminStatus')?.value||'').toUpperCase();
-  if(stateFilter==='ADMITIDA'){
-    ADMIN_REG_DATA.registrations=(ADMIN_REG_DATA.registrations||[]).filter(r=>!ids.has(String(r.inscripcion_id||'')));
-  }
-
-  renderAdminCourseManagement();
-  renderAdminKpis();
-  renderAdminRows();
+  applyAdminFiltersLocal();
 }
 
 async function updateAdminRegistration(id,newState){
@@ -2869,7 +2886,8 @@ async function updateAdminRegistration(id,newState){
       token:sess.token,
       inscripcion_id:id,
       estado:newState,
-      observacion:note
+      observacion:note,
+      row_hint:String(current?.sheet_row||'')
     });
 
     fb.className='admin-action-feedback ok';
@@ -4396,6 +4414,41 @@ window.openNews=openNews;
 window.openUnit=openUnit;
 window.setPage=setPage;
 
+function applyBootstrapPayload(remote){
+  if(!remote || remote.ok===false){
+    throw new Error(remote?.error || 'Respuesta inválida del backend');
+  }
+  DB={
+    ...DB,
+    units: remote.unidades || [],
+    classes: remote.clases || [],
+    videos: remote.videos || [],
+    library: remote.biblioteca || [],
+    staff: remote.staff || [],
+    downloads: remote.descargas || [],
+    news: remote.noticias || [],
+    schedule: remote.cronograma || [],
+    contentByUnit: remote.contentByUnit || {},
+    general: remote.general || DB.general,
+    config: remote.config || {}
+  };
+  applyRemoteConfig();
+}
+
+function applyInitResponse(r,storeToken=true){
+  if(!r?.user) throw new Error('Respuesta de acceso incompleta.');
+  ITB_USER=r.user;
+  ITB_PROGRESS=r.progress||[];
+  ITB_QUIZ_STATUS=r.quiz_status||{};
+  if(storeToken && r.token){
+    localStorage.setItem('itb_session',JSON.stringify({token:r.token,user:r.user}));
+  }else{
+    const sess=getSession();
+    if(sess?.token) localStorage.setItem('itb_session',JSON.stringify({token:sess.token,user:r.user}));
+  }
+  if(r.bootstrap) applyBootstrapPayload(r.bootstrap);
+}
+
 function loadRemoteData(){
   const api=(window.ITB_API_URL||'').trim();
   if(!api) return Promise.resolve({remote:false});
@@ -4429,22 +4482,7 @@ function loadRemoteData(){
           throw new Error(remote?.error || 'Respuesta inválida del backend');
         }
 
-        DB={
-          ...DB,
-          units: remote.unidades || [],
-          classes: remote.clases || [],
-          videos: remote.videos || [],
-          library: remote.biblioteca || [],
-          staff: remote.staff || [],
-          downloads: remote.descargas || [],
-          news: remote.noticias || [],
-          schedule: remote.cronograma || [],
-          contentByUnit: remote.contentByUnit || {},
-          general: remote.general || DB.general,
-          config: remote.config || {}
-        };
-
-        applyRemoteConfig();
+        applyBootstrapPayload(remote);
         resolve({remote:true});
       }catch(err){
         reject(err);
@@ -4530,12 +4568,10 @@ async function loginFromGate(){
 
   try{
     const pin_hash=await sha256(pin);
-    const r=await retryTransient(()=>apiJsonp({action:'login',alumno_id,pin_hash}),2,650);
-    ITB_USER=r.user;
-    localStorage.setItem('itb_session',JSON.stringify({token:r.token,user:r.user}));
-
-    // Carga paralela para evitar sumar latencias de dos ejecuciones Apps Script.
-    await Promise.all([loadMyProgress(),retryTransient(()=>loadRemoteData(),2,700)]);
+    // v0.25.3: una sola ejecución Apps Script devuelve autenticación,
+    // contenido de la cohorte y progreso inicial.
+    const r=await retryTransient(()=>apiJsonp({action:'loginInit',alumno_id,pin_hash}),2,650);
+    applyInitResponse(r,true);
 
     const status=$('#dataStatus');
     if(status){
@@ -4627,11 +4663,10 @@ async function boot(){
   try{
     ITB_USER=saved.user||null;
 
-    // Primero se valida la sesión. Si el token caducó, loadMyProgress lo elimina.
-    await loadMyProgress();
+    // v0.25.3: revalidación, progreso y contenido en una sola llamada.
+    const init=await retryTransient(()=>apiJsonp({action:'sessionInit',token:saved.token}),2,700);
+    applyInitResponse(init,false);
     if(!ITB_USER) throw new Error('Sesión vencida');
-
-    await retryTransient(()=>loadRemoteData(),2,700);
 
     if(status){
       status.textContent='Datos conectados a Google Sheets';
