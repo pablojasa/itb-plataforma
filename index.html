@@ -1352,8 +1352,11 @@ body.admin-mode .admin-only{display:inline-flex!important}
 
 
 
-/* ===== Chat por cohorte · v0.27.0 ===== */
+/* ===== Chat por cohorte · v0.27.3 ===== */
 :root{--chat-teacher:#5cc8ff;--chat-teacher-bg:#102431}
+[data-page="chatPage"]{position:relative}
+[data-page="chatPage"].chat-has-unread::before{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:#ff343b;box-shadow:0 0 0 2px #111820,0 0 8px rgba(255,52,59,.55);top:5px;right:4px;z-index:3}
+.mobile-nav button[data-page="chatPage"].chat-has-unread::before{top:7px;right:12px;box-shadow:0 0 0 2px rgba(17,24,32,.98),0 0 8px rgba(255,52,59,.55)}
 .chat-shell{max-width:920px;margin:0 auto}
 .chat-header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:6px 0 14px}
 .chat-header h2{margin:3px 0 5px;font-size:28px}.chat-header p{margin:0;color:var(--muted);font-size:12px}
@@ -1859,7 +1862,7 @@ body.teacher-mode .chat-student-only,body.admin-mode .chat-student-only{display:
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.27.2 · Chat por cohorte · Hotfix envío y alineación</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.27.3 · Chat por cohorte · Indicador de no leídos</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2267,6 +2270,8 @@ function logoutStudent(){
   ITB_QUIZ_STATUS={};
   TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
   stopChatPolling();
+  stopChatUnreadPolling();
+  applyChatUnreadState({has_unread:false,unread_cohorts:[]});
   CHAT_DATA={cohorts:[],cohorte:'',messages:[]};
   ADMIN_REG_ALL={courses:[],registrations:[]};
   ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
@@ -3038,9 +3043,42 @@ let CHAT_TIMER=null;
 let CHAT_LOADING=false;
 const CHAT_REFRESH_MS=15000;
 const CHAT_MAX_LENGTH=1500;
+let CHAT_UNREAD_TIMER=null;
+let CHAT_UNREAD_LOADING=false;
+let CHAT_UNREAD_STATE={has_unread:false,unread_cohorts:[]};
+const CHAT_UNREAD_REFRESH_MS=60000;
 
 function isChatStaff(){
   return ['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase());
+}
+function applyChatUnreadState(data){
+  const next=data&&typeof data==='object'?data:{};
+  CHAT_UNREAD_STATE={
+    has_unread:!!next.has_unread,
+    unread_cohorts:Array.isArray(next.unread_cohorts)?next.unread_cohorts:[]
+  };
+  const on=!!ITB_USER&&CHAT_UNREAD_STATE.has_unread;
+  document.querySelectorAll('[data-page="chatPage"]').forEach(el=>el.classList.toggle('chat-has-unread',on));
+}
+function stopChatUnreadPolling(){
+  if(CHAT_UNREAD_TIMER){clearInterval(CHAT_UNREAD_TIMER);CHAT_UNREAD_TIMER=null;}
+}
+async function refreshChatUnreadStatus(){
+  if(CHAT_UNREAD_LOADING||!ITB_USER)return;
+  const sess=getSession(); if(!sess?.token)return;
+  CHAT_UNREAD_LOADING=true;
+  try{
+    const r=await retryTransient(()=>apiJsonp({action:'chatUnread',token:sess.token}),2,450);
+    applyChatUnreadState(r);
+  }catch(e){
+    console.warn('No se pudo actualizar el indicador del chat.',e);
+  }finally{CHAT_UNREAD_LOADING=false;}
+}
+function startChatUnreadPolling(){
+  stopChatUnreadPolling();
+  if(!ITB_USER)return;
+  setTimeout(()=>refreshChatUnreadStatus(),900);
+  CHAT_UNREAD_TIMER=setInterval(()=>refreshChatUnreadStatus(),CHAT_UNREAD_REFRESH_MS);
 }
 function stopChatPolling(){
   if(CHAT_TIMER){clearInterval(CHAT_TIMER);CHAT_TIMER=null;}
@@ -3135,6 +3173,7 @@ async function loadChat(forceBottom=false){
       r=await retryTransient(()=>apiJsonp({action:'chatList',token:sess.token,cohorte:selected,limit:'120'}),1,350);
     }
     CHAT_DATA={cohorts:r.cohorts||available,cohorte:r.cohorte||selected,messages:r.messages||[]};
+    if(r.unread)applyChatUnreadState(r.unread);
     syncChatCohortUI();
     renderChatMessages(forceBottom);
     if($('#chatUpdated'))$('#chatUpdated').textContent=r.generated_at?`Actualizado ${r.generated_at}`:'';
@@ -3177,6 +3216,7 @@ window.changeChatCohort=changeChatCohort;
 window.loadChat=loadChat;
 window.sendChatMessage=sendChatMessage;
 window.updateChatCounter=updateChatCounter;
+window.refreshChatUnreadStatus=refreshChatUnreadStatus;
 
 let TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
 let TEACHER_FILTER='all';
@@ -3188,6 +3228,8 @@ function applyRoleUI(){
   const canTeacher=role==='DOCENTE'||isAdmin;
   document.body.classList.toggle('teacher-mode',canTeacher);
   document.body.classList.toggle('admin-mode',isAdmin);
+  if(ITB_USER)startChatUnreadPolling();
+  else{stopChatUnreadPolling();applyChatUnreadState({has_unread:false,unread_cohorts:[]});}
 }
 
 function teacherStudentMetrics(student){
