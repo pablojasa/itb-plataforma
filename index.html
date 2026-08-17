@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"/><link rel="icon" type="image/png" href="assets/ted-favicon.png"/><link rel="apple-touch-icon" href="assets/pwa-icon-192.png"/><link rel="manifest" href="manifest.webmanifest"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#0d1117"/><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="apple-mobile-web-app-title" content="Academia TED"/>
+<head><meta charset="utf-8"/><link rel="icon" type="image/png" href="assets/ted-favicon.png"/><link rel="apple-touch-icon" sizes="180x180" href="assets/ted-app-icon-180-v0281.png"/><link rel="manifest" href="manifest.webmanifest"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<script>(function(){try{var s=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;if(s)document.documentElement.classList.add('itb-launch-standalone');}catch(_){}})();</script>
+<meta name="theme-color" content="#0d1117"/><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="apple-mobile-web-app-title" content="ITB · Academia TED"/>
 <title>Academia TED - Plataforma ITB</title>
 <style>
 :root{
@@ -1428,8 +1429,50 @@ body.pwa-standalone .mobile-nav{padding-bottom:calc(8px + env(safe-area-inset-bo
   .alert-recent-time{margin-left:0;width:100%}.alert-modal-body{padding:19px 17px}.alert-modal-title{font-size:21px}
 }
 
+/* ===== Identidad PWA + pantalla de inicio · v0.28.1 ===== */
+.pwa-launch-splash{display:none}
+html.itb-launch-standalone .pwa-launch-splash{
+  position:fixed;inset:0;z-index:30000;display:flex;align-items:center;justify-content:center;
+  padding:28px max(22px,env(safe-area-inset-right)) 28px max(22px,env(safe-area-inset-left));
+  background:
+    radial-gradient(circle at 50% 34%,rgba(184,25,30,.12),transparent 32%),
+    linear-gradient(180deg,#0d1117 0%,#090d12 100%);
+  color:#f4f6f8;text-align:center;opacity:1;visibility:visible;
+  transition:opacity .32s ease,visibility .32s ease;
+}
+html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibility:hidden;pointer-events:none}
+.pwa-launch-inner{width:min(430px,90vw);display:flex;flex-direction:column;align-items:center}
+.pwa-launch-logo{
+  width:min(210px,52vw);height:auto;display:block;margin:0 auto 25px;
+  filter:drop-shadow(0 16px 34px rgba(0,0,0,.48));
+}
+.pwa-launch-kicker{font-size:12px;font-weight:950;letter-spacing:.22em;color:#e62a31;margin-bottom:12px}
+.pwa-launch-course{font-size:clamp(20px,5.8vw,29px);font-weight:950;line-height:1.18;max-width:420px;text-wrap:balance}
+.pwa-launch-brand{margin-top:13px;color:#aeb8c3;font-size:12px;font-weight:750;letter-spacing:.08em}
+.pwa-launch-loader{width:92px;height:3px;border-radius:99px;background:#222a33;overflow:hidden;margin-top:28px}
+.pwa-launch-loader:after{content:"";display:block;width:42%;height:100%;border-radius:inherit;background:#d71920;animation:itbLaunchMove 1.15s ease-in-out infinite}
+@keyframes itbLaunchMove{0%{transform:translateX(-120%)}50%{transform:translateX(130%)}100%{transform:translateX(330%)}}
+@media(max-width:430px){
+  .pwa-launch-logo{width:min(185px,50vw)}
+  .pwa-launch-course{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){
+  .pwa-launch-splash{transition:none!important}
+  .pwa-launch-loader:after{animation:none;width:100%}
+}
+
 </style></head>
-<body class="guest-mode app-loading"><div class="app">
+<body class="guest-mode app-loading">
+<div id="pwaLaunchSplash" class="pwa-launch-splash" aria-label="Iniciando Academia TED">
+  <div class="pwa-launch-inner">
+    <img class="pwa-launch-logo" src="assets/ted-app-icon-512-v0281.png" alt="Academia TED">
+    <div class="pwa-launch-kicker">ACADEMIA TED</div>
+    <div id="launchCourseName" class="pwa-launch-course">Curso de Instructores de Tiro en Armas Cortas y Largas (ITB)</div>
+    <div class="pwa-launch-brand">Plataforma académica</div>
+    <div class="pwa-launch-loader" aria-hidden="true"></div>
+  </div>
+</div>
+<div class="app">
 <header class="topbar">
  <div class="brand" onclick="setPage('home')"><div class="brandmark brandmark-logo"><img src="assets/ted-logo.png" alt="Academia TED"></div>
  <div class="brandtext"><strong>PLATAFORMA ITB</strong><span>Academia TED · <em id="dataStatus">Conectando…</em></span></div><div id="userPill" class="user-pill"><span id="userLabel">Invitado</span><button onclick="openLogin()">Ingresar</button></div></div>
@@ -1935,7 +1978,7 @@ body.pwa-standalone .mobile-nav{padding-bottom:calc(8px + env(safe-area-inset-bo
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.28.0 · Alertas por cohorte · PWA standalone</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.28.1 · Alertas por cohorte · Identidad PWA</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3335,8 +3378,8 @@ async function showSystemAlertNotification(alert){
     const reg=await navigator.serviceWorker.ready;
     await reg.showNotification(alert.titulo||'Academia TED',{
       body:String(alert.mensaje||'').replace(/\s+/g,' ').slice(0,180),
-      icon:'assets/pwa-icon-192.png',
-      badge:'assets/pwa-icon-192.png',
+      icon:'assets/ted-app-icon-192-v0281.png',
+      badge:'assets/ted-app-icon-192-v0281.png',
       tag:'itb-alert-'+String(alert.alerta_id||''),
       renotify:true,
       data:{alerta_id:alert.alerta_id||'',url:'./'}
@@ -5113,6 +5156,8 @@ async function loadPublicLanding(){
     if(cfg.nombre_curso){
       const clean=String(cfg.nombre_curso).replace(/\s*\(ITB\)\s*$/i,'');
       document.title='Academia TED - Plataforma ITB';
+      const launchName=document.getElementById('launchCourseName');
+      if(launchName) launchName.textContent=String(cfg.nombre_curso);
     }
     // El texto institucional de la portada se mantiene fijo por diseño.
     // La portada utiliza el fondo local aprobado del portal Academia TED.
@@ -5206,6 +5251,8 @@ function applyRemoteConfig(){
   const title=cfg.nombre_curso||DB.general?.courseTitle;
   if(title){
     document.title='TED · '+title;
+    const launchName=document.getElementById('launchCourseName');
+    if(launchName) launchName.textContent=String(title);
     const heroTitle=document.querySelector('.hero h1');
     if(heroTitle) heroTitle.innerHTML=esc(title.replace(/\s*\(ITB\)\s*$/i,''))+' <span style="color:#f0c97d">(ITB)</span>';
   }
@@ -5253,6 +5300,7 @@ async function boot(){
       status.classList.remove('online');
     }
     document.body.classList.remove('app-loading');
+    finishLaunchSplash(false);
     return;
   }
 
@@ -5289,8 +5337,31 @@ async function boot(){
     }
   }finally{
     document.body.classList.remove('app-loading');
+    finishLaunchSplash(false);
   }
 }
+const ITB_LAUNCH_STARTED=Date.now();
+let ITB_LAUNCH_FINISHED=false;
+function finishLaunchSplash(force){
+  if(ITB_LAUNCH_FINISHED)return;
+  const standalone=document.documentElement.classList.contains('itb-launch-standalone');
+  if(!standalone){ITB_LAUNCH_FINISHED=true;return;}
+  const elapsed=Date.now()-ITB_LAUNCH_STARTED;
+  const minimum=650;
+  if(!force && elapsed<minimum){
+    setTimeout(()=>finishLaunchSplash(false),minimum-elapsed);
+    return;
+  }
+  ITB_LAUNCH_FINISHED=true;
+  document.documentElement.classList.add('itb-launch-ready');
+  setTimeout(()=>{
+    document.documentElement.classList.remove('itb-launch-standalone');
+    const el=document.getElementById('pwaLaunchSplash');
+    if(el)el.remove();
+  },380);
+}
+setTimeout(()=>finishLaunchSplash(true),8000);
+
 function initPWA(){
   const standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;
   document.body.classList.toggle('pwa-standalone',!!standalone);
