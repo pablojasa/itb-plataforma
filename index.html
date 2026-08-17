@@ -1358,11 +1358,12 @@ body.admin-mode .admin-only{display:inline-flex!important}
 .chat-header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:6px 0 14px}
 .chat-header h2{margin:3px 0 5px;font-size:28px}.chat-header p{margin:0;color:var(--muted);font-size:12px}
 .chat-cohort-tools{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
-.chat-cohort-tools label{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
-.chat-cohort-select{min-width:170px;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px 12px;color:var(--text);outline:none}
+.chat-cohort-tools label{display:flex;align-items:center;height:42px;margin:0;font-size:10px;line-height:1;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.chat-cohort-select{min-width:170px;height:42px;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:0 12px;color:var(--text);outline:none}
+.chat-cohort-tools>.btn{min-height:42px}
 .chat-fixed-cohort{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 11px;color:#d8dee6;font-size:11px;font-weight:800}
 body.teacher-mode .chat-student-only,body.admin-mode .chat-student-only{display:none!important}
-.chat-staff-only{display:none!important}body.teacher-mode .chat-staff-only,body.admin-mode .chat-staff-only{display:flex!important}
+.chat-staff-only{display:none!important;align-items:center;gap:8px}body.teacher-mode .chat-staff-only,body.admin-mode .chat-staff-only{display:flex!important}
 .chat-panel{border:1px solid var(--line);background:#0f151c;border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
 .chat-info{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:10px;background:#111820}
 .chat-messages{height:min(56vh,600px);min-height:340px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain}
@@ -1858,7 +1859,7 @@ body.teacher-mode .chat-student-only,body.admin-mode .chat-student-only{display:
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.27.1 · Chat por cohorte · Hotfix cohortes</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.27.2 · Chat por cohorte · Hotfix envío y alineación</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3125,8 +3126,15 @@ async function loadChat(forceBottom=false){
   const err=$('#chatError'); if(err){err.classList.remove('show');err.textContent='';}
   try{
     const wanted=isChatStaff()?String($('#chatCohort')?.value||CHAT_DATA.cohorte||''):'';
-    const r=await retryTransient(()=>apiJsonp({action:'chatList',token:sess.token,cohorte:wanted,limit:'120'}),2,500);
-    CHAT_DATA={cohorts:r.cohorts||[],cohorte:r.cohorte||'',messages:r.messages||[]};
+    let r=await retryTransient(()=>apiJsonp({action:'chatList',token:sess.token,cohorte:wanted,limit:'120'}),2,500);
+    const available=Array.isArray(r.cohorts)?r.cohorts:[];
+    const selected=String(r.cohorte||wanted||available[0]||'');
+    // Respaldo de UX: si el servidor devolvió cohortes pero no una selección,
+    // consultamos automáticamente la primera para evitar "Sin cohorte disponible".
+    if(isChatStaff() && selected && !String(r.cohorte||'')){
+      r=await retryTransient(()=>apiJsonp({action:'chatList',token:sess.token,cohorte:selected,limit:'120'}),1,350);
+    }
+    CHAT_DATA={cohorts:r.cohorts||available,cohorte:r.cohorte||selected,messages:r.messages||[]};
     syncChatCohortUI();
     renderChatMessages(forceBottom);
     if($('#chatUpdated'))$('#chatUpdated').textContent=r.generated_at?`Actualizado ${r.generated_at}`:'';
@@ -3148,8 +3156,8 @@ async function sendChatMessage(ev){
   if(err){err.classList.remove('show');err.textContent='';}
   if(btn){btn.disabled=true;btn.textContent='Enviando…';} if(input)input.disabled=true;
   try{
-    const cohort=isChatStaff()?String($('#chatCohort')?.value||CHAT_DATA.cohorte||''):'';
-    const r=await apiJsonp({action:'chatSend',token:sess.token,cohorte,mensaje:text},45000);
+    const cohorte=isChatStaff()?String($('#chatCohort')?.value||CHAT_DATA.cohorte||''):'';
+    const r=await apiJsonp({action:'chatSend',token:sess.token,cohorte:cohorte,mensaje:text},45000);
     if(input){input.value='';input.disabled=false;} updateChatCounter();
     if(r?.message){
       CHAT_DATA.cohorte=r.cohorte||CHAT_DATA.cohorte;
