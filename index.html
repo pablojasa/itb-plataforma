@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"/><link rel="icon" type="image/png" href="assets/ted-favicon.png"/><link rel="apple-touch-icon" href="assets/ted-favicon.png"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#0d1117"/>
+<head><meta charset="utf-8"/><link rel="icon" type="image/png" href="assets/ted-favicon.png"/><link rel="apple-touch-icon" href="assets/pwa-icon-192.png"/><link rel="manifest" href="manifest.webmanifest"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#0d1117"/><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="apple-mobile-web-app-title" content="Academia TED"/>
 <title>Academia TED - Plataforma ITB</title>
 <style>
 :root{
@@ -1395,6 +1395,39 @@ body.teacher-mode .chat-student-only,body.admin-mode .chat-student-only{display:
   .mobile-nav button{flex:0 0 68px;min-width:68px}
 }
 
+
+/* ===== Alertas por cohorte + PWA · v0.28.0 ===== */
+.notification-optin{display:none;margin:18px 0 0;border:1px solid rgba(198,161,91,.36);background:rgba(198,161,91,.08);border-radius:14px;padding:12px 14px;align-items:center;justify-content:space-between;gap:14px}
+.notification-optin.show{display:flex}.notification-optin strong{display:block;font-size:12px}.notification-optin span{display:block;color:var(--muted);font-size:10px;margin-top:3px;line-height:1.45}
+.notification-optin .btn{flex:0 0 auto}
+.alert-admin-shell{max-width:900px;margin:0 auto}.alert-admin-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin:6px 0 16px}
+.alert-admin-head h2{margin:3px 0 5px;font-size:28px}.alert-admin-head p{margin:0;color:var(--muted);font-size:12px}
+.alert-admin-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.alert-form-grid{display:grid;grid-template-columns:220px minmax(0,1fr);gap:14px}.alert-field{display:grid;gap:6px}.alert-field.full{grid-column:1/-1}
+.alert-field label{font-size:10px;color:var(--muted);font-weight:850;text-transform:uppercase;letter-spacing:.08em}
+.alert-field input,.alert-field select,.alert-field textarea{width:100%;min-width:0;background:#0b1117;border:1px solid #354150;color:var(--text);border-radius:11px;padding:11px 12px;font:inherit;outline:none}
+.alert-field textarea{min-height:130px;resize:vertical;line-height:1.45}.alert-field input:focus,.alert-field select:focus,.alert-field textarea:focus{border-color:#5b6b7c}
+.alert-form-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px}.alert-form-note{font-size:10px;color:var(--muted);line-height:1.45}.alert-form-status{font-size:10px;color:#8fe1a8;min-height:16px}
+.alert-recent{display:grid;gap:9px;margin-top:14px}.alert-recent-item{border:1px solid #2b3541;background:#111820;border-radius:13px;padding:12px 13px}
+.alert-recent-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.alert-recent-title{font-weight:900;font-size:13px}.alert-recent-role{font-size:8px;border:1px solid rgba(92,200,255,.42);color:#72d1ff;border-radius:999px;padding:3px 6px;font-weight:900;letter-spacing:.08em}
+.alert-recent-time{margin-left:auto;color:var(--muted);font-size:9px}.alert-recent-text{margin-top:7px;color:#d9dfe6;font-size:11px;line-height:1.48;overflow-wrap:anywhere}.alert-recent-text a{color:#77cfff;text-decoration:underline}
+.alert-modal{position:fixed;inset:0;z-index:12000;background:rgba(3,6,9,.84);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:18px}
+.alert-modal.open{display:flex}.alert-modal-card{width:min(560px,96vw);max-height:88vh;overflow:auto;border:1px solid rgba(215,25,32,.56);background:#10161d;border-radius:20px;box-shadow:0 28px 90px rgba(0,0,0,.62)}
+.alert-modal-strip{height:6px;background:linear-gradient(90deg,#d71920,#8e171c)}.alert-modal-body{padding:22px}
+.alert-modal-kicker{color:#f05b60;font-size:10px;font-weight:950;letter-spacing:.13em;text-transform:uppercase}.alert-modal-title{font-size:24px;font-weight:950;line-height:1.12;margin:8px 0 10px}
+.alert-modal-meta{color:var(--muted);font-size:10px;margin-bottom:15px}.alert-modal-text{font-size:14px;line-height:1.6;color:#eef2f5;white-space:normal;overflow-wrap:anywhere}.alert-modal-text a{color:#77cfff;text-decoration:underline}
+.alert-modal-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px}.alert-modal-count{color:var(--muted);font-size:10px}
+.alert-modal-foot .btn{min-width:120px;justify-content:center}
+body.pwa-standalone{overscroll-behavior-y:none}
+body.pwa-standalone .topbar{padding-top:max(14px,env(safe-area-inset-top))}
+body.pwa-standalone .mobile-nav{padding-bottom:calc(8px + env(safe-area-inset-bottom));bottom:0}
+@media(max-width:760px){
+  .notification-optin{align-items:flex-start;flex-direction:column}.notification-optin .btn{width:100%;justify-content:center}
+  .alert-admin-head{align-items:stretch;flex-direction:column}.alert-form-grid{grid-template-columns:minmax(0,1fr)}.alert-field.full{grid-column:auto}
+  .alert-form-foot{align-items:stretch;flex-direction:column}.alert-form-foot .btn{width:100%;justify-content:center}
+  .alert-recent-time{margin-left:0;width:100%}.alert-modal-body{padding:19px 17px}.alert-modal-title{font-size:21px}
+}
+
 </style></head>
 <body class="guest-mode app-loading"><div class="app">
 <header class="topbar">
@@ -1404,6 +1437,7 @@ body.teacher-mode .chat-student-only,body.admin-mode .chat-student-only{display:
   <button class="navbtn active" data-page="home" onclick="setPage('home')">Inicio</button>
   <button class="navbtn" data-page="course" onclick="setPage('course')">Curso</button>
   <button class="navbtn" data-page="chatPage" onclick="openChat()">Chat</button>
+  <button class="navbtn teacher-only" data-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   <button class="navbtn teacher-only" data-page="teacherPage" onclick="openTeacherPanel()">Panel docente</button>
   <button class="navbtn admin-only" data-page="adminPage" onclick="openAdminPanel()">Inscripciones</button>
   <button class="navbtn" data-page="schedulePage" onclick="setPage('schedulePage')">Cronograma</button>
@@ -1481,6 +1515,7 @@ body.teacher-mode .chat-student-only,body.admin-mode .chat-student-only{display:
   <div class="actions"><button class="btn primary" onclick="setPage('course')">Ingresar al curso →</button>
   <a id="zoomBtn" class="btn ghost" href="#" target="_blank" rel="noopener">Clase por Zoom</a></div>
  </div></div>
+ <div id="notificationOptIn" class="notification-optin"><div><strong>Activá las notificaciones</strong><span>Recibí avisos del equipo docente mientras usás la app instalada.</span></div><button class="btn ghost" onclick="enableSystemNotifications()">Activar notificaciones</button></div>
  <div class="metrics">
   <div class="metric"><b id="metricUnits">0</b><span>Unidades del programa</span></div>
   <div class="metric"><b id="metricVideos">0</b><span>Videos disponibles</span></div>
@@ -1608,6 +1643,43 @@ body.teacher-mode .chat-student-only,body.admin-mode .chat-student-only{display:
   </div>
 </section>
 
+
+
+<section id="alertsPage" class="page">
+  <div class="alert-admin-shell">
+    <div class="alert-admin-head">
+      <div>
+        <div class="kicker">Comunicación institucional</div>
+        <h2>Alertas a alumnos</h2>
+        <p>Creá un aviso para todos los alumnos de una cohorte. El alumno deberá confirmarlo con “Entendido”.</p>
+      </div>
+    </div>
+    <div class="alert-admin-card">
+      <form onsubmit="createCohortAlert(event)">
+        <div class="alert-form-grid">
+          <div class="alert-field">
+            <label for="alertCohort">Cohorte</label>
+            <select id="alertCohort" onchange="loadAlertStaff(this.value)"></select>
+          </div>
+          <div class="alert-field">
+            <label for="alertTitle">Título</label>
+            <input id="alertTitle" maxlength="90" placeholder="Ej.: Cambio de horario">
+          </div>
+          <div class="alert-field full">
+            <label for="alertMessage">Mensaje</label>
+            <textarea id="alertMessage" maxlength="1400" placeholder="Escribí el aviso para los alumnos..."></textarea>
+          </div>
+        </div>
+        <div class="alert-form-foot">
+          <div><div class="alert-form-note">La alerta se mostrará como modal al iniciar sesión y en las sesiones activas cuando el sistema detecte la novedad.</div><div id="alertFormStatus" class="alert-form-status"></div></div>
+          <button id="alertCreateBtn" class="btn primary" type="submit">Crear alerta</button>
+        </div>
+      </form>
+    </div>
+    <div class="section-head"><div><h2>Alertas recientes</h2><p id="alertRecentContext">Seleccioná una cohorte.</p></div><button class="btn ghost" onclick="loadAlertStaff()">Actualizar</button></div>
+    <div id="alertRecentList" class="alert-recent"><div class="teacher-empty">Sin alertas cargadas.</div></div>
+  </div>
+</section>
 
 <section id="teacherPage" class="page">
   <div class="teacher-head">
@@ -1855,6 +1927,7 @@ body.teacher-mode .chat-student-only,body.admin-mode .chat-student-only{display:
  <button class="active" data-page="home" onclick="setPage('home')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V21h14V10.5"/><path d="M9.5 21v-6h5v6"/></svg></span>Inicio</button>
  <button data-page="course" onclick="setPage('course')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Curso</button>
  <button data-page="chatPage" onclick="openChat()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></span>Chat</button>
+ <button class="teacher-only" data-page="alertsPage" onclick="openAlertAdmin()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0112 0v4l2 3H4l2-3z"/><path d="M9 18h6"/><path d="M12 3v1"/></svg></span>Alertas</button>
  <button class="teacher-only" data-page="teacherPage" onclick="openTeacherPanel()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v13H4z"/><path d="M8 21h8M12 18v3"/><path d="M8 9h8M8 13h5"/></svg></span>Docente</button>
  <button class="admin-only" data-page="adminPage" onclick="openAdminPanel()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="M17.5 15.5v4M15.5 17.5h4"/></svg></span>Admin</button>
  <button data-page="schedulePage" onclick="setPage('schedulePage')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></span>Agenda</button>
@@ -1862,7 +1935,7 @@ body.teacher-mode .chat-student-only,body.admin-mode .chat-student-only{display:
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.27.3 · Chat por cohorte · Indicador de no leídos</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.28.0 · Alertas por cohorte · PWA standalone</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2271,7 +2344,11 @@ function logoutStudent(){
   TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
   stopChatPolling();
   stopChatUnreadPolling();
+  stopAlertPolling();
   applyChatUnreadState({has_unread:false,unread_cohorts:[]});
+  setAlertAppBadge(0);
+  ALERT_QUEUE=[]; ALERT_CURRENT=null; ALERT_STAFF_DATA={cohorts:[],cohorte:'',alerts:[]};
+  $('#alertModal')?.classList.remove('open');
   CHAT_DATA={cohorts:[],cohorte:'',messages:[]};
   ADMIN_REG_ALL={courses:[],registrations:[]};
   ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
@@ -3218,6 +3295,170 @@ window.sendChatMessage=sendChatMessage;
 window.updateChatCounter=updateChatCounter;
 window.refreshChatUnreadStatus=refreshChatUnreadStatus;
 
+
+/* ===== Alertas por cohorte + notificaciones · v0.28.0 ===== */
+let ALERT_STAFF_DATA={cohorts:[],cohorte:'',alerts:[]};
+let ALERT_TIMER=null;
+let ALERT_LOADING=false;
+let ALERT_QUEUE=[];
+let ALERT_CURRENT=null;
+let ALERT_FIRST_CHECK=true;
+const ALERT_REFRESH_MS=30000;
+
+function isStudentUser(){return String(ITB_USER?.rol||'ALUMNO').toUpperCase()==='ALUMNO';}
+function stopAlertPolling(){if(ALERT_TIMER){clearInterval(ALERT_TIMER);ALERT_TIMER=null;}}
+function setAlertAppBadge(count){
+  try{
+    const n=Math.max(0,Number(count||0));
+    if(n&&'setAppBadge' in navigator)navigator.setAppBadge(n).catch(()=>{});
+    else if(!n&&'clearAppBadge' in navigator)navigator.clearAppBadge().catch(()=>{});
+  }catch(_){}
+}
+function syncNotificationOptIn(){
+  const box=$('#notificationOptIn');if(!box)return;
+  const supported='Notification' in window && 'serviceWorker' in navigator;
+  const show=!!ITB_USER&&isStudentUser()&&supported&&Notification.permission==='default';
+  box.classList.toggle('show',show);
+}
+async function enableSystemNotifications(){
+  if(!('Notification' in window)){showITBToast('Este dispositivo no admite notificaciones web.');return;}
+  try{
+    const permission=await Notification.requestPermission();
+    syncNotificationOptIn();
+    if(permission==='granted')showITBToast('Notificaciones activadas.');
+    else if(permission==='denied')showITBToast('Las notificaciones quedaron bloqueadas en el navegador.');
+  }catch(e){showITBToast('No se pudieron activar las notificaciones.');}
+}
+async function showSystemAlertNotification(alert){
+  if(!alert||!('Notification' in window)||Notification.permission!=='granted'||!('serviceWorker' in navigator))return;
+  try{
+    const reg=await navigator.serviceWorker.ready;
+    await reg.showNotification(alert.titulo||'Academia TED',{
+      body:String(alert.mensaje||'').replace(/\s+/g,' ').slice(0,180),
+      icon:'assets/pwa-icon-192.png',
+      badge:'assets/pwa-icon-192.png',
+      tag:'itb-alert-'+String(alert.alerta_id||''),
+      renotify:true,
+      data:{alerta_id:alert.alerta_id||'',url:'./'}
+    });
+  }catch(e){console.warn('No se pudo mostrar la notificación del sistema.',e);}
+}
+function mergeAlertQueue(alerts){
+  const byId=new Map();
+  [...ALERT_QUEUE,...(alerts||[])].forEach(a=>{if(a?.alerta_id)byId.set(String(a.alerta_id),a);});
+  ALERT_QUEUE=[...byId.values()].sort((a,b)=>Number(a.timestamp||0)-Number(b.timestamp||0));
+}
+function showNextAlertModal(){
+  if(ALERT_CURRENT||!ALERT_QUEUE.length)return;
+  ALERT_CURRENT=ALERT_QUEUE[0];
+  const a=ALERT_CURRENT;
+  $('#alertModalTitle').textContent=a.titulo||'Aviso importante';
+  const author=[String(a.creador_apellido||'').trim(),String(a.creador_nombre||'').trim()].filter(Boolean).join(', ');
+  $('#alertModalMeta').textContent=[author,a.creador_rol,a.fecha,a.cohorte].filter(Boolean).join(' · ');
+  $('#alertModalText').innerHTML=chatLinkify(a.mensaje||'');
+  $('#alertModalCount').textContent=ALERT_QUEUE.length>1?`1 de ${ALERT_QUEUE.length} avisos pendientes`:'Lectura requerida';
+  $('#alertModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+async function acknowledgeCurrentAlert(){
+  if(!ALERT_CURRENT)return;
+  const sess=getSession();if(!sess?.token)return;
+  const btn=$('#alertAckBtn');if(btn){btn.disabled=true;btn.textContent='Registrando…';}
+  try{
+    await apiJsonp({action:'alertAck',token:sess.token,alerta_id:ALERT_CURRENT.alerta_id},45000);
+    ALERT_QUEUE=ALERT_QUEUE.filter(a=>String(a.alerta_id)!==String(ALERT_CURRENT.alerta_id));
+    ALERT_CURRENT=null;
+    $('#alertModal').classList.remove('open');
+    document.body.style.overflow='';
+    setAlertAppBadge(ALERT_QUEUE.length);
+    if(ALERT_QUEUE.length)setTimeout(showNextAlertModal,120);
+  }catch(e){showITBToast(e.message||'No se pudo registrar la lectura.');}
+  finally{if(btn){btn.disabled=false;btn.textContent='Entendido';}}
+}
+async function refreshStudentAlerts(forceModal=false){
+  if(ALERT_LOADING||!ITB_USER||!isStudentUser())return;
+  const sess=getSession();if(!sess?.token)return;
+  ALERT_LOADING=true;
+  try{
+    const r=await retryTransient(()=>apiJsonp({action:'alertPending',token:sess.token}),2,450);
+    const incoming=Array.isArray(r.alerts)?r.alerts:[];
+    const oldIds=new Set(ALERT_QUEUE.map(a=>String(a.alerta_id)));
+    if(ALERT_CURRENT?.alerta_id)oldIds.add(String(ALERT_CURRENT.alerta_id));
+    const newAlerts=incoming.filter(a=>!oldIds.has(String(a.alerta_id)));
+    mergeAlertQueue(incoming);
+    setAlertAppBadge(ALERT_QUEUE.length);
+    if(!ALERT_FIRST_CHECK && document.visibilityState!=='visible'){
+      for(const a of newAlerts.slice(-2))await showSystemAlertNotification(a);
+    }
+    ALERT_FIRST_CHECK=false;
+    if((forceModal||ALERT_QUEUE.length)&&!ALERT_CURRENT)showNextAlertModal();
+  }catch(e){console.warn('No se pudieron consultar las alertas.',e);}
+  finally{ALERT_LOADING=false;}
+}
+function startAlertPolling(){
+  stopAlertPolling();
+  ALERT_QUEUE=[];ALERT_CURRENT=null;ALERT_FIRST_CHECK=true;
+  setAlertAppBadge(0);
+  syncNotificationOptIn();
+  if(!ITB_USER||!isStudentUser())return;
+  setTimeout(()=>refreshStudentAlerts(true),600);
+  ALERT_TIMER=setInterval(()=>refreshStudentAlerts(false),ALERT_REFRESH_MS);
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&ITB_USER&&isStudentUser())refreshStudentAlerts(false);
+});
+
+async function openAlertAdmin(){
+  if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase()))return;
+  setPage('alertsPage');
+  await loadAlertStaff(ALERT_STAFF_DATA.cohorte||'');
+}
+function renderAlertStaffList(){
+  const box=$('#alertRecentList');if(!box)return;
+  const arr=ALERT_STAFF_DATA.alerts||[];
+  $('#alertRecentContext').textContent=ALERT_STAFF_DATA.cohorte?`Cohorte ${ALERT_STAFF_DATA.cohorte} · ${arr.length} alerta${arr.length===1?'':'s'} reciente${arr.length===1?'':'s'}`:'Sin cohorte seleccionada';
+  if(!arr.length){box.innerHTML='<div class="teacher-empty">Todavía no hay alertas para esta cohorte.</div>';return;}
+  box.innerHTML=arr.slice().reverse().map(a=>{
+    const author=[a.creador_apellido,a.creador_nombre].filter(Boolean).join(', ');
+    return `<article class="alert-recent-item"><div class="alert-recent-top"><span class="alert-recent-title">${esc(a.titulo||'Alerta')}</span><span class="alert-recent-role">${esc(a.creador_rol||'DOCENTE')}</span><span class="alert-recent-time">${esc(a.fecha||'')}</span></div><div class="alert-recent-text">${chatLinkify(a.mensaje||'')}</div><div class="chat-author-name" style="margin-top:8px;font-size:9px;color:var(--muted)">${esc(author||a.creador_id||'')}</div></article>`;
+  }).join('');
+}
+async function loadAlertStaff(cohorte){
+  if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase()))return;
+  const sess=getSession();if(!sess?.token)return;
+  const wanted=String(cohorte||$('#alertCohort')?.value||ALERT_STAFF_DATA.cohorte||'');
+  try{
+    const r=await apiJsonp({action:'alertStaff',token:sess.token,cohorte:wanted});
+    ALERT_STAFF_DATA={cohorts:r.cohorts||[],cohorte:r.cohorte||'',alerts:r.alerts||[]};
+    const sel=$('#alertCohort');
+    if(sel)sel.innerHTML=ALERT_STAFF_DATA.cohorts.map(c=>`<option value="${esc(c)}" ${String(c)===String(ALERT_STAFF_DATA.cohorte)?'selected':''}>${esc(c)}</option>`).join('');
+    renderAlertStaffList();
+  }catch(e){if($('#alertRecentList'))$('#alertRecentList').innerHTML=`<div class="teacher-empty">${esc(e.message||'No se pudieron cargar las alertas.')}</div>`;}
+}
+async function createCohortAlert(ev){
+  ev?.preventDefault?.();
+  const sess=getSession();if(!sess?.token)return;
+  const cohorte=String($('#alertCohort')?.value||'');
+  const titulo=String($('#alertTitle')?.value||'').trim();
+  const mensaje=String($('#alertMessage')?.value||'').trim();
+  const status=$('#alertFormStatus'),btn=$('#alertCreateBtn');
+  if(!cohorte||!titulo||!mensaje){if(status)status.textContent='Completá cohorte, título y mensaje.';return;}
+  if(btn){btn.disabled=true;btn.textContent='Creando…';}if(status)status.textContent='';
+  try{
+    const r=await apiJsonp({action:'alertCreate',token:sess.token,cohorte,titulo,mensaje},45000);
+    if($('#alertTitle'))$('#alertTitle').value='';if($('#alertMessage'))$('#alertMessage').value='';
+    if(status)status.textContent=`Alerta creada para ${r.cohorte}.`;
+    showITBToast('Alerta creada correctamente.');
+    await loadAlertStaff(r.cohorte||cohorte);
+  }catch(e){if(status)status.textContent=e.message||'No se pudo crear la alerta.';}
+  finally{if(btn){btn.disabled=false;btn.textContent='Crear alerta';}}
+}
+window.openAlertAdmin=openAlertAdmin;
+window.loadAlertStaff=loadAlertStaff;
+window.createCohortAlert=createCohortAlert;
+window.acknowledgeCurrentAlert=acknowledgeCurrentAlert;
+window.enableSystemNotifications=enableSystemNotifications;
+
 let TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
 let TEACHER_FILTER='all';
 let TEACHER_SORT='name';
@@ -3230,6 +3471,9 @@ function applyRoleUI(){
   document.body.classList.toggle('admin-mode',isAdmin);
   if(ITB_USER)startChatUnreadPolling();
   else{stopChatUnreadPolling();applyChatUnreadState({has_unread:false,unread_cohorts:[]});}
+  if(ITB_USER && String(role)==='ALUMNO')startAlertPolling();
+  else{stopAlertPolling();setAlertAppBadge(0);}
+  syncNotificationOptIn();
 }
 
 function teacherStudentMetrics(student){
@@ -5047,9 +5291,34 @@ async function boot(){
     document.body.classList.remove('app-loading');
   }
 }
+function initPWA(){
+  const standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;
+  document.body.classList.toggle('pwa-standalone',!!standalone);
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('Service Worker no disponible.',e)),{once:true});
+  }
+}
+initPWA();
 boot();
 
 </script>
+
+<div id="alertModal" class="alert-modal" role="presentation">
+  <div class="alert-modal-card" role="dialog" aria-modal="true" aria-labelledby="alertModalTitle">
+    <div class="alert-modal-strip"></div>
+    <div class="alert-modal-body">
+      <div class="alert-modal-kicker">Aviso del equipo docente</div>
+      <div id="alertModalTitle" class="alert-modal-title">Alerta</div>
+      <div id="alertModalMeta" class="alert-modal-meta"></div>
+      <div id="alertModalText" class="alert-modal-text"></div>
+      <div class="alert-modal-foot">
+        <span id="alertModalCount" class="alert-modal-count"></span>
+        <button id="alertAckBtn" class="btn primary" onclick="acknowledgeCurrentAlert()">Entendido</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="videoModal" class="video-modal" onclick="videoModalBackdrop(event)">
   <div class="video-modal-card" role="dialog" aria-modal="true" aria-labelledby="videoModalTitle">
     <div class="video-modal-head">
