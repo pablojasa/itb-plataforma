@@ -1320,6 +1320,26 @@ body.admin-mode .admin-only{display:inline-flex!important}
 .admin-action-feedback.ok{display:block;background:#10251a;color:#8ae1a7;border:1px solid #285e3d}
 .admin-action-feedback.err{display:block;background:#2b1114;color:#f6a2a6;border:1px solid #693136}
 
+
+/* ===== Gestión de cohorte ===== */
+.admin-course-mgmt{margin:12px 0 16px}
+.course-mgmt-card{border:1px solid var(--line);border-radius:15px;background:#111820;padding:15px;display:flex;justify-content:space-between;gap:18px;align-items:center}
+.course-mgmt-main h3{margin:0 0 5px;font-size:17px}.course-mgmt-main p{margin:0;color:var(--muted);font-size:11px}
+.course-mgmt-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.course-mgmt-chip{padding:6px 8px;border:1px solid var(--line);border-radius:999px;font-size:10px;color:#cad3dc}
+.course-mgmt-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.course-mgmt-actions button{border:1px solid var(--line);border-radius:9px;padding:9px 11px;background:#1a2530;color:#fff;font-size:11px;font-weight:850;cursor:pointer}
+.course-mgmt-actions .incorporate{border-color:#346846;background:#112419;color:#8bdda9}
+.course-mgmt-actions .finish{border-color:#743840;background:#291316;color:#ef959b}
+.course-mgmt-empty{border:1px dashed var(--line);border-radius:13px;padding:12px;color:var(--muted);font-size:11px}
+.credentials-modal{position:fixed;inset:0;background:rgba(3,7,11,.86);z-index:15000;display:none;align-items:center;justify-content:center;padding:18px}
+.credentials-modal.open{display:flex}
+.credentials-card{width:min(980px,96vw);max-height:90vh;overflow:auto;background:#0f151c;border:1px solid var(--line);border-radius:18px}
+.credentials-head{position:sticky;top:0;background:#0f151c;border-bottom:1px solid var(--line);padding:16px;display:flex;justify-content:space-between;align-items:center}
+.credentials-body{padding:16px}.credentials-table{width:100%;border-collapse:collapse;min-width:720px}.credentials-table th,.credentials-table td{padding:9px;border-bottom:1px solid var(--line);text-align:left;font-size:11px}
+.credentials-table th{color:var(--muted);text-transform:uppercase;font-size:9px}
+.credentials-actions{display:flex;gap:8px}.credentials-actions button{border:1px solid var(--line);background:#1a2530;color:#fff;border-radius:8px;padding:8px 10px;font-weight:800;cursor:pointer}
+@media(max-width:800px){.course-mgmt-card{align-items:stretch;flex-direction:column}.course-mgmt-actions{justify-content:flex-start}}
+
 </style></head>
 <body class="guest-mode app-loading"><div class="app">
 <header class="topbar">
@@ -1593,7 +1613,10 @@ body.admin-mode .admin-only{display:inline-flex!important}
     </div>
   </div>
 
+
+  <div id="adminCourseMgmt" class="admin-course-mgmt"></div>
   <div id="adminKpis" class="admin-kpis"></div>
+
 
   <div class="admin-table-wrap">
     <table class="admin-table">
@@ -1630,6 +1653,32 @@ body.admin-mode .admin-only{display:inline-flex!important}
   </div>
 </div>
 
+
+
+<div id="credentialsModal" class="credentials-modal" onclick="if(event.target===this)closeCredentialsModal()">
+  <div class="credentials-card">
+    <div class="credentials-head">
+      <div>
+        <div class="kicker">Alta de alumnos</div>
+        <h3 id="credentialsTitle" style="margin:4px 0 0">Credenciales generadas</h3>
+      </div>
+      <div class="credentials-actions">
+        <button onclick="copyCredentials()">Copiar</button>
+        <button onclick="downloadCredentialsCsv()">CSV</button>
+        <button onclick="closeCredentialsModal()">Cerrar</button>
+      </div>
+    </div>
+    <div class="credentials-body">
+      <div class="note" style="margin-bottom:12px">Los PIN se muestran aquí una sola vez. Guardá o descargá este listado antes de cerrar.</div>
+      <div style="overflow:auto">
+        <table class="credentials-table">
+          <thead><tr><th>Apellido y nombres</th><th>Alumno ID</th><th>Usuario</th><th>PIN</th><th>Email</th></tr></thead>
+          <tbody id="credentialsRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 
 <section id="schedulePage" class="page">
  <div class="section-head">
@@ -1706,7 +1755,7 @@ body.admin-mode .admin-only{display:inline-flex!important}
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.24.0 Panel ADMIN · gestión de inscripciones</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.25.0 Cohortes · altas masivas y cronograma aislado</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2112,7 +2161,9 @@ function getSession(){
 function refreshUserUI(){
   const pill=$('#userPill'), label=$('#userLabel'); if(!pill||!label)return;
   if(ITB_USER){
-    label.textContent=(ITB_USER.nombre||'')+' '+(ITB_USER.apellido||'');
+    const base=(ITB_USER.nombre||'')+' '+(ITB_USER.apellido||'');
+    const courseBits=[ITB_USER.curso_nombre||ITB_USER.cohorte||'',ITB_USER.anio_cursada||''].filter(Boolean).join(' · ');
+    label.textContent=base+(courseBits?` · ${courseBits}`:'');
     pill.querySelector('button').textContent='Salir';
     pill.querySelector('button').onclick=logoutStudent;
   }else{
@@ -2291,6 +2342,7 @@ window.openLogin=openLogin; window.closeLogin=closeLogin; window.loginStudent=lo
 
 
 let ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
+let ADMIN_LAST_CREDENTIALS=[];
 
 function adminStatusMeta(st){
   const s=String(st||'INSCRIPCION_RECIBIDA').toUpperCase();
@@ -2341,12 +2393,117 @@ async function loadAdminRegistrations(){
       courseSel.innerHTML='<option value="">Todos los cursos</option>'+
         ADMIN_REG_DATA.courses.map(c=>`<option value="${esc(c.curso_id)}" ${c.curso_id===current?'selected':''}>${esc(c.nombre_corto||c.curso_id)}${c.cohorte?` · ${esc(c.cohorte)}`:''}</option>`).join('');
     }
+    renderAdminCourseManagement();
     renderAdminKpis();
     renderAdminRows();
   }catch(e){
     if($('#adminRows')) $('#adminRows').innerHTML=`<tr><td colspan="8" class="admin-empty">${esc(e.message||'No se pudo cargar el panel ADMIN.')}</td></tr>`;
   }
 }
+
+
+function selectedAdminCourse(){
+  const id=$('#adminCourse')?.value||'';
+  return (ADMIN_REG_DATA.courses||[]).find(c=>String(c.curso_id)===String(id))||null;
+}
+
+function renderAdminCourseManagement(){
+  const target=$('#adminCourseMgmt'); if(!target)return;
+  const c=selectedAdminCourse();
+  if(!c){
+    target.innerHTML='<div class="course-mgmt-empty">Seleccioná un curso para gestionar su cohorte, año e incorporaciones.</div>';
+    return;
+  }
+  const finalizado=String(c.estado||'').toUpperCase()==='FINALIZADO';
+  target.innerHTML=`<div class="course-mgmt-card">
+    <div class="course-mgmt-main">
+      <h3>${esc(c.nombre_corto||c.curso_id)} ${c.anio?`· ${esc(c.anio)}`:''}</h3>
+      <p>${esc(c.cohorte||'')} · Estado: ${esc(c.estado||'—')}</p>
+      <div class="course-mgmt-stats">
+        <span class="course-mgmt-chip">${Number(c.pendientes_incorporacion||0)} admitidos pendientes</span>
+        <span class="course-mgmt-chip">${Number(c.alumnos_activos||0)} alumnos activos</span>
+        <span class="course-mgmt-chip">${Number(c.alumnos_finalizados||0)} finalizados</span>
+      </div>
+    </div>
+    <div class="course-mgmt-actions">
+      ${!finalizado?`<button class="incorporate" onclick="bulkCreateStudents()">Incorporar admitidos (${Number(c.pendientes_incorporacion||0)})</button>`:''}
+      ${!finalizado?`<button class="finish" onclick="finalizeSelectedCourse()">Finalizar curso</button>`:''}
+    </div>
+  </div>`;
+}
+
+async function bulkCreateStudents(){
+  const c=selectedAdminCourse();
+  if(!c){alert('Seleccioná un curso.');return;}
+  const pending=Number(c.pendientes_incorporacion||0);
+  if(!pending){alert('No hay admitidos pendientes de incorporación.');return;}
+
+  const yearInput=prompt(`Año de cursada para ${c.nombre_corto||c.curso_id}:`,String(c.anio||new Date().getFullYear()));
+  if(yearInput===null)return;
+  const year=Number(yearInput);
+  if(!Number.isInteger(year)||year<2000||year>2100){alert('Año inválido.');return;}
+
+  if(!confirm(`Se crearán ${pending} alumno(s) en ${c.nombre_corto||c.curso_id} · ${year}.\\n\\n¿Continuar?`))return;
+
+  try{
+    const sess=getSession(); if(!sess?.token)throw new Error('Sesión vencida.');
+    const r=await apiJsonp({action:'adminBulkCreateStudents',token:sess.token,curso_id:c.curso_id,anio:String(year)});
+    ADMIN_LAST_CREDENTIALS=r.credentials||[];
+    showCredentialsModal(r);
+    await loadAdminRegistrations();
+  }catch(e){alert(e.message||'No se pudieron crear los alumnos.');}
+}
+
+function showCredentialsModal(r){
+  $('#credentialsTitle').textContent=`${r.curso_nombre||r.curso_id} · ${r.anio} · ${r.creados||0} alumno(s)`;
+  $('#credentialsRows').innerHTML=(ADMIN_LAST_CREDENTIALS||[]).map(x=>`<tr>
+    <td><b>${esc(x.apellido)}, ${esc(x.nombres)}</b></td>
+    <td>${esc(x.alumno_id)}</td>
+    <td>${esc(x.usuario)}</td>
+    <td><b>${esc(x.pin)}</b></td>
+    <td>${esc(x.email||'')}</td>
+  </tr>`).join('');
+  $('#credentialsModal').classList.add('open');
+}
+function closeCredentialsModal(){$('#credentialsModal')?.classList.remove('open')}
+
+function credentialsText(){
+  return ['APELLIDO Y NOMBRES\\tALUMNO ID\\tUSUARIO\\tPIN\\tEMAIL']
+    .concat((ADMIN_LAST_CREDENTIALS||[]).map(x=>`${x.apellido}, ${x.nombres}\\t${x.alumno_id}\\t${x.usuario}\\t${x.pin}\\t${x.email||''}`))
+    .join('\\n');
+}
+async function copyCredentials(){
+  try{await navigator.clipboard.writeText(credentialsText());showITBToast('Credenciales copiadas.')}catch(_){alert(credentialsText())}
+}
+function downloadCredentialsCsv(){
+  const rows=[['Apellido','Nombres','Alumno ID','Usuario','PIN','Email']]
+    .concat((ADMIN_LAST_CREDENTIALS||[]).map(x=>[x.apellido,x.nombres,x.alumno_id,x.usuario,x.pin,x.email||'']));
+  const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(';')).join('\\r\\n');
+  const blob=new Blob(['\\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='credenciales_alumnos.csv';a.click();URL.revokeObjectURL(url);
+}
+
+async function finalizeSelectedCourse(){
+  const c=selectedAdminCourse(); if(!c){alert('Seleccioná un curso.');return;}
+  const note=prompt(`Motivo/observación para finalizar ${c.nombre_corto||c.curso_id}:`,'Curso finalizado');
+  if(note===null)return;
+  if(!String(note).trim()){alert('La observación es obligatoria.');return;}
+  if(!confirm(`FINALIZAR ${c.nombre_corto||c.curso_id}?\\n\\nLos alumnos pasarán a estado FINALIZADO. Conservarán acceso histórico, pero el cronograma seguirá ligado a esta edición.`))return;
+
+  try{
+    const sess=getSession(); if(!sess?.token)throw new Error('Sesión vencida.');
+    const r=await apiJsonp({action:'adminFinalizeCourse',token:sess.token,curso_id:c.curso_id,observacion:note});
+    alert(`Curso finalizado. Alumnos actualizados: ${r.alumnos_finalizados||0}`);
+    await loadAdminRegistrations();
+  }catch(e){alert(e.message||'No se pudo finalizar el curso.');}
+}
+
+window.bulkCreateStudents=bulkCreateStudents;
+window.finalizeSelectedCourse=finalizeSelectedCourse;
+window.closeCredentialsModal=closeCredentialsModal;
+window.copyCredentials=copyCredentials;
+window.downloadCredentialsCsv=downloadCredentialsCsv;
 
 function renderAdminKpis(){
   const c=ADMIN_REG_DATA.counts||{};
@@ -2486,11 +2643,7 @@ function openAdminDetail(id){
           <textarea id="adminActionNote" placeholder="Observación o motivo. Es obligatorio para Observar, No admitir y Desistimiento."></textarea>
           <div class="admin-actions-note">Cada cambio registra administrador, fecha/hora y observación en la planilla.</div>
           <div class="admin-action-buttons">
-            <button class="admin-action-btn review" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','EN_REVISION')">Tomar para revisión</button>
-            <button class="admin-action-btn observe" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','OBSERVADA')">Observar</button>
-            <button class="admin-action-btn admit" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','ADMITIDA')">Admitir</button>
-            <button class="admin-action-btn reject" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','NO_ADMITIDA')">No admitir</button>
-            <button class="admin-action-btn withdraw" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','DESISTIDA')">Registrar desistimiento</button>
+            ${adminActionButtons(r)}
           </div>
           <div id="adminActionFeedback" class="admin-action-feedback"></div>
         </div>
@@ -2501,11 +2654,39 @@ function openAdminDetail(id){
 }
 
 
+
+function adminActionButtons(r){
+  const st=String(r.estado_inscripcion||'INSCRIPCION_RECIBIDA').toUpperCase();
+  if(st==='ALUMNO_CREADO') return '<span class="note">La inscripción ya fue incorporada como alumno.</span>';
+  if(['NO_ADMITIDA','DESISTIDA'].includes(st)){
+    return `<button class="admin-action-btn review" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','EN_REVISION')">Reabrir en revisión</button>`;
+  }
+  if(st==='OBSERVADA'){
+    return `<button class="admin-action-btn review" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','EN_REVISION')">Retomar revisión</button>
+            <button class="admin-action-btn withdraw" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','DESISTIDA')">Registrar desistimiento</button>`;
+  }
+  if(st==='ADMITIDA'){
+    return `<button class="admin-action-btn review" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','EN_REVISION')">Volver a revisión</button>
+            <button class="admin-action-btn withdraw" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','DESISTIDA')">Registrar desistimiento</button>`;
+  }
+  if(st==='INSCRIPCION_RECIBIDA'){
+    return `<button class="admin-action-btn review" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','EN_REVISION')">Tomar para revisión</button>
+            <button class="admin-action-btn withdraw" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','DESISTIDA')">Registrar desistimiento</button>`;
+  }
+  return `<button class="admin-action-btn observe" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','OBSERVADA')">Observar</button>
+          <button class="admin-action-btn admit" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','ADMITIDA')">Admitir</button>
+          <button class="admin-action-btn reject" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','NO_ADMITIDA')">No admitir</button>
+          <button class="admin-action-btn withdraw" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','DESISTIDA')">Registrar desistimiento</button>`;
+}
+
 async function updateAdminRegistration(id,newState){
   if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN') return;
 
   const note=String($('#adminActionNote')?.value||'').trim();
-  const required=['OBSERVADA','NO_ADMITIDA','DESISTIDA'].includes(newState);
+  const current=(ADMIN_REG_DATA.registrations||[]).find(x=>String(x.inscripcion_id)===String(id));
+  const currentState=String(current?.estado_inscripcion||'').toUpperCase();
+  const required=['OBSERVADA','NO_ADMITIDA','DESISTIDA'].includes(newState) ||
+    (newState==='EN_REVISION' && ['NO_ADMITIDA','DESISTIDA','ADMITIDA'].includes(currentState));
   if(required && !note){
     const fb=$('#adminActionFeedback');
     fb.className='admin-action-feedback err';
