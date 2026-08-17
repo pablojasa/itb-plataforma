@@ -1755,7 +1755,7 @@ body.admin-mode .admin-only{display:inline-flex!important}
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.25.1 Cohortes · hotfix incorporación masiva</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.25.2 · Rendimiento y estabilidad</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2096,16 +2096,17 @@ let ITB_USER=null;
 let ITB_PROGRESS=[];
 let ITB_QUIZ_STATUS={};
 
-function apiJsonp(params){
+function apiJsonp(params,timeoutMs){
   const api=(window.ITB_API_URL||'').trim();
   if(!api) return Promise.reject(new Error('Backend no configurado'));
+  const wait=Math.max(30000,Number(timeoutMs||window.ITB_API_TIMEOUT_MS||0));
   return new Promise((resolve,reject)=>{
     const cb='__itbApi'+Date.now()+Math.floor(Math.random()*100000);
     const sc=document.createElement('script');
     const qs=new URLSearchParams({...params,prefix:cb,ts:Date.now()});
     let done=false;
     const cleanup=()=>{if(sc.parentNode)sc.remove();try{delete window[cb]}catch(_){}};
-    const timer=setTimeout(()=>{if(done)return;done=true;cleanup();reject(new Error('Tiempo agotado'));},12000);
+    const timer=setTimeout(()=>{if(done)return;done=true;cleanup();reject(new Error('Tiempo agotado'));},wait);
     window[cb]=(data)=>{if(done)return;done=true;clearTimeout(timer);cleanup();data&&data.ok!==false?resolve(data):reject(new Error(data?.error||'Error de backend'));};
     sc.onerror=()=>{if(done)return;done=true;clearTimeout(timer);cleanup();reject(new Error('No se pudo conectar'));};
     sc.src=api+(api.includes('?')?'&':'?')+qs.toString(); sc.async=true; document.head.appendChild(sc);
@@ -2129,8 +2130,9 @@ async function loginStudent(){
     ITB_USER=r.user;
     localStorage.setItem('itb_session',JSON.stringify({token:r.token,user:r.user}));
     $('#loginModal').classList.remove('open');
-    await loadMyProgress();
-    await loadRemoteData();
+    // Progreso y contenido no dependen entre sí: cargarlos en paralelo
+    // reduce sensiblemente el tiempo total del ingreso.
+    await Promise.all([loadMyProgress(),loadRemoteData()]);
     refreshUserUI();
     applyRoleUI();
     renderApp();
@@ -2490,7 +2492,9 @@ async function bulkCreateStudents(){
     const r=await apiJsonpLong({action:'adminBulkCreateStudents',token:sess.token,curso_id:c.curso_id,anio:String(year)},60000);
     ADMIN_LAST_CREDENTIALS=r.credentials||[];
     showCredentialsModal(r);
-    await loadAdminRegistrations();
+    // La respuesta ya contiene las inscripciones creadas: actualizamos el panel
+    // localmente y evitamos una segunda consulta completa de 8–10+ segundos.
+    applyBulkCreateLocal(r);
   }catch(e){alert(e.message||'No se pudieron crear los alumnos.');}
 }
 
@@ -2719,6 +2723,87 @@ function adminActionButtons(r){
           <button class="admin-action-btn withdraw" onclick="updateAdminRegistration('${esc(r.inscripcion_id)}','DESISTIDA')">Registrar desistimiento</button>`;
 }
 
+function applyAdminRegistrationUpdateLocal(id,response,oldState,newState){
+  const rows=ADMIN_REG_DATA.registrations||[];
+  const idx=rows.findIndex(x=>String(x.inscripcion_id)===String(id));
+  const row=idx>=0?rows[idx]:null;
+
+  // Los KPI siempre representan todos los estados del curso filtrado.
+  const counts=ADMIN_REG_DATA.counts||{};
+  if(oldState && Object.prototype.hasOwnProperty.call(counts,oldState)){
+    counts[oldState]=Math.max(0,Number(counts[oldState]||0)-1);
+  }
+  if(newState && Object.prototype.hasOwnProperty.call(counts,newState)){
+    counts[newState]=Number(counts[newState]||0)+1;
+  }
+
+  if(row){
+    row.estado_inscripcion=newState;
+    row.revisado_por=response.revisado_por||row.revisado_por||'';
+    row.fecha_revision=response.fecha_revision||row.fecha_revision||'';
+    row.observaciones_admin=response.observaciones_admin||row.observaciones_admin||'';
+    if(newState==='ADMITIDA') row.fecha_admision=response.fecha_revision||row.fecha_admision||'';
+
+    const c=(ADMIN_REG_DATA.courses||[]).find(x=>String(x.curso_id)===String(row.curso_id));
+    if(c && !String(row.alumno_id||'').trim()){
+      if(oldState==='ADMITIDA' && newState!=='ADMITIDA'){
+        c.pendientes_incorporacion=Math.max(0,Number(c.pendientes_incorporacion||0)-1);
+      }else if(oldState!=='ADMITIDA' && newState==='ADMITIDA'){
+        c.pendientes_incorporacion=Number(c.pendientes_incorporacion||0)+1;
+      }
+    }
+
+    const stateFilter=String($('#adminStatus')?.value||'').toUpperCase();
+    if(stateFilter && newState!==stateFilter){
+      ADMIN_REG_DATA.registrations.splice(idx,1);
+    }
+  }
+
+  renderAdminCourseManagement();
+  renderAdminKpis();
+  renderAdminRows();
+}
+
+function applyBulkCreateLocal(result){
+  const credentials=result.credentials||[];
+  if(!credentials.length)return;
+
+  const ids=new Map(credentials.map(x=>[String(x.inscripcion_id||''),String(x.alumno_id||'')]));
+  let changed=0;
+
+  (ADMIN_REG_DATA.registrations||[]).forEach(r=>{
+    const aid=ids.get(String(r.inscripcion_id||''));
+    if(!aid)return;
+    if(String(r.estado_inscripcion||'').toUpperCase()==='ADMITIDA'){
+      r.estado_inscripcion='ALUMNO_CREADO';
+      r.alumno_id=aid;
+      changed++;
+    }
+  });
+
+  const counts=ADMIN_REG_DATA.counts||{};
+  if(changed){
+    counts.ADMITIDA=Math.max(0,Number(counts.ADMITIDA||0)-changed);
+    counts.ALUMNO_CREADO=Number(counts.ALUMNO_CREADO||0)+changed;
+  }
+
+  const course=(ADMIN_REG_DATA.courses||[]).find(c=>String(c.curso_id)===String(result.curso_id));
+  if(course){
+    course.pendientes_incorporacion=Math.max(0,Number(course.pendientes_incorporacion||0)-credentials.length);
+    course.alumnos_activos=Number(course.alumnos_activos||0)+credentials.length;
+    course.anio=result.anio||course.anio;
+  }
+
+  const stateFilter=String($('#adminStatus')?.value||'').toUpperCase();
+  if(stateFilter==='ADMITIDA'){
+    ADMIN_REG_DATA.registrations=(ADMIN_REG_DATA.registrations||[]).filter(r=>!ids.has(String(r.inscripcion_id||'')));
+  }
+
+  renderAdminCourseManagement();
+  renderAdminKpis();
+  renderAdminRows();
+}
+
 async function updateAdminRegistration(id,newState){
   if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN') return;
 
@@ -2755,7 +2840,7 @@ async function updateAdminRegistration(id,newState){
     const sess=getSession();
     if(!sess?.token) throw new Error('Sesión vencida.');
 
-    await apiJsonp({
+    const result=await apiJsonp({
       action:'adminUpdateRegistration',
       token:sess.token,
       inscripcion_id:id,
@@ -2766,11 +2851,13 @@ async function updateAdminRegistration(id,newState){
     fb.className='admin-action-feedback ok';
     fb.textContent='Estado actualizado correctamente.';
 
-    await loadAdminRegistrations();
+    // No recargamos toda la hoja después de cada cambio.
+    // El botón Actualizar queda disponible para una sincronización completa.
+    applyAdminRegistrationUpdateLocal(id,result,currentState,newState);
 
     const updated=(ADMIN_REG_DATA.registrations||[]).find(x=>String(x.inscripcion_id)===String(id));
     if(updated){
-      setTimeout(()=>openAdminDetail(id),150);
+      setTimeout(()=>openAdminDetail(id),80);
     }else{
       closeAdminDetail();
     }
@@ -4305,7 +4392,7 @@ function loadRemoteData(){
       finished=true;
       cleanup();
       reject(new Error('Tiempo de espera agotado al conectar con Google Sheets'));
-    }, window.ITB_API_TIMEOUT_MS || 12000);
+    }, Math.max(30000,Number(window.ITB_API_TIMEOUT_MS||0)));
 
     window[callback]=(remote)=>{
       if(finished) return;
@@ -4423,8 +4510,8 @@ async function loginFromGate(){
     ITB_USER=r.user;
     localStorage.setItem('itb_session',JSON.stringify({token:r.token,user:r.user}));
 
-    await loadMyProgress();
-    await loadRemoteData();
+    // Carga paralela para evitar sumar latencias de dos ejecuciones Apps Script.
+    await Promise.all([loadMyProgress(),loadRemoteData()]);
 
     const status=$('#dataStatus');
     if(status){
