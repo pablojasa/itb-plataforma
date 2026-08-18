@@ -88,7 +88,7 @@ main{max-width:1180px;margin:0 auto;padding:28px 24px 92px}
 .book{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer}
 .book-cover{height:220px;background:#1d2530 center/cover no-repeat}
 .book-body{padding:14px}.book-body h3{font-size:15px;margin:0 0 7px}.book-body p{font-size:12px;color:var(--muted);margin:0}
-/* ===== v0.32.0 · Gestión de alumnos ===== */
+/* ===== v0.33.0 · Gestión de alumnos + baja ===== */
 .students-admin-summary{
   display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 16px;
 }
@@ -113,6 +113,13 @@ main{max-width:1180px;margin:0 auto;padding:28px 24px 92px}
 }
 .student-reset-btn:hover{background:#42201c}
 .student-reset-btn:disabled{opacity:.45;cursor:not-allowed}
+.student-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.student-drop-btn{
+  border:1px solid #84313a;background:#3a171c;color:#ffc1c7;border-radius:9px;padding:7px 9px;
+  font-size:10px;font-weight:850;cursor:pointer;white-space:nowrap;
+}
+.student-drop-btn:hover{background:#4b1b22}
+.student-drop-btn:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:760px){
   #studentsAdminPage .admin-table{min-width:860px}
 }
@@ -2023,7 +2030,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <div>
       <div class="kicker">Administración · Academia TED</div>
       <h2>Gestión de alumnos</h2>
-      <p class="note">Consulta de cuentas de alumnos y restablecimiento del acceso inicial.</p>
+      <p class="note">Consulta de cuentas, restablecimiento de acceso y baja administrativa de alumnos.</p>
     </div>
     <div class="admin-controls">
       <select id="studentsAdminCourse" onchange="applyStudentAdminFilters()"><option value="">Todos los cursos</option></select>
@@ -2125,7 +2132,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.32.0 · Gestión de alumnos · Restablecimiento de acceso</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.33.0 · Gestión de alumnos · Baja administrativa</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3034,7 +3041,8 @@ function renderStudentAdminSummary(){
   const rows=ADMIN_STUDENTS_ROWS||[];
   const temps=rows.filter(studentAdminIsTemp).length;
   const active=rows.filter(s=>studentAdminBool(s.activo,true)&&String(s.estado||'ACTIVO').toUpperCase()==='ACTIVO').length;
-  t.innerHTML=`<span class="students-admin-chip"><b>${rows.length}</b> alumno${rows.length===1?'':'s'}</span><span class="students-admin-chip"><b>${active}</b> activos</span><span class="students-admin-chip"><b>${temps}</b> con PIN temporal</span>`;
+  const bajas=rows.filter(s=>String(s.estado||'').toUpperCase()==='BAJA').length;
+  t.innerHTML=`<span class="students-admin-chip"><b>${rows.length}</b> alumno${rows.length===1?'':'s'}</span><span class="students-admin-chip"><b>${active}</b> activos</span><span class="students-admin-chip"><b>${bajas}</b> de baja</span><span class="students-admin-chip"><b>${temps}</b> con PIN temporal</span>`;
 }
 function renderStudentAdminRows(){
   const body=$('#studentsAdminRows');if(!body)return;
@@ -3049,9 +3057,9 @@ function renderStudentAdminRows(){
       <td><b>${esc(s.usuario||s.alumno_id||'')}</b></td>
       <td>${esc(s.curso_nombre||s.curso_id||'—')}<div class="note">${esc(s.cohorte||'')}</div></td>
       <td>${esc(s.email||'—')}</td>
-      <td><span class="student-state ${stateClass}">${stateLabel}</span></td>
+      <td><span class="student-state ${stateClass}">${stateLabel}</span>${String(s.estado||'').toUpperCase()==='BAJA'?`<div class="note">${s.fecha_baja?adminFmtDate(s.fecha_baja,true)+' · ':''}${esc(s.motivo_baja||'')}</div>`:''}</td>
       <td><span class="student-sec ${temp?'temp':'personal'}">${temp?'🔑 PIN temporal':'✓ PIN personal'}</span></td>
-      <td><button class="student-reset-btn" ${active?'':'disabled'} onclick="resetStudentAccess('${esc(s.alumno_id)}')">Restablecer PIN</button></td>
+      <td><div class="student-actions"><button class="student-reset-btn" ${active?'':'disabled'} onclick="resetStudentAccess('${esc(s.alumno_id)}')">Restablecer PIN</button><button class="student-drop-btn" ${active?'':'disabled'} onclick="deactivateStudent('${esc(s.alumno_id)}')">Dar de baja</button></div></td>
     </tr>`;
   }).join('');
 }
@@ -3068,7 +3076,22 @@ async function resetStudentAccess(alumnoId){
     showITBToast(`Acceso restablecido: ${r.usuario||s.usuario} · PIN temporal 123456`);
   }catch(e){alert(e.message||'No se pudo restablecer el PIN.');}
 }
-window.openStudentAdmin=openStudentAdmin;window.loadAdminStudents=loadAdminStudents;window.applyStudentAdminFilters=applyStudentAdminFilters;window.resetStudentAccess=resetStudentAccess;
+async function deactivateStudent(alumnoId){
+  const s=(ADMIN_STUDENTS_ALL.students||[]).find(x=>String(x.alumno_id)===String(alumnoId));if(!s)return;
+  const who=[s.apellido,s.nombre].filter(Boolean).join(', ')||s.usuario||alumnoId;
+  const motivo=prompt(`Motivo de la baja de ${who}:`,`No continúa el curso`);
+  if(motivo===null)return;
+  if(!String(motivo).trim()){alert('El motivo de la baja es obligatorio.');return;}
+  if(!confirm(`DAR DE BAJA a ${who}?\n\nPerderá el acceso al curso actual. Su inscripción y su historial permanecerán registrados, y podrá volver a inscribirse en una futura edición.`))return;
+  try{
+    const sess=getSession();if(!sess?.token)throw new Error('Sesión vencida.');
+    const r=await apiJsonp({action:'adminDeactivateStudent',token:sess.token,alumno_id:alumnoId,motivo:String(motivo).trim()});
+    s.estado='BAJA';s.activo=false;s.fecha_baja=r.fecha_baja||new Date().toISOString();s.motivo_baja=r.motivo_baja||String(motivo).trim();s.baja_por=r.baja_por||'';
+    applyStudentAdminFilters();
+    showITBToast(`${who} fue dado de baja del curso.`);
+  }catch(e){alert(e.message||'No se pudo dar de baja al alumno.');}
+}
+window.openStudentAdmin=openStudentAdmin;window.loadAdminStudents=loadAdminStudents;window.applyStudentAdminFilters=applyStudentAdminFilters;window.resetStudentAccess=resetStudentAccess;window.deactivateStudent=deactivateStudent;
 
 let ADMIN_REG_ALL={courses:[],registrations:[]};
 let ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};

@@ -1,4 +1,4 @@
-const CACHE_NAME='itb-pwa-v0320';
+const CACHE_NAME='itb-pwa-v0330';
 const SHELL=['./','./index.html','./manifest.webmanifest','./assets/ted-app-icon-180-v0281.png','./assets/ted-app-icon-192-v0281.png','./assets/ted-app-icon-512-v0281.png'];
 
 self.addEventListener('install',event=>{
