@@ -1473,6 +1473,33 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   .pwa-launch-loader:after{animation:none;width:100%}
 }
 
+
+
+/* ===== v0.30 Perfil de usuario + recuperación de PIN ===== */
+.user-pill #profileBtn{border-color:#3b4652;background:#17202a;color:#e9eef3}
+.login-reset-link{display:block;margin:14px auto 0;background:none;border:0;color:#aeb8c2;text-decoration:underline;cursor:pointer;font:inherit}
+.profile-modal,.pin-reset-modal{position:fixed;inset:0;z-index:15000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(3,7,11,.88);backdrop-filter:blur(6px)}
+.profile-modal.open,.pin-reset-modal.open{display:flex}
+.profile-card,.pin-reset-card{width:min(760px,96vw);max-height:92vh;overflow:auto;background:#0e151c;border:1px solid #35414d;border-radius:18px;box-shadow:0 28px 80px rgba(0,0,0,.5);padding:22px}
+.pin-reset-card{width:min(500px,96vw)}
+.profile-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+.profile-head h2,.pin-reset-card h2{margin:0;color:#f3f5f7}.profile-head p,.pin-reset-card p{margin:6px 0 0;color:var(--muted)}
+.profile-close{border:0;background:none;color:#cad2da;font-size:28px;cursor:pointer}
+.profile-layout{display:grid;grid-template-columns:180px 1fr;gap:20px}
+.profile-photo-box{display:flex;flex-direction:column;align-items:center;gap:10px}
+.profile-photo{width:128px;height:128px;border-radius:50%;object-fit:cover;background:#18232e;border:2px solid #3a4754;display:none}
+.profile-photo-placeholder{width:128px;height:128px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#18232e;border:2px solid #3a4754;font-size:34px;font-weight:900;color:#e5ebf0}
+.profile-photo-actions{display:grid;gap:7px;width:100%}.profile-photo-actions .btn{width:100%}
+.profile-section{border-top:1px solid #28333e;padding-top:16px;margin-top:16px}.profile-section:first-child{border-top:0;padding-top:0;margin-top:0}
+.profile-section h3{margin:0 0 12px;font-size:15px;color:#f0f3f6}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.profile-field{display:grid;gap:5px}.profile-field.full{grid-column:1/-1}.profile-field label{font-size:11px;font-weight:800;color:#c4ccd4;text-transform:uppercase;letter-spacing:.04em}
+.profile-field input{width:100%;box-sizing:border-box;background:#0a1016;border:1px solid #35414d;border-radius:10px;color:#f1f4f6;padding:11px 12px}
+.profile-readonly{padding:11px 12px;border-radius:10px;background:#141d26;color:#cbd3db;border:1px solid #2a3540;min-height:18px}
+.profile-note,.pin-reset-note{font-size:11px;color:var(--muted);line-height:1.45}.profile-status,.pin-reset-status{min-height:18px;margin-top:9px;font-size:12px;color:#f0b9bc}
+.profile-security{display:grid;grid-template-columns:1fr 1fr;gap:12px}.profile-security .full{grid-column:1/-1}
+.pin-reset-step{display:none}.pin-reset-step.active{display:block}.pin-reset-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+@media(max-width:700px){.profile-layout{grid-template-columns:1fr}.profile-photo-box{padding-bottom:10px}.profile-grid,.profile-security{grid-template-columns:1fr}.profile-field.full,.profile-security .full{grid-column:auto}.profile-card{padding:16px}.user-pill #profileBtn{padding-left:8px;padding-right:8px}}
 </style></head>
 <body class="guest-mode app-loading">
 <div id="pwaLaunchSplash" class="pwa-launch-splash" aria-label="Iniciando Academia TED">
@@ -1487,7 +1514,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 <div class="app">
 <header class="topbar">
  <div class="brand" onclick="setPage('home')"><div class="brandmark brandmark-logo"><img src="assets/ted-logo.png" alt="Academia TED"></div>
- <div class="brandtext"><strong>PLATAFORMA ITB</strong><span>Academia TED · <em id="dataStatus">Conectando…</em></span></div><div id="userPill" class="user-pill"><span id="userLabel">Invitado</span><button onclick="openLogin()">Ingresar</button></div></div>
+ <div class="brandtext"><strong>PLATAFORMA ITB</strong><span>Academia TED · <em id="dataStatus">Conectando…</em></span></div><div id="userPill" class="user-pill"><span id="userLabel">Invitado</span><button id="profileBtn" onclick="openProfile()" style="display:none">Mi perfil</button><button id="sessionBtn" onclick="openLogin()">Ingresar</button></div></div>
  <nav class="desktop-nav">
   <button class="navbtn active" data-page="home" onclick="setPage('home')">Inicio</button>
   <button class="navbtn" data-page="course" onclick="setPage('course')">Curso</button>
@@ -1543,7 +1570,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
             ACCEDER <span class="arrow">→</span>
           </button>
 
-          <span class="guest-help" onclick="showITBToast('Consultá con el equipo docente para recuperar tus datos de acceso.')">¿Problemas para ingresar?</span>
+          <span class="guest-help" onclick="openPinReset()">¿Olvidaste tu PIN?</span>
           <div class="guest-card-bottom"></div>
         </div>
       </section>
@@ -1990,7 +2017,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.29.1 · Autoevaluación nativa · Vista previa docente/admin</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.30.0 · Perfil de usuario · Seguridad · Recuperación de PIN</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2451,6 +2478,118 @@ async function loginStudent(){
   }catch(e){ $('#loginError').textContent=e.message||'No se pudo iniciar sesión.'; }
 }
 
+
+let ITB_PROFILE=null;
+
+function profileInitials(user){
+  return ((String(user?.nombre||'').trim().charAt(0)||'U')+(String(user?.apellido||'').trim().charAt(0)||'')).toUpperCase();
+}
+function setProfilePhoto(data){
+  const img=$('#profilePhoto'), ph=$('#profilePhotoPlaceholder');
+  if(data){img.src=data;img.style.display='block';ph.style.display='none';}
+  else{img.removeAttribute('src');img.style.display='none';ph.style.display='flex';ph.textContent=profileInitials(ITB_PROFILE?.user||ITB_USER);}
+}
+async function openProfile(){
+  const s=getSession(); if(!s?.token){openLogin();return;}
+  $('#profileModal').classList.add('open'); document.body.style.overflow='hidden';
+  $('#profileStatus').textContent='Cargando perfil…';
+  try{
+    const r=await retryTransient(()=>apiJsonp({action:'profileGet',token:s.token}),2,650);
+    ITB_PROFILE=r; renderProfile(r);
+  }catch(e){$('#profileStatus').textContent=e.message||'No se pudo cargar el perfil.';}
+}
+function closeProfile(){ $('#profileModal').classList.remove('open'); document.body.style.overflow=''; }
+function profileBackdrop(e){if(e?.target?.id==='profileModal')closeProfile();}
+function renderProfile(r){
+  const u=r?.user||{}, p=r?.profile||{}; ITB_PROFILE=r;
+  $('#profileIdentityName').textContent=[u.apellido,u.nombre].filter(Boolean).join(', ')||'—';
+  $('#profileIdentityUser').textContent=u.usuario||u.alumno_id||'—';
+  $('#profileIdentityRole').textContent=u.rol||'—';
+  $('#profileIdentityCourse').textContent=[u.curso_nombre||u.cohorte,u.anio_cursada].filter(Boolean).join(' · ')||'—';
+  $('#profileEmail').value=p.email||''; $('#profilePhone').value=p.telefono||''; $('#profileDependency').value=p.dependencia||'';
+  $('#profileBirth').value=(String(p.fecha_nacimiento||'').match(/^\d{4}-\d{2}-\d{2}/)||[''])[0];
+  setProfilePhoto(p.foto_data||''); $('#profileStatus').textContent='';
+}
+async function saveProfile(){
+  const s=getSession(), st=$('#profileStatus'); if(!s?.token)return;
+  st.textContent='Guardando…';
+  try{
+    const r=await retryTransient(()=>apiJsonp({action:'profileUpdate',token:s.token,email:$('#profileEmail').value.trim(),telefono:$('#profilePhone').value.trim(),dependencia:$('#profileDependency').value.trim(),fecha_nacimiento:$('#profileBirth').value}),2,650);
+    ITB_PROFILE=r; ITB_USER={...(ITB_USER||{}),...(r.user||{})};
+    const sess=getSession(); if(sess){sess.user=ITB_USER;localStorage.setItem('itb_session',JSON.stringify(sess));}
+    renderProfile(r); refreshUserUI(); st.textContent='Datos actualizados correctamente.';
+  }catch(e){st.textContent=e.message||'No se pudieron guardar los cambios.';}
+}
+async function changeProfilePin(){
+  const s=getSession(), st=$('#profileSecurityStatus'); if(!s?.token)return;
+  const current=$('#profileCurrentPin').value.trim(), p1=$('#profileNewPin').value.trim(), p2=$('#profileNewPin2').value.trim();
+  if(!/^\d{6}$/.test(current)){st.textContent='Ingresá tu PIN actual de 6 números.';return;}
+  if(!/^\d{6}$/.test(p1)){st.textContent='El nuevo PIN debe tener exactamente 6 números.';return;}
+  if(p1==='123456'){st.textContent='El PIN 123456 está reservado como PIN temporal.';return;}
+  if(p1!==p2){st.textContent='Los nuevos PIN no coinciden.';return;}
+  st.textContent='Actualizando PIN…';
+  try{
+    await apiJsonp({action:'profileChangePin',token:s.token,current_pin_hash:await sha256(current),new_pin_hash:await sha256(p1)});
+    $('#profileCurrentPin').value='';$('#profileNewPin').value='';$('#profileNewPin2').value='';st.textContent='PIN modificado correctamente.';
+  }catch(e){st.textContent=e.message||'No se pudo modificar el PIN.';}
+}
+function compressProfilePhoto(file){
+  return new Promise((resolve,reject)=>{
+    if(!file||!/^image\//.test(file.type||'')){reject(new Error('Seleccioná una imagen válida.'));return;}
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error('No se pudo leer la imagen.'));
+    reader.onload=()=>{
+      const im=new Image(); im.onerror=()=>reject(new Error('No se pudo procesar la imagen.'));
+      im.onload=()=>{
+        let size=192, quality=.76, data='';
+        const render=()=>{const c=document.createElement('canvas');c.width=c.height=size;const ctx=c.getContext('2d');const side=Math.min(im.naturalWidth,im.naturalHeight);const sx=(im.naturalWidth-side)/2,sy=(im.naturalHeight-side)/2;ctx.drawImage(im,sx,sy,side,side,0,0,size,size);return c.toDataURL('image/jpeg',quality);};
+        data=render(); while(data.length>43000 && quality>.45){quality-=.08;data=render();}
+        if(data.length>43000){size=160;quality=.65;data=render();}
+        if(data.length>45000){reject(new Error('La imagen no pudo reducirse lo suficiente. Elegí otra fotografía.'));return;}
+        resolve(data);
+      }; im.src=reader.result;
+    }; reader.readAsDataURL(file);
+  });
+}
+async function selectProfilePhoto(input){
+  const file=input?.files?.[0]; if(!file)return; const st=$('#profileStatus'); st.textContent='Preparando fotografía…';
+  try{const data=await compressProfilePhoto(file);await uploadProfilePhoto(data);}
+  catch(e){st.textContent=e.message||'No se pudo cargar la fotografía.';} finally{input.value='';}
+}
+function uploadProfilePhoto(data){
+  return new Promise((resolve,reject)=>{
+    const s=getSession(); if(!s?.token){reject(new Error('Sesión no disponible.'));return;}
+    const api=(window.ITB_API_URL||'').trim(); if(!api){reject(new Error('Backend no configurado.'));return;}
+    const frame=document.createElement('iframe'), name='itbProfileUpload_'+Date.now(); frame.name=name;frame.style.display='none';document.body.appendChild(frame);
+    const form=document.createElement('form');form.method='POST';form.action=api;form.target=name;form.style.display='none';
+    const add=(n,v)=>{const i=document.createElement('input');i.type='hidden';i.name=n;i.value=v;form.appendChild(i);};
+    add('action','profilePhotoUpload');add('token',s.token);add('photo_data',data);document.body.appendChild(form);
+    let submitted=false;
+    frame.addEventListener('load',async()=>{if(!submitted)return;setTimeout(async()=>{try{const r=await apiJsonp({action:'profileGet',token:s.token});ITB_PROFILE=r;renderProfile(r);$('#profileStatus').textContent='Fotografía actualizada.';resolve();}catch(e){reject(e);}finally{form.remove();frame.remove();}},500);},{once:false});
+    submitted=true;form.submit();setTimeout(()=>{if(document.body.contains(form)){form.remove();frame.remove();reject(new Error('La carga de la fotografía demoró demasiado.'));}},15000);
+  });
+}
+async function deleteProfilePhoto(){
+  const s=getSession();if(!s?.token)return;$('#profileStatus').textContent='Quitando fotografía…';
+  try{await apiJsonp({action:'profilePhotoDelete',token:s.token});ITB_PROFILE.profile.foto_data='';setProfilePhoto('');$('#profileStatus').textContent='Fotografía eliminada.';}catch(e){$('#profileStatus').textContent=e.message||'No se pudo quitar la fotografía.';}
+}
+window.openProfile=openProfile;window.closeProfile=closeProfile;window.profileBackdrop=profileBackdrop;window.saveProfile=saveProfile;window.changeProfilePin=changeProfilePin;window.selectProfilePhoto=selectProfilePhoto;window.deleteProfilePhoto=deleteProfilePhoto;
+
+let PIN_RESET_USER='';
+function openPinReset(){closeLogin();$('#pinResetModal').classList.add('open');document.body.style.overflow='hidden';$('#pinResetStep1').classList.add('active');$('#pinResetStep2').classList.remove('active');$('#pinResetUser').value='';$('#pinResetCode').value='';$('#pinResetNew1').value='';$('#pinResetNew2').value='';$('#pinResetStatus').textContent='';}
+function closePinReset(){ $('#pinResetModal').classList.remove('open');document.body.style.overflow=''; }
+function pinResetBackdrop(e){if(e?.target?.id==='pinResetModal')closePinReset();}
+async function requestPinReset(){
+  const user=$('#pinResetUser').value.trim(),st=$('#pinResetStatus');if(!user){st.textContent='Ingresá tu usuario.';return;}st.textContent='Solicitando código…';
+  try{const r=await apiJsonp({action:'requestPinReset',usuario:user});PIN_RESET_USER=user;$('#pinResetStep1').classList.remove('active');$('#pinResetStep2').classList.add('active');st.textContent=r.message||'Revisá tu correo electrónico.';}catch(e){st.textContent=e.message||'No se pudo iniciar la recuperación.';}
+}
+async function confirmPinReset(){
+  const code=$('#pinResetCode').value.trim(),p1=$('#pinResetNew1').value.trim(),p2=$('#pinResetNew2').value.trim(),st=$('#pinResetStatus');
+  if(!/^\d{6}$/.test(code)){st.textContent='Ingresá el código de 6 números recibido por correo.';return;}if(!/^\d{6}$/.test(p1)){st.textContent='El nuevo PIN debe tener 6 números.';return;}if(p1==='123456'){st.textContent='Elegí un PIN diferente de 123456.';return;}if(p1!==p2){st.textContent='Los nuevos PIN no coinciden.';return;}
+  st.textContent='Actualizando PIN…';try{await apiJsonp({action:'confirmPinReset',usuario:PIN_RESET_USER,codigo:code,new_pin_hash:await sha256(p1)});st.textContent='PIN actualizado. Ya podés ingresar con tu nuevo PIN.';setTimeout(()=>{closePinReset();openLogin();$('#loginAlumnoId').value=PIN_RESET_USER;},900);}catch(e){st.textContent=e.message||'No se pudo restablecer el PIN.';}
+}
+window.openPinReset=openPinReset;window.closePinReset=closePinReset;window.pinResetBackdrop=pinResetBackdrop;window.requestPinReset=requestPinReset;window.confirmPinReset=confirmPinReset;
+
 function logoutStudent(){
   ITB_USER=null;
   ITB_PROGRESS=[];
@@ -2480,17 +2619,17 @@ function getSession(){
   try{return JSON.parse(localStorage.getItem('itb_session')||'null')}catch(_){return null}
 }
 function refreshUserUI(){
-  const pill=$('#userPill'), label=$('#userLabel'); if(!pill||!label)return;
+  const pill=$('#userPill'), label=$('#userLabel'), profileBtn=$('#profileBtn'), sessionBtn=$('#sessionBtn'); if(!pill||!label)return;
   if(ITB_USER){
     const base=(ITB_USER.nombre||'')+' '+(ITB_USER.apellido||'');
     const courseBits=[ITB_USER.curso_nombre||ITB_USER.cohorte||'',ITB_USER.anio_cursada||''].filter(Boolean).join(' · ');
     label.textContent=base+(courseBits?` · ${courseBits}`:'');
-    pill.querySelector('button').textContent='Salir';
-    pill.querySelector('button').onclick=logoutStudent;
+    if(profileBtn) profileBtn.style.display='';
+    if(sessionBtn){sessionBtn.textContent='Salir';sessionBtn.onclick=logoutStudent;}
   }else{
     label.textContent='Invitado';
-    pill.querySelector('button').textContent='Ingresar';
-    pill.querySelector('button').onclick=openLogin;
+    if(profileBtn) profileBtn.style.display='none';
+    if(sessionBtn){sessionBtn.textContent='Ingresar';sessionBtn.onclick=openLogin;}
   }
 }
 async function loadMyProgress(){
@@ -5547,10 +5686,64 @@ boot();
   </div>
 </div>
 
+
+<div id="profileModal" class="profile-modal" onclick="profileBackdrop(event)">
+  <div class="profile-card" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+    <div class="profile-head"><div><h2 id="profileTitle">Mi perfil</h2><p>Datos personales y seguridad de la cuenta.</p></div><button class="profile-close" onclick="closeProfile()" aria-label="Cerrar">×</button></div>
+    <div class="profile-layout">
+      <aside class="profile-photo-box">
+        <img id="profilePhoto" class="profile-photo" alt="Foto de perfil">
+        <div id="profilePhotoPlaceholder" class="profile-photo-placeholder">U</div>
+        <div class="profile-photo-actions">
+          <label class="btn ghost" style="cursor:pointer;text-align:center">Cambiar foto<input type="file" accept="image/*" style="display:none" onchange="selectProfilePhoto(this)"></label>
+          <button class="btn ghost" onclick="deleteProfilePhoto()">Quitar foto</button>
+        </div>
+        <div class="profile-note">La imagen se recorta y comprime antes de enviarse.</div>
+      </aside>
+      <div>
+        <section class="profile-section"><h3>Identidad</h3><div class="profile-grid">
+          <div class="profile-field full"><label>Apellido y nombre</label><div id="profileIdentityName" class="profile-readonly">—</div></div>
+          <div class="profile-field"><label>Usuario</label><div id="profileIdentityUser" class="profile-readonly">—</div></div>
+          <div class="profile-field"><label>Rol</label><div id="profileIdentityRole" class="profile-readonly">—</div></div>
+          <div class="profile-field full"><label>Curso / cohorte</label><div id="profileIdentityCourse" class="profile-readonly">—</div></div>
+        </div><div class="profile-note" style="margin-top:8px">Los datos de identidad, usuario, rol y curso no pueden modificarse desde el perfil.</div></section>
+        <section class="profile-section"><h3>Datos de contacto</h3><div class="profile-grid">
+          <div class="profile-field"><label>Correo electrónico</label><input id="profileEmail" type="email" autocomplete="email"></div>
+          <div class="profile-field"><label>Teléfono</label><input id="profilePhone" autocomplete="tel"></div>
+          <div class="profile-field full"><label>Dependencia / destino</label><input id="profileDependency"></div>
+          <div class="profile-field"><label>Fecha de nacimiento</label><input id="profileBirth" type="date"></div>
+        </div><div style="margin-top:12px"><button class="btn primary" onclick="saveProfile()">Guardar datos</button></div><div id="profileStatus" class="profile-status"></div></section>
+        <section class="profile-section"><h3>Seguridad · Cambiar PIN</h3><div class="profile-security">
+          <div class="profile-field full"><label>PIN actual</label><input id="profileCurrentPin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password"></div>
+          <div class="profile-field"><label>Nuevo PIN</label><input id="profileNewPin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password"></div>
+          <div class="profile-field"><label>Confirmar nuevo PIN</label><input id="profileNewPin2" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password"></div>
+        </div><div class="profile-note" style="margin-top:8px">Debe contener exactamente 6 números y no puede ser 123456.</div><div style="margin-top:12px"><button class="btn primary" onclick="changeProfilePin()">Modificar PIN</button></div><div id="profileSecurityStatus" class="profile-status"></div></section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pinResetModal" class="pin-reset-modal" onclick="pinResetBackdrop(event)">
+  <div class="pin-reset-card" role="dialog" aria-modal="true" aria-labelledby="pinResetTitle">
+    <div class="profile-head"><div><h2 id="pinResetTitle">Recuperar PIN</h2><p>Recuperación mediante el correo electrónico registrado.</p></div><button class="profile-close" onclick="closePinReset()" aria-label="Cerrar">×</button></div>
+    <div id="pinResetStep1" class="pin-reset-step active">
+      <div class="profile-field"><label>Usuario</label><input id="pinResetUser" autocomplete="username" placeholder="Ej.: jperez23"></div>
+      <div class="pin-reset-note" style="margin-top:10px">Si el usuario tiene un correo registrado, enviaremos un código de 6 números. Por seguridad, la plataforma no informa si una cuenta existe o no.</div>
+      <div class="pin-reset-actions"><button class="btn primary" onclick="requestPinReset()">Enviar código</button><button class="btn ghost" onclick="closePinReset()">Cancelar</button></div>
+    </div>
+    <div id="pinResetStep2" class="pin-reset-step">
+      <div class="profile-grid"><div class="profile-field full"><label>Código recibido</label><input id="pinResetCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div><div class="profile-field"><label>Nuevo PIN</label><input id="pinResetNew1" type="password" inputmode="numeric" maxlength="6"></div><div class="profile-field"><label>Confirmar nuevo PIN</label><input id="pinResetNew2" type="password" inputmode="numeric" maxlength="6"></div></div>
+      <div class="pin-reset-note" style="margin-top:10px">El código vence a los 15 minutos. El nuevo PIN debe tener 6 números y no puede ser 123456.</div>
+      <div class="pin-reset-actions"><button class="btn primary" onclick="confirmPinReset()">Guardar nuevo PIN</button><button class="btn ghost" onclick="closePinReset()">Cancelar</button></div>
+    </div>
+    <div id="pinResetStatus" class="pin-reset-status"></div>
+  </div>
+</div>
+
 <div id="loginModal" class="login-modal">
   <div class="login-card">
-    <h2>Ingreso de alumno</h2>
-    <p>Ingresá tu usuario y PIN para acceder al curso.</p>
+    <h2>Ingreso a Academia TED</h2>
+    <p>Ingresá tu usuario y PIN para acceder.</p>
     <div class="login-field"><label>Usuario</label><input id="loginAlumnoId" autocomplete="username" placeholder="Ej.: jperez23"></div>
     <div class="login-field"><label>PIN</label><input id="loginPin" type="password" inputmode="numeric" autocomplete="current-password"></div>
     <div id="loginError" class="login-error"></div>
@@ -5558,6 +5751,7 @@ boot();
       <button class="btn primary" onclick="loginStudent()">Ingresar</button>
       <button class="btn ghost" onclick="closeLogin()">Cancelar</button>
     </div>
+    <button class="login-reset-link" onclick="openPinReset()">¿Olvidaste tu PIN?</button>
   </div>
 </div>
 
