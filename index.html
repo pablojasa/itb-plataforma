@@ -408,6 +408,18 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
 .login-card{width:min(410px,95vw);background:#0f151c;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.55)}
 .login-card h2{margin:0 0 7px}.login-card p{color:var(--muted);font-size:12px;line-height:1.5}
 .login-field{display:grid;gap:5px;margin-top:12px}.login-field label{font-size:11px;color:#cbd3dc}.login-field input{background:#101720;border:1px solid var(--line);color:#fff;border-radius:10px;padding:11px 12px;outline:none}
+
+/* ===== Cambio obligatorio de PIN · v0.29.0 ===== */
+.pin-change-modal{position:fixed;inset:0;background:rgba(3,6,10,.94);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:18px;z-index:20050}
+.pin-change-modal.open{display:flex}
+.pin-change-card{width:min(440px,96vw);background:linear-gradient(180deg,#111922,#0d131a);border:1px solid #273544;border-radius:20px;padding:24px;box-shadow:0 28px 90px rgba(0,0,0,.68)}
+.pin-change-kicker{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#e5b763;margin-bottom:7px}
+.pin-change-card h2{margin:0 0 8px;font-size:22px}.pin-change-card p{margin:0;color:#aeb9c5;font-size:13px;line-height:1.55}
+.pin-change-user{margin:15px 0 3px;padding:10px 12px;border:1px solid #253342;background:#0c1218;border-radius:11px;font-size:12px;color:#cbd5df}.pin-change-user b{color:#fff}
+.pin-change-hint{font-size:11px;color:#8f9aa6;margin-top:10px;line-height:1.45}
+.pin-change-actions{display:flex;justify-content:flex-end;margin-top:16px}.pin-change-actions .btn{min-width:190px}
+.pin-change-error{min-height:18px;margin-top:10px;color:#ff8d8d;font-size:12px}
+@media(max-width:560px){.pin-change-card{padding:20px 17px}.pin-change-actions .btn{width:100%}}
 .login-error{color:#f09999;font-size:11px;min-height:18px;margin-top:8px}
 .progress-action{display:inline-flex;align-items:center;gap:5px;margin-top:7px;border:1px solid var(--line);background:#151d26;color:#7db8f3;border-radius:8px;padding:6px 8px;font-size:10px;cursor:pointer}
 .progress-action.done{color:#68d091;border-color:#315343;background:#102019}
@@ -1890,7 +1902,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
       </div>
     </div>
     <div class="credentials-body">
-      <div class="note" style="margin-bottom:12px">Los PIN se muestran aquí una sola vez. Guardá o descargá este listado antes de cerrar.</div>
+      <div class="note" style="margin-bottom:12px">El PIN informado es temporal y común: 123456. Cada alumno deberá reemplazarlo obligatoriamente en su primer ingreso.</div>
       <div style="overflow:auto">
         <table class="credentials-table">
           <thead><tr><th>Apellido y nombres</th><th>Alumno ID</th><th>Usuario</th><th>PIN</th><th>Email</th></tr></thead>
@@ -1978,7 +1990,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.28.1 · Alertas por cohorte · Identidad PWA</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.29.0 · Usuario simplificado · Cambio obligatorio de PIN</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2359,17 +2371,75 @@ async function sha256(text){
   const hash=await crypto.subtle.digest('SHA-256',bytes);
   return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
+let PIN_CHANGE_CONTEXT=null;
+
+function openMandatoryPinChange(r){
+  PIN_CHANGE_CONTEXT={change_token:String(r?.change_token||''),user:r?.user||{}};
+  localStorage.removeItem('itb_session');
+  ITB_USER=null; ITB_PROGRESS=[]; ITB_QUIZ_STATUS={};
+  $('#loginModal')?.classList.remove('open');
+  const modal=$('#pinChangeModal');
+  if(!modal)return;
+  const u=PIN_CHANGE_CONTEXT.user||{};
+  const alias=String(u.usuario||'');
+  const name=[u.apellido,u.nombre].filter(Boolean).join(', ');
+  $('#pinChangeUser').innerHTML=`${name?`<b>${esc(name)}</b> · `:''}Usuario: <b>${esc(alias)}</b>`;
+  $('#pinChangePin1').value='';
+  $('#pinChangePin2').value='';
+  $('#pinChangeError').textContent='';
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+  setTimeout(()=>$('#pinChangePin1')?.focus(),120);
+}
+
+function closeMandatoryPinChangeAfterSuccess(){
+  $('#pinChangeModal')?.classList.remove('open');
+  PIN_CHANGE_CONTEXT=null;
+  document.body.style.overflow='';
+}
+
+async function submitMandatoryPinChange(){
+  const err=$('#pinChangeError');
+  const p1=String($('#pinChangePin1')?.value||'').trim();
+  const p2=String($('#pinChangePin2')?.value||'').trim();
+  if(!PIN_CHANGE_CONTEXT?.change_token){if(err)err.textContent='La solicitud venció. Ingresá nuevamente.';return;}
+  if(!/^\d{6}$/.test(p1)){if(err)err.textContent='El nuevo PIN debe tener exactamente 6 números.';return;}
+  if(p1==='123456'){if(err)err.textContent='Elegí un PIN diferente del PIN temporal 123456.';return;}
+  if(p1!==p2){if(err)err.textContent='Los PIN ingresados no coinciden.';return;}
+  if(err)err.textContent='Guardando nuevo PIN…';
+  const btn=$('#pinChangeSaveBtn'); if(btn)btn.disabled=true;
+  try{
+    const new_pin_hash=await sha256(p1);
+    const r=await retryTransient(()=>apiJsonp({action:'changeInitialPin',change_token:PIN_CHANGE_CONTEXT.change_token,new_pin_hash}),2,650);
+    applyInitResponse(r,true);
+    closeMandatoryPinChangeAfterSuccess();
+    refreshUserUI();
+    applyRoleUI();
+    renderApp();
+    refreshCourseProgressUI();
+    showPrivateApp();
+    showITBToast('PIN personal guardado correctamente.');
+  }catch(e){
+    if(err)err.textContent=e.message||'No se pudo cambiar el PIN.';
+  }finally{if(btn)btn.disabled=false;}
+}
+window.submitMandatoryPinChange=submitMandatoryPinChange;
+
 function openLogin(){ $('#loginModal').classList.add('open'); $('#loginError').textContent=''; }
 function closeLogin(){ $('#loginModal').classList.remove('open'); }
 async function loginStudent(){
   const alumno_id=$('#loginAlumnoId').value.trim();
   const pin=$('#loginPin').value.trim();
-  if(!alumno_id||!pin){$('#loginError').textContent='Completá Alumno ID y PIN.';return;}
+  if(!alumno_id||!pin){$('#loginError').textContent='Completá usuario y PIN.';return;}
   $('#loginError').textContent='Validando…';
   try{
     const pin_hash=await sha256(pin);
-    // v0.25.3: login + contenido + progreso en un único viaje al backend.
     const r=await retryTransient(()=>apiJsonp({action:'loginInit',alumno_id,pin_hash}),2,650);
+    if(r?.must_change_pin){
+      $('#loginPin').value='';
+      openMandatoryPinChange(r);
+      return;
+    }
     applyInitResponse(r,true);
     $('#loginModal').classList.remove('open');
     refreshUserUI();
@@ -2380,6 +2450,7 @@ async function loginStudent(){
     if(document.querySelector('#unitDetail.active')&&window.__currentUnitId) openUnit(window.__currentUnitId);
   }catch(e){ $('#loginError').textContent=e.message||'No se pudo iniciar sesión.'; }
 }
+
 function logoutStudent(){
   ITB_USER=null;
   ITB_PROGRESS=[];
@@ -5209,9 +5280,13 @@ async function loginFromGate(){
 
   try{
     const pin_hash=await sha256(pin);
-    // v0.25.3: una sola ejecución Apps Script devuelve autenticación,
-    // contenido de la cohorte y progreso inicial.
     const r=await retryTransient(()=>apiJsonp({action:'loginInit',alumno_id,pin_hash}),2,650);
+    if(r?.must_change_pin){
+      if($('#guestPin')) $('#guestPin').value='';
+      if(err) err.textContent='';
+      openMandatoryPinChange(r);
+      return;
+    }
     applyInitResponse(r,true);
 
     const status=$('#dataStatus');
@@ -5238,8 +5313,13 @@ async function loginFromGate(){
     document.body.classList.remove('app-loading');
   }
 }
+
 window.loginFromGate=loginFromGate;
 document.addEventListener('keydown',e=>{
+  if(e.key==='Enter' && $('#pinChangeModal')?.classList.contains('open') &&
+     (document.activeElement?.id==='pinChangePin1' || document.activeElement?.id==='pinChangePin2')){
+    submitMandatoryPinChange(); return;
+  }
   if(e.key==='Enter' && document.body.classList.contains('guest-mode') &&
      (document.activeElement?.id==='guestAlumnoId' || document.activeElement?.id==='guestPin')){
     loginFromGate();
@@ -5309,6 +5389,14 @@ async function boot(){
 
     // v0.25.3: revalidación, progreso y contenido en una sola llamada.
     const init=await retryTransient(()=>apiJsonp({action:'sessionInit',token:saved.token}),2,700);
+    if(init?.must_change_pin){
+      localStorage.removeItem('itb_session');
+      resetPrivateDB();
+      ITB_USER=null;ITB_PROGRESS=[];ITB_QUIZ_STATUS={};
+      refreshUserUI(); applyRoleUI(); showGuestGate();
+      openMandatoryPinChange(init);
+      return;
+    }
     applyInitResponse(init,false);
     if(!ITB_USER) throw new Error('Sesión vencida');
 
@@ -5423,11 +5511,25 @@ boot();
 </div>
 
 
+<div id="pinChangeModal" class="pin-change-modal" role="presentation">
+  <div class="pin-change-card" role="dialog" aria-modal="true" aria-labelledby="pinChangeTitle">
+    <div class="pin-change-kicker">Primer ingreso</div>
+    <h2 id="pinChangeTitle">Creá tu PIN personal</h2>
+    <p>Estás utilizando el PIN temporal de Academia TED. Por seguridad, debés reemplazarlo antes de ingresar a la plataforma.</p>
+    <div id="pinChangeUser" class="pin-change-user"></div>
+    <div class="login-field"><label>Nuevo PIN</label><input id="pinChangePin1" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password" placeholder="6 números"></div>
+    <div class="login-field"><label>Confirmar nuevo PIN</label><input id="pinChangePin2" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password" placeholder="Repetí el PIN"></div>
+    <div class="pin-change-hint">El PIN debe tener exactamente 6 números y no puede ser 123456. Academia TED guarda únicamente su versión cifrada.</div>
+    <div id="pinChangeError" class="pin-change-error"></div>
+    <div class="pin-change-actions"><button id="pinChangeSaveBtn" class="btn primary" onclick="submitMandatoryPinChange()">Guardar nuevo PIN</button></div>
+  </div>
+</div>
+
 <div id="loginModal" class="login-modal">
   <div class="login-card">
     <h2>Ingreso de alumno</h2>
-    <p>Ingresá tu identificador y PIN para registrar tu progreso en el curso.</p>
-    <div class="login-field"><label>Alumno ID</label><input id="loginAlumnoId" autocomplete="username" placeholder="ALU_001"></div>
+    <p>Ingresá tu usuario y PIN para acceder al curso.</p>
+    <div class="login-field"><label>Usuario</label><input id="loginAlumnoId" autocomplete="username" placeholder="Ej.: jperez23"></div>
     <div class="login-field"><label>PIN</label><input id="loginPin" type="password" inputmode="numeric" autocomplete="current-password"></div>
     <div id="loginError" class="login-error"></div>
     <div class="actions">
