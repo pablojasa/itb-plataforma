@@ -1,5 +1,5 @@
-const CACHE_NAME='itb-pwa-v0.38.0';
-const SHELL=['./','./index.html','./manifest.webmanifest','./assets/ted-app-icon-180-v0281.png','./assets/ted-app-icon-192-v0281.png','./assets/ted-app-icon-512-v0281.png','./assets/cert-diploma-template-v0380.jpg','./assets/cert-analitico-template-v0380.jpg'];
+const CACHE_NAME='itb-pwa-v0.39.0';
+const SHELL=['./','./index.html','./manifest.webmanifest','./assets/ted-app-icon-180-v0281.png','./assets/ted-app-icon-192-v0281.png','./assets/ted-app-icon-512-v0281.png','./assets/cert-diploma-template-v0390.jpg','./assets/cert-analitico-template-v0390.jpg'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(SHELL)).catch(()=>{}));
