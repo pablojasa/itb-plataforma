@@ -168,6 +168,55 @@ main{max-width:1180px;margin:0 auto;padding:28px 24px 92px}
 }
 @media(max-width:390px){.attendance-roster{grid-template-columns:1fr 1fr}.attendance-surname{font-size:11px}.attendance-given{font-size:10px}}
 
+
+/* ===== v0.36.0 · Mi presentismo del alumno + solicitudes de revisión ===== */
+.student-only{display:none!important}
+body.student-mode .student-only{display:block!important}
+body.student-mode #course .course-side{grid-template-columns:repeat(4,minmax(0,1fr))}
+.my-attendance-card{display:flex!important;flex-direction:column}
+.my-attendance-main{display:flex;align-items:center;gap:13px;margin-top:3px}
+.my-attendance-pct{font-size:32px;font-weight:950;line-height:1;color:#fff;min-width:72px}
+.my-attendance-meta{display:grid;gap:3px;font-size:10px;color:var(--muted);line-height:1.35}
+.my-attendance-meta b{color:#e9eef3}
+.my-attendance-track{height:7px;border-radius:999px;background:#111820;overflow:hidden;margin:13px 0 11px}
+.my-attendance-track>span{display:block;height:100%;border-radius:inherit;background:#43c85a}
+.my-attendance-alert{font-size:9px;font-weight:850;color:#ffd889;border:1px solid #695522;background:#2b2415;padding:5px 7px;border-radius:999px;align-self:flex-start;margin-bottom:9px}
+.my-attendance-card .btn{margin-top:auto;justify-content:center}
+.my-attendance-modal,.attendance-review-modal{position:fixed;inset:0;z-index:16000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(3,7,11,.88);backdrop-filter:blur(6px)}
+.my-attendance-modal.open,.attendance-review-modal.open{display:flex}
+.my-attendance-dialog{width:min(820px,96vw);max-height:92vh;overflow:auto;background:#0e151c;border:1px solid #35414d;border-radius:19px;box-shadow:0 28px 80px rgba(0,0,0,.52)}
+.my-attendance-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:20px;border-bottom:1px solid var(--line)}
+.my-attendance-head h2{margin:2px 0 5px;font-size:24px}.my-attendance-head p{margin:0;color:var(--muted);font-size:11px}
+.my-attendance-close{border:0;background:none;color:#cad2da;font-size:28px;cursor:pointer}
+.my-attendance-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;padding:14px 20px;border-bottom:1px solid var(--line);background:#111820}
+.my-attendance-kpi{border:1px solid var(--line);border-radius:12px;padding:11px}.my-attendance-kpi b{display:block;font-size:20px}.my-attendance-kpi span{font-size:9px;color:var(--muted)}
+.my-attendance-list{display:grid;gap:9px;padding:16px 20px 20px}
+.my-attendance-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:13px;background:#121920;padding:12px 13px}
+.my-attendance-item.present{border-color:#315343}.my-attendance-item.absent{border-color:#6d3339}
+.my-attendance-item-title{font-size:12px;font-weight:850;color:#f2f4f6}.my-attendance-item-meta{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.35}
+.my-attendance-item-side{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.my-attendance-state{font-size:10px;font-weight:950;letter-spacing:.045em}.my-attendance-state.present{color:#72eaa0}.my-attendance-state.absent{color:#ff9aa3}
+.my-attendance-review-status{font-size:9px;color:#ffd889;text-align:right;max-width:220px}
+.my-attendance-review-status.ok{color:#8fe2ad}.my-attendance-review-status.no{color:#f2a4aa}
+.my-attendance-review-btn{border:1px solid #695522;background:#2b2415;color:#ffd889;border-radius:9px;padding:7px 9px;font-size:9px;font-weight:850;cursor:pointer}
+.attendance-review-dialog{width:min(520px,96vw);background:#0e151c;border:1px solid #35414d;border-radius:18px;box-shadow:0 28px 80px rgba(0,0,0,.52);padding:20px}
+.attendance-review-dialog h3{margin:0 0 7px;font-size:20px}.attendance-review-dialog p{margin:0 0 13px;color:var(--muted);font-size:11px;line-height:1.45}
+.attendance-review-dialog textarea{width:100%;box-sizing:border-box;min-height:120px;resize:vertical;background:#0a1016;border:1px solid #35414d;border-radius:11px;color:#fff;padding:11px 12px;font:inherit}
+.attendance-review-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.attendance-review-status{min-height:17px;margin-top:8px;font-size:10px;color:#f0b9bc}
+.attendance-person-wrap{display:flex;flex-direction:column;min-width:0}
+.attendance-person-wrap .attendance-person-card{flex:1;width:100%;box-sizing:border-box}
+.attendance-review-callout{border:1px solid #695522;border-top:0;background:#241f14;color:#e9d8aa;border-radius:0 0 13px 13px;padding:9px 10px;margin:-6px 6px 0;font-size:9px;line-height:1.35}
+.attendance-review-callout b{display:block;color:#ffd889;margin-bottom:4px}
+.attendance-review-callout button{margin-top:7px;border:1px solid #73414a;background:#301a1e;color:#ffc0c6;border-radius:8px;padding:6px 8px;font-size:9px;font-weight:850;cursor:pointer}
+.attendance-chip.review{color:#ffd889;border-color:#695522;background:#2b2415}
+@media(max-width:1200px){body.student-mode #course .course-side{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){
+  body.student-mode #course .course-side{grid-template-columns:1fr}
+  .my-attendance-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .my-attendance-item{grid-template-columns:1fr}.my-attendance-item-side{align-items:flex-start}
+  .my-attendance-review-status{text-align:left}
+}
+
 .mobile-nav{
   display:none;position:fixed;z-index:40;left:12px;right:12px;bottom:10px;background:rgba(20,26,34,.96);
   border:1px solid var(--line);border-radius:18px;padding:6px;box-shadow:var(--shadow);backdrop-filter:blur(16px)
@@ -1799,6 +1848,11 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
         <h3>Tu actividad reciente</h3>
         <div id="courseRecentActivity" class="recent-list"></div>
       </div>
+
+      <div class="course-side-card student-only my-attendance-card" id="myAttendanceCard">
+        <h3>Mi presentismo</h3>
+        <div id="myAttendanceMount"><div class="note">Cargando presentismo…</div></div>
+      </div>
     </div>
 
     <div class="course-toolbar">
@@ -2192,6 +2246,31 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <div class="section-head"><div><h2>Aplicaciones recomendadas</h2><p>Herramientas y accesos para alumnos.</p></div></div><div id="downloadsList" class="content-list"></div>
 </section>
 </main>
+
+<div id="myAttendanceModal" class="my-attendance-modal" onclick="if(event.target===this)closeMyAttendance()">
+  <div class="my-attendance-dialog" role="dialog" aria-modal="true" aria-labelledby="myAttendanceTitle">
+    <div class="my-attendance-head">
+      <div><div class="kicker">Seguimiento personal</div><h2 id="myAttendanceTitle">Mi presentismo</h2><p>Detalle de las clases cuyo presentismo ya fue registrado.</p></div>
+      <button class="my-attendance-close" onclick="closeMyAttendance()" aria-label="Cerrar">×</button>
+    </div>
+    <div id="myAttendanceSummary" class="my-attendance-summary"></div>
+    <div id="myAttendanceList" class="my-attendance-list"></div>
+  </div>
+</div>
+
+<div id="attendanceReviewModal" class="attendance-review-modal" onclick="if(event.target===this)closeAttendanceReviewModal()">
+  <div class="attendance-review-dialog" role="dialog" aria-modal="true">
+    <h3>Solicitar revisión</h3>
+    <p id="attendanceReviewContext">Indicá brevemente por qué considerás que el registro de ausencia debe revisarse.</p>
+    <textarea id="attendanceReviewReason" maxlength="700" placeholder="Ej.: Estuve presente durante toda la clase y respondí al llamado de asistencia."></textarea>
+    <div id="attendanceReviewStatus" class="attendance-review-status"></div>
+    <div class="attendance-review-actions">
+      <button class="btn ghost" onclick="closeAttendanceReviewModal()">Cancelar</button>
+      <button id="attendanceReviewSendBtn" class="btn primary" onclick="submitAttendanceReview()">Enviar solicitud</button>
+    </div>
+  </div>
+</div>
+
 <nav class="mobile-nav">
  <button class="active" data-page="home" onclick="setPage('home')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V21h14V10.5"/><path d="M9.5 21v-6h5v6"/></svg></span>Inicio</button>
  <button data-page="course" onclick="setPage('course')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Curso</button>
@@ -2206,7 +2285,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.35.1 · Género persistente · Avatares y presentismo</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.36.0 · Mi presentismo · Solicitudes de revisión</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2326,6 +2405,8 @@ function renderCourseDashboard(){
       </section>`;
     }
   }
+
+  renderMyAttendanceCard();
 
   const nextMount=$('#courseNextActivity');
   if(nextMount){
@@ -2870,6 +2951,9 @@ function logoutStudent(){
   CHAT_DATA={cohorts:[],cohorte:'',messages:[]};
   ADMIN_REG_ALL={courses:[],registrations:[]};
   ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
+  MY_ATTENDANCE_DATA={presentes:0,ausentes:0,total:0,porcentaje:null,revisiones_pendientes:0,items:[]};
+  MY_ATTENDANCE_LOADED=false;MY_ATTENDANCE_LOADING=false;MY_ATTENDANCE_REVIEW_SESSION='';
+  $('#myAttendanceModal')?.classList.remove('open');$('#attendanceReviewModal')?.classList.remove('open');
   localStorage.removeItem('itb_session');
   resetPrivateDB();
   refreshUserUI();
@@ -4107,6 +4191,7 @@ function applyRoleUI(){
   const canTeacher=role==='DOCENTE'||isAdmin;
   document.body.classList.toggle('teacher-mode',canTeacher);
   document.body.classList.toggle('admin-mode',isAdmin);
+  document.body.classList.toggle('student-mode',role==='ALUMNO');
   if(ITB_USER)startChatUnreadPolling();
   else{stopChatUnreadPolling();applyChatUnreadState({has_unread:false,unread_cohorts:[]});}
   if(ITB_USER && String(role)==='ALUMNO')startAlertPolling();
@@ -4142,7 +4227,7 @@ function teacherStudentMetrics(student){
 }
 
 
-let ATTENDANCE_DATA={cohorts:[],cohorte:'',sessions:[],session:null,students:[],registered:false,record_meta:null};
+let ATTENDANCE_DATA={cohorts:[],cohorte:'',sessions:[],session:null,students:[],registered:false,record_meta:null,pending_reviews:0};
 
 function attendanceFmtDate(v){
   if(!v)return '—';
@@ -4156,7 +4241,8 @@ function attendanceDateTime(v){
   return new Intl.DateTimeFormat('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(d);
 }
 function attendanceSessionLabel(s){
-  return `${attendanceFmtDate(s.fecha)} · ${s.hora||'--:--'} · ${s.titulo||'Clase'}${s.registrado?' · ✓ registrado':''}`;
+  const pending=Number(s.pending_reviews||0);
+  return `${attendanceFmtDate(s.fecha)} · ${s.hora||'--:--'} · ${s.titulo||'Clase'}${s.registrado?' · ✓ registrado':''}${pending?` · ⚠ ${pending} revisión${pending===1?'':'es'}`:''}`;
 }
 async function openAttendance(){
   if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase()))return;
@@ -4170,7 +4256,7 @@ async function loadAttendance(cohorte='',cronogramaId=''){
   if($('#attendanceSaveBtn'))$('#attendanceSaveBtn').disabled=true;
   try{
     const r=await apiJsonp({action:'attendanceData',token:sess.token,cohorte:cohorte||'',cronograma_id:cronogramaId||''});
-    ATTENDANCE_DATA={cohorts:r.cohorts||[],cohorte:r.cohorte||'',sessions:r.sessions||[],session:r.session||null,students:r.students||[],registered:!!r.registered,record_meta:r.record_meta||null};
+    ATTENDANCE_DATA={cohorts:r.cohorts||[],cohorte:r.cohorte||'',sessions:r.sessions||[],session:r.session||null,students:r.students||[],registered:!!r.registered,record_meta:r.record_meta||null,pending_reviews:Number(r.pending_reviews||0)};
     const cs=$('#attendanceCohort');if(cs){cs.innerHTML=ATTENDANCE_DATA.cohorts.map(c=>`<option value="${esc(c)}" ${c===ATTENDANCE_DATA.cohorte?'selected':''}>${esc(c)}</option>`).join('');}
     const ss=$('#attendanceSession');if(ss){ss.innerHTML=ATTENDANCE_DATA.sessions.length?ATTENDANCE_DATA.sessions.map(s=>`<option value="${esc(s.cronograma_id)}" ${ATTENDANCE_DATA.session&&s.cronograma_id===ATTENDANCE_DATA.session.cronograma_id?'selected':''}>${esc(attendanceSessionLabel(s))}</option>`).join(''):'<option value="">Sin fechas disponibles</option>';}
     renderAttendance();
@@ -4191,12 +4277,17 @@ function renderAttendance(){
   if(meta)meta.innerHTML=`<div><div class="kicker">${esc(s.tipo||s.modalidad||'Clase')}</div><h3>${esc(s.titulo||'Clase')}</h3><p>${esc(attendanceFmtDate(s.fecha))} · ${esc(s.hora||'--:--')} h${s.modalidad?' · '+esc(s.modalidad):''}</p></div><span class="attendance-badge ${d.registered?'saved':'pending'}">${d.registered?'✓ Registrado':'Pendiente de registrar'}</span>`;
   if(roster)roster.innerHTML=d.students.length?d.students.map(st=>{
     const avatar=st.foto_data||defaultAvatarData(st.genero);
-    return `<label class="attendance-person-card ${st.presente?'present':'absent'}" data-student="${esc(st.alumno_id)}">
-      <input class="attendance-check" type="checkbox" ${st.presente?'checked':''} onchange="attendanceChanged()">
-      <img class="attendance-avatar" src="${esc(avatar)}" alt="Perfil de ${esc((st.apellido||'')+' '+(st.nombre||''))}">
-      <div class="attendance-person-name"><div class="attendance-surname">${esc(st.apellido||'')}</div><div class="attendance-given">${esc(st.nombre||'')}</div><div class="attendance-user">${esc(st.usuario||st.alumno_id||'')}</div></div>
-      <div class="attendance-state ${st.presente?'present':'absent'}">${st.presente?'PRESENTE':'AUSENTE'}</div>
-    </label>`;
+    const rev=st.revision||null;
+    const pending=String(rev?.estado||'')==='PENDIENTE';
+    return `<div class="attendance-person-wrap">
+      <label class="attendance-person-card ${st.presente?'present':'absent'}" data-student="${esc(st.alumno_id)}">
+        <input class="attendance-check" type="checkbox" ${st.presente?'checked':''} onchange="attendanceChanged()">
+        <img class="attendance-avatar" src="${esc(avatar)}" alt="Perfil de ${esc((st.apellido||'')+' '+(st.nombre||''))}">
+        <div class="attendance-person-name"><div class="attendance-surname">${esc(st.apellido||'')}</div><div class="attendance-given">${esc(st.nombre||'')}</div><div class="attendance-user">${esc(st.usuario||st.alumno_id||'')}</div></div>
+        <div class="attendance-state ${st.presente?'present':'absent'}">${st.presente?'PRESENTE':'AUSENTE'}</div>
+      </label>
+      ${pending?`<div class="attendance-review-callout"><b>⚠ Revisión solicitada</b>${esc(rev.motivo||'Sin observación.')}<button type="button" onclick="event.preventDefault();event.stopPropagation();rejectAttendanceReview('${esc(rev.revision_id)}')">Mantener AUSENTE</button></div>`:''}
+    </div>`;
   }).join(''):'<div class="attendance-empty">No hay alumnos activos en la nómina para esta fecha.</div>';
   const rm=d.record_meta;
   if($('#attendanceRecordMeta'))$('#attendanceRecordMeta').textContent=rm?(d.registered?`Registrado por ${rm.registrado_por||'—'}${rm.registrado_en?' · '+attendanceDateTime(rm.registrado_en):''}${Number(rm.revision_nro||1)>1?` · revisión ${rm.revision_nro}`:''}`:''):'';
@@ -4211,7 +4302,7 @@ function attendanceChanged(updateState=true){
     if(updateState){const row=ch.closest('.attendance-person-card'),state=row?.querySelector('.attendance-state');if(row){row.classList.toggle('present',ch.checked);row.classList.toggle('absent',!ch.checked);}if(state){state.textContent=ch.checked?'PRESENTE':'AUSENTE';state.className='attendance-state '+(ch.checked?'present':'absent');}}
   });
   const absent=checks.length-present;
-  const sum=$('#attendanceSummary');if(sum)sum.innerHTML=`<span class="attendance-chip"><b>${checks.length}</b> alumnos</span><span class="attendance-chip"><b>${present}</b> presentes</span><span class="attendance-chip"><b>${absent}</b> ausentes</span><div class="attendance-tools"><button class="btn ghost" onclick="event.preventDefault();attendanceMarkAllPresent()">Marcar todos presentes</button></div>`;
+  const sum=$('#attendanceSummary');if(sum)sum.innerHTML=`<span class="attendance-chip"><b>${checks.length}</b> alumnos</span><span class="attendance-chip"><b>${present}</b> presentes</span><span class="attendance-chip"><b>${absent}</b> ausentes</span>${Number(ATTENDANCE_DATA.pending_reviews||0)?`<span class="attendance-chip review"><b>${Number(ATTENDANCE_DATA.pending_reviews||0)}</b> revisión${Number(ATTENDANCE_DATA.pending_reviews||0)===1?'':'es'} pendiente${Number(ATTENDANCE_DATA.pending_reviews||0)===1?'':'s'}</span>`:''}<div class="attendance-tools"><button class="btn ghost" onclick="event.preventDefault();attendanceMarkAllPresent()">Marcar todos presentes</button></div>`;
 }
 function attendanceMarkAllPresent(){document.querySelectorAll('#attendanceRoster .attendance-check').forEach(ch=>ch.checked=true);attendanceChanged();}
 async function saveAttendance(){
@@ -4232,6 +4323,155 @@ async function saveAttendance(){
   }catch(e){alert(e.message||'No se pudo registrar el presentismo.');if(btn){btn.disabled=false;btn.textContent=d.registered?'Guardar corrección':'Registrar presentismo';}}
 }
 window.openAttendance=openAttendance;window.changeAttendanceCohort=changeAttendanceCohort;window.changeAttendanceSession=changeAttendanceSession;window.refreshAttendance=refreshAttendance;window.attendanceChanged=attendanceChanged;window.attendanceMarkAllPresent=attendanceMarkAllPresent;window.saveAttendance=saveAttendance;
+
+
+async function rejectAttendanceReview(revisionId){
+  if(!revisionId)return;
+  if(!confirm('¿Mantener el estado AUSENTE y cerrar esta solicitud de revisión?'))return;
+  try{
+    const sess=getSession();if(!sess?.token)throw new Error('Sesión vencida.');
+    await apiJsonp({action:'attendanceReviewResolve',token:sess.token,revision_id:revisionId,decision:'RECHAZADA'});
+    showITBToast('Solicitud revisada. Se mantiene AUSENTE.');
+    await refreshAttendance();
+  }catch(e){alert(e.message||'No se pudo resolver la solicitud.');}
+}
+window.rejectAttendanceReview=rejectAttendanceReview;
+
+
+/* ===== v0.36.0 · Mi presentismo del alumno ===== */
+let MY_ATTENDANCE_DATA={presentes:0,ausentes:0,total:0,porcentaje:null,revisiones_pendientes:0,items:[]};
+let MY_ATTENDANCE_LOADED=false;
+let MY_ATTENDANCE_LOADING=false;
+let MY_ATTENDANCE_REVIEW_SESSION='';
+
+function renderMyAttendanceCard(){
+  const mount=$('#myAttendanceMount');
+  if(!mount)return;
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO'){
+    mount.innerHTML='';return;
+  }
+  if(!MY_ATTENDANCE_LOADED){
+    mount.innerHTML='<div class="note">Cargando presentismo…</div>';
+    if(!MY_ATTENDANCE_LOADING)setTimeout(()=>loadMyAttendance(false),0);
+    return;
+  }
+  const d=MY_ATTENDANCE_DATA;
+  if(!Number(d.total||0)){
+    mount.innerHTML='<div class="note">Todavía no hay clases con presentismo registrado.</div>';
+    return;
+  }
+  const pct=Number(d.porcentaje||0);
+  mount.innerHTML=`
+    ${Number(d.revisiones_pendientes||0)?`<div class="my-attendance-alert">${d.revisiones_pendientes} revisión${d.revisiones_pendientes===1?'':'es'} pendiente${d.revisiones_pendientes===1?'':'s'}</div>`:''}
+    <div class="my-attendance-main">
+      <div class="my-attendance-pct">${pct}%</div>
+      <div class="my-attendance-meta"><span><b>${d.presentes}</b> presentes</span><span><b>${d.ausentes}</b> ausentes</span><span><b>${d.total}</b> clases registradas</span></div>
+    </div>
+    <div class="my-attendance-track"><span style="width:${Math.max(0,Math.min(100,pct))}%"></span></div>
+    <button class="btn ghost" onclick="openMyAttendance()">Ver detalle</button>`;
+}
+
+async function loadMyAttendance(force=false){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO')return;
+  if(MY_ATTENDANCE_LOADING)return;
+  if(MY_ATTENDANCE_LOADED&&!force){renderMyAttendanceCard();return;}
+  const sess=getSession();if(!sess?.token)return;
+  MY_ATTENDANCE_LOADING=true;
+  try{
+    const r=await retryTransient(()=>apiJsonp({action:'myAttendance',token:sess.token}),2,650);
+    MY_ATTENDANCE_DATA={
+      presentes:Number(r.presentes||0),ausentes:Number(r.ausentes||0),total:Number(r.total||0),
+      porcentaje:r.porcentaje==null?null:Number(r.porcentaje),
+      revisiones_pendientes:Number(r.revisiones_pendientes||0),
+      items:r.items||[]
+    };
+    MY_ATTENDANCE_LOADED=true;
+    renderMyAttendanceCard();
+    if($('#myAttendanceModal')?.classList.contains('open'))renderMyAttendanceDetail();
+  }catch(e){
+    const mount=$('#myAttendanceMount');if(mount)mount.innerHTML=`<div class="note">${esc(e.message||'No se pudo cargar el presentismo.')}</div>`;
+  }finally{MY_ATTENDANCE_LOADING=false;}
+}
+
+function myAttendanceReviewText(item){
+  const rev=item?.revision||null;
+  if(!rev)return '';
+  const state=String(rev.estado||'').toUpperCase();
+  if(state==='PENDIENTE')return '<div class="my-attendance-review-status">Revisión solicitada · pendiente</div>';
+  if(state==='ACEPTADA')return '<div class="my-attendance-review-status ok">✓ Revisión aceptada · registro corregido</div>';
+  if(state==='RECHAZADA')return '<div class="my-attendance-review-status no">Revisión realizada · se mantiene AUSENTE</div>';
+  return '';
+}
+
+function renderMyAttendanceDetail(){
+  const d=MY_ATTENDANCE_DATA;
+  const sum=$('#myAttendanceSummary'),list=$('#myAttendanceList');
+  if(sum)sum.innerHTML=`
+    <div class="my-attendance-kpi"><b>${d.porcentaje==null?'—':d.porcentaje+'%'}</b><span>Presentismo</span></div>
+    <div class="my-attendance-kpi"><b>${d.presentes}</b><span>Presentes</span></div>
+    <div class="my-attendance-kpi"><b>${d.ausentes}</b><span>Ausentes</span></div>
+    <div class="my-attendance-kpi"><b>${d.total}</b><span>Clases registradas</span></div>`;
+  if(!list)return;
+  if(!d.items.length){
+    list.innerHTML='<div class="attendance-empty">Todavía no hay clases con presentismo registrado.</div>';return;
+  }
+  list.innerHTML=d.items.map(it=>{
+    const present=String(it.estado||'')==='PRESENTE';
+    const revHtml=myAttendanceReviewText(it);
+    const button=(!present&&it.puede_solicitar_revision)
+      ? `<button class="my-attendance-review-btn" onclick="openAttendanceReviewModal('${esc(it.cronograma_id)}')">Solicitar revisión</button>`
+      : '';
+    return `<div class="my-attendance-item ${present?'present':'absent'}">
+      <div><div class="my-attendance-item-title">${esc(it.titulo||'Clase')}</div><div class="my-attendance-item-meta">${esc(attendanceFmtDate(it.fecha))} · ${esc(it.hora||'--:--')} h${it.modalidad?' · '+esc(it.modalidad):''}</div></div>
+      <div class="my-attendance-item-side"><div class="my-attendance-state ${present?'present':'absent'}">${present?'✓ PRESENTE':'✕ AUSENTE'}</div>${revHtml}${button}</div>
+    </div>`;
+  }).join('');
+}
+
+async function openMyAttendance(){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO')return;
+  $('#myAttendanceModal')?.classList.add('open');document.body.style.overflow='hidden';
+  const list=$('#myAttendanceList');if(list)list.innerHTML='<div class="attendance-empty">Actualizando presentismo…</div>';
+  await loadMyAttendance(true);
+  renderMyAttendanceDetail();
+}
+function closeMyAttendance(){$('#myAttendanceModal')?.classList.remove('open');document.body.style.overflow='';}
+
+function openAttendanceReviewModal(cronogramaId){
+  const item=(MY_ATTENDANCE_DATA.items||[]).find(x=>String(x.cronograma_id)===String(cronogramaId));
+  if(!item||String(item.estado)!=='AUSENTE'||!item.puede_solicitar_revision)return;
+  MY_ATTENDANCE_REVIEW_SESSION=String(cronogramaId);
+  $('#attendanceReviewReason').value='';
+  $('#attendanceReviewStatus').textContent='';
+  $('#attendanceReviewContext').textContent=`${item.titulo||'Clase'} · ${attendanceFmtDate(item.fecha)}. Indicá brevemente por qué considerás que el AUSENTE debe revisarse.`;
+  $('#attendanceReviewModal')?.classList.add('open');
+  setTimeout(()=>$('#attendanceReviewReason')?.focus(),100);
+}
+function closeAttendanceReviewModal(){
+  $('#attendanceReviewModal')?.classList.remove('open');
+  MY_ATTENDANCE_REVIEW_SESSION='';
+}
+async function submitAttendanceReview(){
+  const reason=String($('#attendanceReviewReason')?.value||'').trim();
+  const st=$('#attendanceReviewStatus'),btn=$('#attendanceReviewSendBtn');
+  if(!MY_ATTENDANCE_REVIEW_SESSION){if(st)st.textContent='La solicitud ya no está disponible.';return;}
+  if(!reason){if(st)st.textContent='Escribí una breve observación.';return;}
+  if(st)st.textContent='Enviando solicitud…';if(btn)btn.disabled=true;
+  try{
+    const sess=getSession();if(!sess?.token)throw new Error('Sesión vencida.');
+    await apiJsonp({action:'attendanceReviewRequest',token:sess.token,cronograma_id:MY_ATTENDANCE_REVIEW_SESSION,motivo:reason});
+    closeAttendanceReviewModal();
+    showITBToast('Solicitud de revisión enviada.');
+    await loadMyAttendance(true);
+    renderMyAttendanceDetail();
+  }catch(e){if(st)st.textContent=e.message||'No se pudo enviar la solicitud.';}
+  finally{if(btn)btn.disabled=false;}
+}
+
+window.openMyAttendance=openMyAttendance;window.closeMyAttendance=closeMyAttendance;
+window.openAttendanceReviewModal=openAttendanceReviewModal;window.closeAttendanceReviewModal=closeAttendanceReviewModal;
+window.submitAttendanceReview=submitAttendanceReview;window.loadMyAttendance=loadMyAttendance;
+
 
 async function openTeacherPanel(){
   if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase())) return;
@@ -5968,7 +6208,7 @@ function resetPrivateDB(){
 
 function showGuestGate(){
   document.body.classList.add('guest-mode');
-  document.body.classList.remove('teacher-mode','admin-mode');
+  document.body.classList.remove('teacher-mode','admin-mode','student-mode');
   $$('.page').forEach(p=>p.classList.remove('active'));
   const home=$('#home'); if(home) home.classList.add('active');
   window.scrollTo({top:0,behavior:'instant'});
