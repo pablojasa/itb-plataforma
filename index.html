@@ -217,6 +217,18 @@ body.student-mode #course .course-side{grid-template-columns:repeat(4,minmax(0,1
   .my-attendance-review-status{text-align:left}
 }
 
+/* ===== v0.36.1 · Aviso ADMIN de revisiones pendientes ===== */
+.admin-att-review-modal{position:fixed;inset:0;z-index:17000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(3,7,11,.88);backdrop-filter:blur(6px)}
+.admin-att-review-modal.open{display:flex}
+.admin-att-review-dialog{width:min(520px,96vw);background:#0e151c;border:1px solid #6a5723;border-radius:19px;box-shadow:0 28px 80px rgba(0,0,0,.55);overflow:hidden}
+.admin-att-review-strip{height:5px;background:linear-gradient(90deg,#d2a63a,#7f651f)}
+.admin-att-review-body{padding:21px}
+.admin-att-review-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#2b2415;border:1px solid #695522;color:#ffd889;font-size:21px;font-weight:950;margin-bottom:12px}
+.admin-att-review-dialog h3{margin:0 0 8px;font-size:21px}.admin-att-review-dialog p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.admin-att-review-count{margin:15px 0 0;border:1px solid #695522;background:#211c12;border-radius:12px;padding:11px 12px;color:#f1dfaa;font-size:12px;font-weight:800}
+.admin-att-review-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+@media(max-width:560px){.admin-att-review-actions{flex-direction:column}.admin-att-review-actions .btn{width:100%;justify-content:center}}
+
 .mobile-nav{
   display:none;position:fixed;z-index:40;left:12px;right:12px;bottom:10px;background:rgba(20,26,34,.96);
   border:1px solid var(--line);border-radius:18px;padding:6px;box-shadow:var(--shadow);backdrop-filter:blur(16px)
@@ -2271,6 +2283,22 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
+<div id="adminAttendanceReviewModal" class="admin-att-review-modal" onclick="if(event.target===this)closeAdminAttendanceReviewNotice()">
+  <div class="admin-att-review-dialog" role="dialog" aria-modal="true" aria-labelledby="adminAttendanceReviewTitle">
+    <div class="admin-att-review-strip"></div>
+    <div class="admin-att-review-body">
+      <div class="admin-att-review-icon">!</div>
+      <h3 id="adminAttendanceReviewTitle">Revisión de presentismo pendiente</h3>
+      <p>Hay solicitudes de alumnos que requieren revisión administrativa. Podés abrir directamente la clase vinculada a la solicitud más reciente.</p>
+      <div id="adminAttendanceReviewCount" class="admin-att-review-count"></div>
+      <div class="admin-att-review-actions">
+        <button class="btn ghost" onclick="closeAdminAttendanceReviewNotice()">Cerrar</button>
+        <button class="btn primary" onclick="goToAdminAttendanceReview()">Ir a Presentismo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <nav class="mobile-nav">
  <button class="active" data-page="home" onclick="setPage('home')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V21h14V10.5"/><path d="M9.5 21v-6h5v6"/></svg></span>Inicio</button>
  <button data-page="course" onclick="setPage('course')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Curso</button>
@@ -2285,7 +2313,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.36.0 · Mi presentismo · Solicitudes de revisión</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.36.1 · Presentismo optimizado · Aviso ADMIN de revisiones</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2952,8 +2980,10 @@ function logoutStudent(){
   ADMIN_REG_ALL={courses:[],registrations:[]};
   ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
   MY_ATTENDANCE_DATA={presentes:0,ausentes:0,total:0,porcentaje:null,revisiones_pendientes:0,items:[]};
-  MY_ATTENDANCE_LOADED=false;MY_ATTENDANCE_LOADING=false;MY_ATTENDANCE_REVIEW_SESSION='';
-  $('#myAttendanceModal')?.classList.remove('open');$('#attendanceReviewModal')?.classList.remove('open');
+  MY_ATTENDANCE_LOADED=false;MY_ATTENDANCE_LOADING=false;MY_ATTENDANCE_PROMISE=null;MY_ATTENDANCE_LOADED_AT=0;MY_ATTENDANCE_REVIEW_SESSION='';
+  ADMIN_ATT_REVIEW_NOTICE_CHECKED=false;ADMIN_ATT_REVIEW_NOTICE_DATA=null;
+  if(ADMIN_ATT_REVIEW_NOTICE_TIMER){clearTimeout(ADMIN_ATT_REVIEW_NOTICE_TIMER);ADMIN_ATT_REVIEW_NOTICE_TIMER=null;}
+  $('#myAttendanceModal')?.classList.remove('open');$('#attendanceReviewModal')?.classList.remove('open');$('#adminAttendanceReviewModal')?.classList.remove('open');
   localStorage.removeItem('itb_session');
   resetPrivateDB();
   refreshUserUI();
@@ -4181,6 +4211,49 @@ window.createCohortAlert=createCohortAlert;
 window.acknowledgeCurrentAlert=acknowledgeCurrentAlert;
 window.enableSystemNotifications=enableSystemNotifications;
 
+/* ===== v0.36.1 · Aviso de revisiones pendiente sólo para ADMIN ===== */
+let ADMIN_ATT_REVIEW_NOTICE_CHECKED=false;
+let ADMIN_ATT_REVIEW_NOTICE_DATA=null;
+let ADMIN_ATT_REVIEW_NOTICE_TIMER=null;
+
+function closeAdminAttendanceReviewNotice(){
+  $('#adminAttendanceReviewModal')?.classList.remove('open');
+  document.body.style.overflow='';
+}
+async function checkAdminAttendanceReviewNotice(){
+  if(ADMIN_ATT_REVIEW_NOTICE_CHECKED)return;
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN')return;
+  const sess=getSession();if(!sess?.token)return;
+  ADMIN_ATT_REVIEW_NOTICE_CHECKED=true;
+  try{
+    const r=await retryTransient(()=>apiJsonp({action:'attendanceReviewAdminPending',token:sess.token}),1,450);
+    const count=Number(r.pending_count||0);
+    if(!count)return;
+    ADMIN_ATT_REVIEW_NOTICE_DATA=r;
+    const box=$('#adminAttendanceReviewCount');
+    if(box)box.textContent=count===1?'Tenés 1 solicitud de revisión de presentismo pendiente.':`Tenés ${count} solicitudes de revisión de presentismo pendientes.`;
+    $('#adminAttendanceReviewModal')?.classList.add('open');
+    document.body.style.overflow='hidden';
+  }catch(e){
+    console.warn('No se pudo consultar el aviso ADMIN de presentismo.',e);
+  }
+}
+function scheduleAdminAttendanceReviewNotice(){
+  if(ADMIN_ATT_REVIEW_NOTICE_CHECKED||String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN')return;
+  if(ADMIN_ATT_REVIEW_NOTICE_TIMER)clearTimeout(ADMIN_ATT_REVIEW_NOTICE_TIMER);
+  ADMIN_ATT_REVIEW_NOTICE_TIMER=setTimeout(()=>{ADMIN_ATT_REVIEW_NOTICE_TIMER=null;checkAdminAttendanceReviewNotice();},700);
+}
+async function goToAdminAttendanceReview(){
+  const d=ADMIN_ATT_REVIEW_NOTICE_DATA||{};
+  const latest=d.latest||{};
+  closeAdminAttendanceReviewNotice();
+  setPage('attendancePage');
+  try{await loadAttendance(String(latest.cohorte||''),String(latest.cronograma_id||''));}
+  catch(e){console.warn('No se pudo abrir la solicitud pendiente.',e);}
+}
+window.closeAdminAttendanceReviewNotice=closeAdminAttendanceReviewNotice;
+window.goToAdminAttendanceReview=goToAdminAttendanceReview;
+
 let TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
 let TEACHER_FILTER='all';
 let TEACHER_SORT='name';
@@ -4196,6 +4269,12 @@ function applyRoleUI(){
   else{stopChatUnreadPolling();applyChatUnreadState({has_unread:false,unread_cohorts:[]});}
   if(ITB_USER && String(role)==='ALUMNO')startAlertPolling();
   else{stopAlertPolling();setAlertAppBadge(0);}
+  if(ITB_USER && isAdmin)scheduleAdminAttendanceReviewNotice();
+  else{
+    if(ADMIN_ATT_REVIEW_NOTICE_TIMER){clearTimeout(ADMIN_ATT_REVIEW_NOTICE_TIMER);ADMIN_ATT_REVIEW_NOTICE_TIMER=null;}
+    ADMIN_ATT_REVIEW_NOTICE_CHECKED=false;ADMIN_ATT_REVIEW_NOTICE_DATA=null;
+    closeAdminAttendanceReviewNotice();
+  }
   syncNotificationOptIn();
 }
 
@@ -4342,6 +4421,8 @@ window.rejectAttendanceReview=rejectAttendanceReview;
 let MY_ATTENDANCE_DATA={presentes:0,ausentes:0,total:0,porcentaje:null,revisiones_pendientes:0,items:[]};
 let MY_ATTENDANCE_LOADED=false;
 let MY_ATTENDANCE_LOADING=false;
+let MY_ATTENDANCE_PROMISE=null;
+let MY_ATTENDANCE_LOADED_AT=0;
 let MY_ATTENDANCE_REVIEW_SESSION='';
 
 function renderMyAttendanceCard(){
@@ -4372,25 +4453,35 @@ function renderMyAttendanceCard(){
 }
 
 async function loadMyAttendance(force=false){
-  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO')return;
-  if(MY_ATTENDANCE_LOADING)return;
-  if(MY_ATTENDANCE_LOADED&&!force){renderMyAttendanceCard();return;}
-  const sess=getSession();if(!sess?.token)return;
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO')return MY_ATTENDANCE_DATA;
+  if(MY_ATTENDANCE_LOADED&&!force){renderMyAttendanceCard();return MY_ATTENDANCE_DATA;}
+  if(MY_ATTENDANCE_LOADING&&MY_ATTENDANCE_PROMISE)return MY_ATTENDANCE_PROMISE;
+  const sess=getSession();if(!sess?.token)return MY_ATTENDANCE_DATA;
+
   MY_ATTENDANCE_LOADING=true;
-  try{
-    const r=await retryTransient(()=>apiJsonp({action:'myAttendance',token:sess.token}),2,650);
-    MY_ATTENDANCE_DATA={
-      presentes:Number(r.presentes||0),ausentes:Number(r.ausentes||0),total:Number(r.total||0),
-      porcentaje:r.porcentaje==null?null:Number(r.porcentaje),
-      revisiones_pendientes:Number(r.revisiones_pendientes||0),
-      items:r.items||[]
-    };
-    MY_ATTENDANCE_LOADED=true;
-    renderMyAttendanceCard();
-    if($('#myAttendanceModal')?.classList.contains('open'))renderMyAttendanceDetail();
-  }catch(e){
-    const mount=$('#myAttendanceMount');if(mount)mount.innerHTML=`<div class="note">${esc(e.message||'No se pudo cargar el presentismo.')}</div>`;
-  }finally{MY_ATTENDANCE_LOADING=false;}
+  MY_ATTENDANCE_PROMISE=(async()=>{
+    try{
+      const r=await retryTransient(()=>apiJsonp({action:'myAttendance',token:sess.token}),2,650);
+      MY_ATTENDANCE_DATA={
+        presentes:Number(r.presentes||0),ausentes:Number(r.ausentes||0),total:Number(r.total||0),
+        porcentaje:r.porcentaje==null?null:Number(r.porcentaje),
+        revisiones_pendientes:Number(r.revisiones_pendientes||0),
+        items:r.items||[]
+      };
+      MY_ATTENDANCE_LOADED=true;
+      MY_ATTENDANCE_LOADED_AT=Date.now();
+      renderMyAttendanceCard();
+      if($('#myAttendanceModal')?.classList.contains('open'))renderMyAttendanceDetail();
+      return MY_ATTENDANCE_DATA;
+    }catch(e){
+      const mount=$('#myAttendanceMount');if(mount)mount.innerHTML=`<div class="note">${esc(e.message||'No se pudo cargar el presentismo.')}</div>`;
+      throw e;
+    }finally{
+      MY_ATTENDANCE_LOADING=false;
+      MY_ATTENDANCE_PROMISE=null;
+    }
+  })();
+  return MY_ATTENDANCE_PROMISE;
 }
 
 function myAttendanceReviewText(item){
@@ -4401,6 +4492,19 @@ function myAttendanceReviewText(item){
   if(state==='ACEPTADA')return '<div class="my-attendance-review-status ok">✓ Revisión aceptada · registro corregido</div>';
   if(state==='RECHAZADA')return '<div class="my-attendance-review-status no">Revisión realizada · se mantiene AUSENTE</div>';
   return '';
+}
+
+function myAttendanceDisplayItem(item){
+  const sid=String(item?.cronograma_id||'');
+  const sc=(DB.schedule||[]).find(x=>String(x.id||x.cronograma_id||'')===sid)||{};
+  return {
+    ...item,
+    titulo:item?.titulo||sc.titulo||sc.actividad||sc.tipo||'Clase',
+    tipo:item?.tipo||sc.tipo||'',
+    modalidad:item?.modalidad||sc.modalidad||'',
+    fecha:item?.fecha||String(sc.fecha||'').slice(0,10),
+    hora:item?.hora||sc.hora||''
+  };
 }
 
 function renderMyAttendanceDetail(){
@@ -4415,7 +4519,8 @@ function renderMyAttendanceDetail(){
   if(!d.items.length){
     list.innerHTML='<div class="attendance-empty">Todavía no hay clases con presentismo registrado.</div>';return;
   }
-  list.innerHTML=d.items.map(it=>{
+  list.innerHTML=d.items.map(raw=>{
+    const it=myAttendanceDisplayItem(raw);
     const present=String(it.estado||'')==='PRESENTE';
     const revHtml=myAttendanceReviewText(it);
     const button=(!present&&it.puede_solicitar_revision)
@@ -4431,14 +4536,28 @@ function renderMyAttendanceDetail(){
 async function openMyAttendance(){
   if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO')return;
   $('#myAttendanceModal')?.classList.add('open');document.body.style.overflow='hidden';
-  const list=$('#myAttendanceList');if(list)list.innerHTML='<div class="attendance-empty">Actualizando presentismo…</div>';
-  await loadMyAttendance(true);
-  renderMyAttendanceDetail();
+
+  // v0.36.1: si el dashboard ya cargó el presentismo, el detalle abre
+  // inmediatamente. No repetimos la misma consulta sólo por abrir el modal.
+  if(MY_ATTENDANCE_LOADED){
+    renderMyAttendanceDetail();
+    // Si la copia tiene más de un minuto, actualizamos en segundo plano sin
+    // bloquear la apertura del detalle.
+    if(Date.now()-MY_ATTENDANCE_LOADED_AT>60000){
+      loadMyAttendance(true).catch(e=>console.warn('No se pudo refrescar Mi presentismo.',e));
+    }
+    return;
+  }
+
+  const list=$('#myAttendanceList');if(list)list.innerHTML='<div class="attendance-empty">Cargando presentismo…</div>';
+  try{await loadMyAttendance(false);}catch(_){}
+  if(MY_ATTENDANCE_LOADED)renderMyAttendanceDetail();
 }
 function closeMyAttendance(){$('#myAttendanceModal')?.classList.remove('open');document.body.style.overflow='';}
 
 function openAttendanceReviewModal(cronogramaId){
-  const item=(MY_ATTENDANCE_DATA.items||[]).find(x=>String(x.cronograma_id)===String(cronogramaId));
+  const raw=(MY_ATTENDANCE_DATA.items||[]).find(x=>String(x.cronograma_id)===String(cronogramaId));
+  const item=raw?myAttendanceDisplayItem(raw):null;
   if(!item||String(item.estado)!=='AUSENTE'||!item.puede_solicitar_revision)return;
   MY_ATTENDANCE_REVIEW_SESSION=String(cronogramaId);
   $('#attendanceReviewReason').value='';
