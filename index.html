@@ -124,6 +124,39 @@ main{max-width:1180px;margin:0 auto;padding:28px 24px 92px}
   #studentsAdminPage .admin-table{min-width:860px}
 }
 
+
+/* ===== v0.34.0 · Presentismo ===== */
+.attendance-shell{max-width:1080px;margin:0 auto}
+.attendance-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:16px}
+.attendance-head h2{margin:3px 0 5px;font-size:28px}.attendance-head p{margin:0;color:var(--muted);font-size:12px}
+.attendance-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.attendance-controls select{background:#111820;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 12px;min-width:190px}
+#attendanceSession{min-width:min(480px,70vw)}
+.attendance-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.attendance-session-meta{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.attendance-session-meta h3{margin:3px 0 5px;font-size:18px}.attendance-session-meta p{margin:0;color:var(--muted);font-size:11px}
+.attendance-badge{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:10px;font-weight:850}
+.attendance-badge.pending{color:#ffd889;border-color:#695522;background:#2b2415}.attendance-badge.saved{color:#8fe2ad;border-color:#285a3c;background:#14251b}
+.attendance-summary{display:flex;gap:9px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line);background:#111820}
+.attendance-chip{border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:11px;color:var(--muted)}.attendance-chip b{color:#fff}
+.attendance-tools{margin-left:auto;display:flex;gap:8px}
+.attendance-roster{display:grid}
+.attendance-row{display:grid;grid-template-columns:42px minmax(0,1fr) 110px;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid var(--line)}
+.attendance-row:last-child{border-bottom:0}.attendance-row:hover{background:#151d25}
+.attendance-check{width:21px;height:21px;accent-color:#2da562;cursor:pointer}
+.attendance-name b{display:block;font-size:12px}.attendance-name span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.attendance-state{font-size:10px;font-weight:900;text-align:right}.attendance-state.present{color:#8fe2ad}.attendance-state.absent{color:#ff9aa3}
+.attendance-foot{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}
+.attendance-foot-note{font-size:10px;color:var(--muted);line-height:1.45}.attendance-record-meta{font-size:10px;color:#aeb8c2;margin-top:4px}
+.attendance-empty{padding:26px;text-align:center;color:var(--muted);font-size:12px}
+.teacher-attendance{display:grid;gap:4px;min-width:92px}.teacher-attendance b{font-size:12px}.teacher-attendance span{font-size:9px;color:var(--muted)}
+.teacher-table{min-width:1050px}
+@media(max-width:760px){
+  .attendance-head{align-items:stretch;flex-direction:column}.attendance-controls{display:grid;grid-template-columns:1fr}.attendance-controls select,#attendanceSession{width:100%;min-width:0}
+  .attendance-row{grid-template-columns:36px minmax(0,1fr) 74px;padding:11px 13px}.attendance-foot{align-items:stretch;flex-direction:column}.attendance-foot .btn{width:100%;justify-content:center}
+  .attendance-tools{margin-left:0;width:100%}.attendance-tools .btn{flex:1}
+}
+
 .mobile-nav{
   display:none;position:fixed;z-index:40;left:12px;right:12px;bottom:10px;background:rgba(20,26,34,.96);
   border:1px solid var(--line);border-radius:18px;padding:6px;box-shadow:var(--shadow);backdrop-filter:blur(16px)
@@ -1605,6 +1638,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <button class="navbtn" data-page="chatPage" onclick="openChat()">Chat</button>
   <button class="navbtn teacher-only" data-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   <button class="navbtn teacher-only" data-page="teacherPage" onclick="openTeacherPanel()">Panel docente</button>
+  <button class="navbtn teacher-only" data-page="attendancePage" onclick="openAttendance()">Presentismo</button>
   <button class="navbtn admin-only" data-page="adminPage" onclick="openAdminPanel()">Inscripciones</button>
   <button class="navbtn admin-only" data-page="studentsAdminPage" onclick="openStudentAdmin()">Alumnos</button>
   <button class="navbtn" data-page="schedulePage" onclick="setPage('schedulePage')">Cronograma</button>
@@ -1894,6 +1928,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
         <tr>
           <th class="sortable" onclick="setTeacherSort('name')">Alumno</th>
           <th class="sortable" onclick="setTeacherSort('progress')">Progreso global</th>
+          <th class="sortable" onclick="setTeacherSort('attendance')">Presentismo</th>
           <th>Unidades completas</th>
           <th>Unidad en curso</th>
           <th class="sortable" onclick="setTeacherSort('last')">Última actividad</th>
@@ -1931,6 +1966,33 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 
 </section>
 
+
+
+<section id="attendancePage" class="page">
+  <div class="attendance-shell">
+    <div class="attendance-head">
+      <div>
+        <div class="kicker">Seguimiento académico</div>
+        <h2>Presentismo</h2>
+        <p>Seleccioná la fecha de clase. Todos los alumnos aparecen presentes por defecto; destildá únicamente a los ausentes.</p>
+      </div>
+      <div class="attendance-controls">
+        <select id="attendanceCohort" title="Cohorte" onchange="changeAttendanceCohort(this.value)"></select>
+        <select id="attendanceSession" title="Fecha de clase" onchange="changeAttendanceSession(this.value)"></select>
+        <button class="btn ghost" onclick="refreshAttendance()">Actualizar</button>
+      </div>
+    </div>
+    <div class="attendance-card">
+      <div id="attendanceSessionMeta" class="attendance-session-meta"><div><h3>Seleccioná una fecha</h3><p>Las fechas disponibles se toman del cronograma.</p></div></div>
+      <div id="attendanceSummary" class="attendance-summary"></div>
+      <div id="attendanceRoster" class="attendance-roster"><div class="attendance-empty">Cargando presentismo…</div></div>
+      <div class="attendance-foot">
+        <div><div class="attendance-foot-note">El registro se guarda recién al presionar el botón. Podés volver a esta fecha y corregirlo posteriormente.</div><div id="attendanceRecordMeta" class="attendance-record-meta"></div></div>
+        <button id="attendanceSaveBtn" class="btn primary" onclick="saveAttendance()" disabled>Registrar presentismo</button>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section id="adminPage" class="page">
   <div class="admin-head">
@@ -2125,6 +2187,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="chatPage" onclick="openChat()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></span>Chat</button>
  <button class="teacher-only" data-page="alertsPage" onclick="openAlertAdmin()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0112 0v4l2 3H4l2-3z"/><path d="M9 18h6"/><path d="M12 3v1"/></svg></span>Alertas</button>
  <button class="teacher-only" data-page="teacherPage" onclick="openTeacherPanel()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v13H4z"/><path d="M8 21h8M12 18v3"/><path d="M8 9h8M8 13h5"/></svg></span>Docente</button>
+ <button class="teacher-only" data-page="attendancePage" onclick="openAttendance()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v15H4z"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="m8 14 2 2 5-5"/></svg></span>Presente</button>
  <button class="admin-only" data-page="adminPage" onclick="openAdminPanel()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="M17.5 15.5v4M15.5 17.5h4"/></svg></span>Admin</button>
  <button class="admin-only" data-page="studentsAdminPage" onclick="openStudentAdmin()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Alumnos</button>
  <button data-page="schedulePage" onclick="setPage('schedulePage')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></span>Agenda</button>
@@ -2132,7 +2195,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.33.0 · Gestión de alumnos · Baja administrativa</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.34.0 · Presentismo · Registro y corrección por cronograma</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -4042,6 +4105,90 @@ function teacherStudentMetrics(student){
   return {percent,completedUnits,unitCount:infos.filter(x=>x.info.total>0).length,active,last,daysInactive,infos};
 }
 
+
+let ATTENDANCE_DATA={cohorts:[],cohorte:'',sessions:[],session:null,students:[],registered:false,record_meta:null};
+
+function attendanceFmtDate(v){
+  if(!v)return '—';
+  const d=new Date(String(v).slice(0,10)+'T12:00:00');
+  if(Number.isNaN(d.getTime()))return String(v);
+  return new Intl.DateTimeFormat('es-AR',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'}).format(d);
+}
+function attendanceDateTime(v){
+  if(!v)return '';
+  const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);
+  return new Intl.DateTimeFormat('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(d);
+}
+function attendanceSessionLabel(s){
+  return `${attendanceFmtDate(s.fecha)} · ${s.hora||'--:--'} · ${s.titulo||'Clase'}${s.registrado?' · ✓ registrado':''}`;
+}
+async function openAttendance(){
+  if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase()))return;
+  setPage('attendancePage');
+  await loadAttendance(ATTENDANCE_DATA.cohorte||'',ATTENDANCE_DATA.session?.cronograma_id||'');
+}
+async function loadAttendance(cohorte='',cronogramaId=''){
+  if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase()))return;
+  const sess=getSession();if(!sess?.token)return;
+  const roster=$('#attendanceRoster');if(roster)roster.innerHTML='<div class="attendance-empty">Cargando nómina…</div>';
+  if($('#attendanceSaveBtn'))$('#attendanceSaveBtn').disabled=true;
+  try{
+    const r=await apiJsonp({action:'attendanceData',token:sess.token,cohorte:cohorte||'',cronograma_id:cronogramaId||''});
+    ATTENDANCE_DATA={cohorts:r.cohorts||[],cohorte:r.cohorte||'',sessions:r.sessions||[],session:r.session||null,students:r.students||[],registered:!!r.registered,record_meta:r.record_meta||null};
+    const cs=$('#attendanceCohort');if(cs){cs.innerHTML=ATTENDANCE_DATA.cohorts.map(c=>`<option value="${esc(c)}" ${c===ATTENDANCE_DATA.cohorte?'selected':''}>${esc(c)}</option>`).join('');}
+    const ss=$('#attendanceSession');if(ss){ss.innerHTML=ATTENDANCE_DATA.sessions.length?ATTENDANCE_DATA.sessions.map(s=>`<option value="${esc(s.cronograma_id)}" ${ATTENDANCE_DATA.session&&s.cronograma_id===ATTENDANCE_DATA.session.cronograma_id?'selected':''}>${esc(attendanceSessionLabel(s))}</option>`).join(''):'<option value="">Sin fechas disponibles</option>';}
+    renderAttendance();
+  }catch(e){
+    if(roster)roster.innerHTML=`<div class="attendance-empty">${esc(e.message||'No se pudo cargar el presentismo.')}</div>`;
+  }
+}
+function changeAttendanceCohort(v){loadAttendance(v,'')}
+function changeAttendanceSession(v){loadAttendance($('#attendanceCohort')?.value||'',v)}
+function refreshAttendance(){loadAttendance($('#attendanceCohort')?.value||'', $('#attendanceSession')?.value||'')}
+function renderAttendance(){
+  const d=ATTENDANCE_DATA,s=d.session,meta=$('#attendanceSessionMeta'),roster=$('#attendanceRoster'),save=$('#attendanceSaveBtn');
+  if(!s){
+    if(meta)meta.innerHTML='<div><h3>Sin fechas disponibles</h3><p>No hay actividades del cronograma habilitadas para registrar presentismo.</p></div>';
+    if(roster)roster.innerHTML='<div class="attendance-empty">No hay una fecha de clase disponible.</div>';
+    if($('#attendanceSummary'))$('#attendanceSummary').innerHTML='';if($('#attendanceRecordMeta'))$('#attendanceRecordMeta').textContent='';if(save)save.disabled=true;return;
+  }
+  if(meta)meta.innerHTML=`<div><div class="kicker">${esc(s.tipo||s.modalidad||'Clase')}</div><h3>${esc(s.titulo||'Clase')}</h3><p>${esc(attendanceFmtDate(s.fecha))} · ${esc(s.hora||'--:--')} h${s.modalidad?' · '+esc(s.modalidad):''}</p></div><span class="attendance-badge ${d.registered?'saved':'pending'}">${d.registered?'✓ Registrado':'Pendiente de registrar'}</span>`;
+  if(roster)roster.innerHTML=d.students.length?d.students.map(st=>`<label class="attendance-row" data-student="${esc(st.alumno_id)}"><input class="attendance-check" type="checkbox" ${st.presente?'checked':''} onchange="attendanceChanged()"><span class="attendance-name"><b>${esc(st.apellido||'')}${st.apellido&&st.nombre?', ':''}${esc(st.nombre||'')}</b><span>${esc(st.usuario||st.alumno_id||'')}</span></span><span class="attendance-state ${st.presente?'present':'absent'}">${st.presente?'PRESENTE':'AUSENTE'}</span></label>`).join(''):'<div class="attendance-empty">No hay alumnos activos en la nómina para esta fecha.</div>';
+  const rm=d.record_meta;
+  if($('#attendanceRecordMeta'))$('#attendanceRecordMeta').textContent=rm?(d.registered?`Registrado por ${rm.registrado_por||'—'}${rm.registrado_en?' · '+attendanceDateTime(rm.registrado_en):''}${Number(rm.revision_nro||1)>1?` · revisión ${rm.revision_nro}`:''}`:''):'';
+  if(save){save.disabled=!d.students.length;save.textContent=d.registered?'Guardar corrección':'Registrar presentismo';}
+  attendanceChanged(false);
+}
+function attendanceChanged(updateState=true){
+  const checks=[...document.querySelectorAll('#attendanceRoster .attendance-check')];
+  let present=0;
+  checks.forEach(ch=>{
+    if(ch.checked)present++;
+    if(updateState){const row=ch.closest('.attendance-row'),state=row?.querySelector('.attendance-state');if(state){state.textContent=ch.checked?'PRESENTE':'AUSENTE';state.className='attendance-state '+(ch.checked?'present':'absent');}}
+  });
+  const absent=checks.length-present;
+  const sum=$('#attendanceSummary');if(sum)sum.innerHTML=`<span class="attendance-chip"><b>${checks.length}</b> alumnos</span><span class="attendance-chip"><b>${present}</b> presentes</span><span class="attendance-chip"><b>${absent}</b> ausentes</span><div class="attendance-tools"><button class="btn ghost" onclick="event.preventDefault();attendanceMarkAllPresent()">Marcar todos presentes</button></div>`;
+}
+function attendanceMarkAllPresent(){document.querySelectorAll('#attendanceRoster .attendance-check').forEach(ch=>ch.checked=true);attendanceChanged();}
+async function saveAttendance(){
+  const d=ATTENDANCE_DATA,s=d.session;if(!s||!d.students.length)return;
+  const ausentes=[];
+  document.querySelectorAll('#attendanceRoster .attendance-row').forEach(row=>{const ch=row.querySelector('.attendance-check');if(ch&&!ch.checked)ausentes.push(String(row.dataset.student||''));});
+  const presentes=d.students.length-ausentes.length;
+  const action=d.registered?'corregir':'registrar';
+  if(!confirm(`${d.registered?'CORREGIR':'REGISTRAR'} presentismo del ${attendanceFmtDate(s.fecha)}?\n\nPresentes: ${presentes}\nAusentes: ${ausentes.length}\n\n${d.registered?'Esta acción reemplazará el estado vigente de los alumnos que figuran en la nómina.':'Recién al confirmar se guardará el registro.'}`))return;
+  const btn=$('#attendanceSaveBtn');if(btn){btn.disabled=true;btn.textContent='Guardando…';}
+  try{
+    const sess=getSession();if(!sess?.token)throw new Error('Sesión vencida.');
+    const r=await apiJsonpLong({action:'attendanceSave',token:sess.token,cohorte:d.cohorte,cronograma_id:s.cronograma_id,ausentes:JSON.stringify(ausentes)},60000);
+    showITBToast(`${r.presentes} presentes · ${r.ausentes} ausentes registrados.`);
+    await loadAttendance(d.cohorte,s.cronograma_id);
+    // El porcentaje del Panel docente puede haber cambiado.
+    TEACHER_DATA={cohorts:[],cohorte:'',students:[],diagnostico:{}};
+  }catch(e){alert(e.message||'No se pudo registrar el presentismo.');if(btn){btn.disabled=false;btn.textContent=d.registered?'Guardar corrección':'Registrar presentismo';}}
+}
+window.openAttendance=openAttendance;window.changeAttendanceCohort=changeAttendanceCohort;window.changeAttendanceSession=changeAttendanceSession;window.refreshAttendance=refreshAttendance;window.attendanceChanged=attendanceChanged;window.attendanceMarkAllPresent=attendanceMarkAllPresent;window.saveAttendance=saveAttendance;
+
 async function openTeacherPanel(){
   if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase())) return;
   setPage('teacherPage');
@@ -4052,7 +4199,7 @@ async function openTeacherPanel(){
 async function loadTeacherPanel(cohorte){
   if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase())) return;
   const sess=getSession(); if(!sess?.token)return;
-  $('#teacherRows').innerHTML='<tr><td colspan="8">Cargando…</td></tr>';
+  $('#teacherRows').innerHTML='<tr><td colspan="9">Cargando…</td></tr>';
   try{
     const r=await apiJsonp({action:'teacherPanel',token:sess.token,cohorte:cohorte||''});
     TEACHER_DATA={cohorts:r.cohorts||[],cohorte:r.cohorte||'',students:r.students||[],diagnostico:r.diagnostico||{}};
@@ -4061,7 +4208,7 @@ async function loadTeacherPanel(cohorte){
     renderTeacherRows();
     await loadTeacherQuizStats('');
   }catch(e){
-    $('#teacherRows').innerHTML=`<tr><td colspan="8" class="teacher-empty">${esc(e.message||'No se pudo cargar el panel.')}</td></tr>`;
+    $('#teacherRows').innerHTML=`<tr><td colspan="9" class="teacher-empty">${esc(e.message||'No se pudo cargar el panel.')}</td></tr>`;
   }
 }
 
@@ -4137,6 +4284,13 @@ function teacherSortRows(rows){
       return db-da;
     });
   }
+  if(TEACHER_SORT==='attendance'){
+    return arr.sort((a,b)=>{
+      const pa=a.attendance?.porcentaje==null?-1:Number(a.attendance.porcentaje);
+      const pb=b.attendance?.porcentaje==null?-1:Number(b.attendance.porcentaje);
+      return pb-pa || String(a.apellido||'').localeCompare(String(b.apellido||''),'es',{sensitivity:'base'});
+    });
+  }
   return arr.sort((a,b)=>{
     const ap=String(a.apellido||'').localeCompare(String(b.apellido||''),'es',{sensitivity:'base'});
     if(ap!==0) return ap;
@@ -4189,7 +4343,7 @@ function renderTeacherRows(){
   $('#teacherFilterSummary').innerHTML=`Mostrando <b>${rows.length}</b> de <b>${all.length}</b> alumnos${parts.length?' · '+esc(parts.join(' · ')):''}${ds.total_ms!=null?` · carga servidor ${esc(ds.total_ms)} ms`:''}`;
 
   if(!rows.length){
-    $('#teacherRows').innerHTML='<tr><td colspan="8" class="teacher-empty">No hay alumnos para mostrar.</td></tr>';
+    $('#teacherRows').innerHTML='<tr><td colspan="9" class="teacher-empty">No hay alumnos para mostrar.</td></tr>';
   }else{
     $('#teacherRows').innerHTML=rows.map(s=>{
       const m=s.metrics;
@@ -4203,6 +4357,7 @@ function renderTeacherRows(){
       return `<tr>
         <td><div class="teacher-student">${esc((s.apellido||'')+', '+(s.nombre||''))}</div><div class="teacher-muted">${esc(s.alumno_id||'')} · ${esc(s.email||'')}</div></td>
         <td><div class="teacher-progress"><b>${m.percent}%</b><div class="teacher-progress-track"><span style="width:${m.percent}%"></span></div></div></td>
+        <td><div class="teacher-attendance"><b>${s.attendance?.porcentaje==null?'—':s.attendance.porcentaje+'%'}</b><span>${s.attendance?.total?`${s.attendance.presentes}/${s.attendance.total} presentes`:'Sin registros'}</span></div></td>
         <td>${m.completedUnits}/${m.unitCount}</td>
         <td>${esc(active)}</td>
         <td>${esc(last)}</td>
@@ -4371,6 +4526,7 @@ function showTeacherStudent(id){
           <h3>Resumen del alumno</h3>
           <div class="student-info-row"><span>Correo electrónico</span><span>${esc(st.email||'—')}</span></div>
           <div class="student-info-row"><span>Cohorte</span><span>${esc(st.cohorte||'—')}</span></div>
+          <div class="student-info-row"><span>Presentismo</span><span>${st.attendance?.porcentaje==null?'—':`${st.attendance.porcentaje}% · ${st.attendance.presentes}/${st.attendance.total}`}</span></div>
           <div class="student-info-row"><span>Rol</span><span>ALUMNO</span></div>
           <div class="student-info-row"><span>Estado</span><span style="color:#68d091">Activo</span></div>
         </div>
