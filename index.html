@@ -1990,7 +1990,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.29.0 · Usuario simplificado · Cambio obligatorio de PIN</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.29.1 · Autoevaluación nativa · Vista previa docente/admin</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -4228,6 +4228,8 @@ function quizStatus(uid){
 
 function renderNativeQuizBox(uid,auto){
   const qs=quizStatus(uid);
+  const role=String(ITB_USER?.rol||'').toUpperCase();
+  const isStaff=['DOCENTE','ADMIN'].includes(role);
 
   if(!ITB_USER){
     if(qs.available){
@@ -4242,7 +4244,23 @@ function renderNativeQuizBox(uid,auto){
   }
 
   if(!qs.available){
-    return auto?`<div class="unitws-eval"><div class="unitws-evalnum">0%</div><b>${esc(auto.name||auto.nombre||'Autoevaluación')}</b><small>Pendiente</small>${auto.link?`<div style="margin-top:10px"><a class="btn primary" href="${esc(auto.link)}" target="_blank" rel="noopener">Iniciar</a></div>`:''}</div>`:'<div class="unitws-empty">Todavía no hay banco de preguntas suficiente para esta unidad.</div>';
+    return auto?`<div class="unitws-eval"><div class="unitws-evalnum">0%</div><b>${esc(auto.name||auto.nombre||'Autoevaluación')}</b><small>Banco nativo aún no disponible</small>${auto.link?`<div style="margin-top:10px"><a class="btn ghost" href="${esc(auto.link)}" target="_blank" rel="noopener">Abrir evaluación anterior ↗</a></div>`:''}</div>`:'<div class="unitws-empty">Todavía no hay banco de preguntas suficiente para esta unidad.</div>';
+  }
+
+  if(isStaff || qs.staff_preview){
+    return `<div class="unitws-eval quiz-status-box">
+      <div class="quiz-status-score quiz-status-pending">PREVIEW</div>
+      <b>Autoevaluación nativa</b>
+      <small>Vista previa para ${role==='ADMIN'?'administración':'docentes'}</small>
+      <div class="quiz-status-meta">
+        <span>Preguntas activas: <b>${qs.question_count||'10+'}</b></span>
+        <span>Selección: <b>10 aleatorias</b></span>
+        <span>Esta prueba <b>no registra intentos ni notas</b></span>
+      </div>
+      <div style="margin-top:8px">
+        <button class="btn primary" onclick="startQuiz('${esc(uid)}')">Abrir vista previa</button>
+      </div>
+    </div>`;
   }
 
   const best=qs.best_score===null||qs.best_score===undefined?'—':`${qs.best_score}/10`;
@@ -4280,13 +4298,16 @@ async function startQuiz(unitId){
       attemptId:r.attempt_id,
       unitId,
       attemptNo:r.attempt_nro,
+      preview:!!r.preview,
       questions:r.questions||[],
       answers:{},
       current:0
     };
     const u=(DB.units||[]).find(x=>String(x.id)===String(unitId));
     $('#quizTitle').textContent=`Autoevaluación · Unidad ${u?.numero||''}`;
-    $('#quizSubtitle').textContent=`Intento ${r.attempt_nro}/5 · 10 preguntas · aprobación 7/10`;
+    $('#quizSubtitle').textContent=r.preview
+      ? 'Vista previa docente/admin · 10 preguntas · no registra intentos ni notas'
+      : `Intento ${r.attempt_nro}/5 · 10 preguntas · aprobación 7/10`;
     $('#quizFoot').style.display='flex';
     renderQuizQuestion();
   }catch(e){
@@ -4370,20 +4391,21 @@ async function submitQuiz(){
       respuestas:JSON.stringify(ITB_QUIZ.answers)
     });
 
-    await loadMyProgress();
-    refreshCourseProgressUI();
+    if(!r.preview){
+      await loadMyProgress();
+      refreshCourseProgressUI();
+    }
 
     const review=r.review||[];
     $('#quizProgressBar').style.width='100%';
     $('#quizBody').innerHTML=`
       <div class="quiz-result">
         <div class="quiz-result-score">${r.nota}/10</div>
-        <h2>${r.aprobado?'Autoevaluación aprobada':'Autoevaluación no aprobada'}</h2>
-        <p>${r.aprobado?'Excelente. La autoevaluación quedó registrada como completada.':'Podés volver a intentarlo mientras tengas intentos disponibles.'}</p>
+        <h2>${r.preview?'Vista previa finalizada':(r.aprobado?'Autoevaluación aprobada':'Autoevaluación no aprobada')}</h2>
+        <p>${r.preview?'Resultado de prueba para revisión docente. No se registraron intentos, notas ni progreso.':(r.aprobado?'Excelente. La autoevaluación quedó registrada como completada.':'Podés volver a intentarlo mientras tengas intentos disponibles.')}</p>
         <div class="quiz-result-stats">
           <span class="quiz-result-pill">${r.aciertos}/10 correctas</span>
-          <span class="quiz-result-pill">Mejor nota: ${r.mejor_nota}/10</span>
-          <span class="quiz-result-pill">Intentos: ${r.intentos_usados}/5</span>
+          ${r.preview?'':`<span class="quiz-result-pill">Mejor nota: ${r.mejor_nota}/10</span><span class="quiz-result-pill">Intentos: ${r.intentos_usados}/5</span>`}
         </div>
       </div>
       ${review.length?`<div class="quiz-review">
@@ -4399,7 +4421,7 @@ async function submitQuiz(){
         <button class="btn primary" onclick="closeQuiz()">Cerrar</button>
       </div>`;
 
-    if(window.__currentUnitId===ITB_QUIZ.unitId){
+    if(!r.preview && window.__currentUnitId===ITB_QUIZ.unitId){
       setTimeout(()=>openUnit(ITB_QUIZ.unitId),250);
     }
   }catch(e){
