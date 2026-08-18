@@ -125,37 +125,48 @@ main{max-width:1180px;margin:0 auto;padding:28px 24px 92px}
 }
 
 
-/* ===== v0.34.0 · Presentismo ===== */
-.attendance-shell{max-width:1080px;margin:0 auto}
-.attendance-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:16px}
-.attendance-head h2{margin:3px 0 5px;font-size:28px}.attendance-head p{margin:0;color:var(--muted);font-size:12px}
+/* ===== v0.35.0 · Presentismo visual + avatares ===== */
+.attendance-shell{max-width:1160px;margin:0 auto}
+.attendance-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:16px}
+.attendance-head>div:first-child{display:flex;flex-direction:column;justify-content:flex-end}
+.attendance-head .kicker,.attendance-session-meta .kicker{line-height:1.15;margin:0 0 5px}
+.attendance-head h2{margin:0 0 6px;font-size:28px;line-height:1.08}.attendance-head p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
 .attendance-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.attendance-controls select{background:#111820;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 12px;min-width:190px}
+.attendance-controls select{background:#111820;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 12px;min-width:190px;line-height:1.2}
 #attendanceSession{min-width:min(480px,70vw)}
 .attendance-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
-.attendance-session-meta{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
-.attendance-session-meta h3{margin:3px 0 5px;font-size:18px}.attendance-session-meta p{margin:0;color:var(--muted);font-size:11px}
-.attendance-badge{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:10px;font-weight:850}
+.attendance-session-meta{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+.attendance-session-meta>div{display:flex;flex-direction:column;justify-content:center}
+.attendance-session-meta h3{margin:0 0 5px;font-size:18px;line-height:1.18}.attendance-session-meta p{margin:0;color:var(--muted);font-size:11px;line-height:1.35}
+.attendance-badge{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:10px;font-weight:850;line-height:1}
 .attendance-badge.pending{color:#ffd889;border-color:#695522;background:#2b2415}.attendance-badge.saved{color:#8fe2ad;border-color:#285a3c;background:#14251b}
-.attendance-summary{display:flex;gap:9px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line);background:#111820}
-.attendance-chip{border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:11px;color:var(--muted)}.attendance-chip b{color:#fff}
-.attendance-tools{margin-left:auto;display:flex;gap:8px}
-.attendance-roster{display:grid}
-.attendance-row{display:grid;grid-template-columns:42px minmax(0,1fr) 110px;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid var(--line)}
-.attendance-row:last-child{border-bottom:0}.attendance-row:hover{background:#151d25}
-.attendance-check{width:21px;height:21px;accent-color:#2da562;cursor:pointer}
-.attendance-name b{display:block;font-size:12px}.attendance-name span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
-.attendance-state{font-size:10px;font-weight:900;text-align:right}.attendance-state.present{color:#8fe2ad}.attendance-state.absent{color:#ff9aa3}
+.attendance-summary{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line);background:#111820}
+.attendance-chip{display:inline-flex;align-items:center;min-height:22px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:11px;line-height:1;color:var(--muted)}.attendance-chip b{color:#fff;margin-right:3px}
+.attendance-tools{margin-left:auto;display:flex;align-items:center;gap:8px}
+.attendance-roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px;padding:16px;background:#0f151c}
+.attendance-person-card{position:relative;min-height:242px;border:1px solid #303a45;background:#141b23;border-radius:17px;padding:13px 12px 12px;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease,box-shadow .15s ease;user-select:none}
+.attendance-person-card:hover{transform:translateY(-2px);border-color:#475563;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.attendance-person-card.present{border-color:#315c44;background:#142019}.attendance-person-card.absent{border-color:#74343b;background:#21171a}
+.attendance-check{position:absolute;top:11px;right:11px;width:21px;height:21px;accent-color:#2da562;cursor:pointer;z-index:2}
+.attendance-avatar{width:94px;height:94px;border-radius:50%;object-fit:cover;display:block;margin:5px auto 11px;background:#202a34;border:2px solid #3a4652;box-shadow:0 5px 14px rgba(0,0,0,.22)}
+.attendance-person-card.present .attendance-avatar{border-color:#3e7254}.attendance-person-card.absent .attendance-avatar{border-color:#8a454d;filter:saturate(.82)}
+.attendance-person-name{width:100%;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;line-height:1.18}
+.attendance-surname{font-size:12px;font-weight:950;letter-spacing:.025em;text-transform:uppercase;overflow-wrap:anywhere}
+.attendance-given{font-size:11px;font-weight:750;color:#e4e9ee;margin-top:4px;overflow-wrap:anywhere}
+.attendance-user{font-size:9px;color:var(--muted);margin-top:6px;line-height:1.15;overflow-wrap:anywhere}
+.attendance-state{margin-top:auto;padding-top:11px;font-size:10px;font-weight:950;letter-spacing:.055em;line-height:1}.attendance-state.present{color:#72eaa0}.attendance-state.absent{color:#ff9aa3}
 .attendance-foot{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}
-.attendance-foot-note{font-size:10px;color:var(--muted);line-height:1.45}.attendance-record-meta{font-size:10px;color:#aeb8c2;margin-top:4px}
-.attendance-empty{padding:26px;text-align:center;color:var(--muted);font-size:12px}
+.attendance-foot-note{font-size:10px;color:var(--muted);line-height:1.45}.attendance-record-meta{font-size:10px;color:#aeb8c2;margin-top:4px;line-height:1.35}
+.attendance-empty{grid-column:1/-1;padding:26px;text-align:center;color:var(--muted);font-size:12px}
 .teacher-attendance{display:grid;gap:4px;min-width:92px}.teacher-attendance b{font-size:12px}.teacher-attendance span{font-size:9px;color:var(--muted)}
 .teacher-table{min-width:1050px}
 @media(max-width:760px){
   .attendance-head{align-items:stretch;flex-direction:column}.attendance-controls{display:grid;grid-template-columns:1fr}.attendance-controls select,#attendanceSession{width:100%;min-width:0}
-  .attendance-row{grid-template-columns:36px minmax(0,1fr) 74px;padding:11px 13px}.attendance-foot{align-items:stretch;flex-direction:column}.attendance-foot .btn{width:100%;justify-content:center}
+  .attendance-roster{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:11px}.attendance-person-card{min-height:225px;padding:11px 9px}.attendance-avatar{width:80px;height:80px}
+  .attendance-foot{align-items:stretch;flex-direction:column}.attendance-foot .btn{width:100%;justify-content:center}
   .attendance-tools{margin-left:0;width:100%}.attendance-tools .btn{flex:1}
 }
+@media(max-width:390px){.attendance-roster{grid-template-columns:1fr 1fr}.attendance-surname{font-size:11px}.attendance-given{font-size:10px}}
 
 .mobile-nav{
   display:none;position:fixed;z-index:40;left:12px;right:12px;bottom:10px;background:rgba(20,26,34,.96);
@@ -1604,8 +1615,8 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 .profile-close{border:0;background:none;color:#cad2da;font-size:28px;cursor:pointer}
 .profile-layout{display:grid;grid-template-columns:180px 1fr;gap:20px}
 .profile-photo-box{display:flex;flex-direction:column;align-items:center;gap:10px}
-.profile-photo{width:128px;height:128px;border-radius:50%;object-fit:cover;background:#18232e;border:2px solid #3a4754;display:none}
-.profile-photo-placeholder{width:128px;height:128px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#18232e;border:2px solid #3a4754;font-size:34px;font-weight:900;color:#e5ebf0}
+.profile-photo{width:128px;height:128px;border-radius:50%;object-fit:cover;background:#18232e;border:2px solid #3a4754;display:block}
+.profile-photo-placeholder{display:none}
 .profile-photo-actions{display:grid;gap:7px;width:100%}.profile-photo-actions .btn{width:100%}
 .profile-section{border-top:1px solid #28333e;padding-top:16px;margin-top:16px}.profile-section:first-child{border-top:0;padding-top:0;margin-top:0}
 .profile-section h3{margin:0 0 12px;font-size:15px;color:#f0f3f6}
@@ -2195,7 +2206,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.34.0 · Presentismo · Registro y corrección por cronograma</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.35.0 · Presentismo visual · Fotos y perfiles</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2712,10 +2723,34 @@ let ITB_PROFILE=null;
 function profileInitials(user){
   return ((String(user?.nombre||'').trim().charAt(0)||'U')+(String(user?.apellido||'').trim().charAt(0)||'')).toUpperCase();
 }
+function avatarGenderClass(v){
+  const g=String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();
+  if(g==='F'||g.startsWith('FEM')||g.includes('MUJER'))return 'female';
+  if(g==='M'||g.startsWith('MASC')||g.includes('HOMBRE'))return 'male';
+  return 'neutral';
+}
+function defaultAvatarData(gender){
+  const kind=avatarGenderClass(gender);
+  const female=kind==='female';
+  const male=kind==='male';
+  const hair=female
+    ? '<path d="M58 72c0-31 17-46 38-46s38 15 38 46c0 14-4 27-11 35-4-18-13-31-27-31s-23 13-27 31c-7-8-11-21-11-35Z" fill="#56616d"/><circle cx="96" cy="66" r="23" fill="#7d8792"/>'
+    : male
+      ? '<circle cx="96" cy="64" r="25" fill="#7d8792"/><path d="M70 59c3-22 17-31 27-31 15 0 25 9 28 25-13-5-39-4-55 6Z" fill="#56616d"/>'
+      : '<circle cx="96" cy="64" r="25" fill="#7d8792"/>';
+  const shoulders=female
+    ? '<path d="M41 160c4-39 25-60 55-60s51 21 55 60H41Z" fill="#68737f"/><path d="M74 104c6 12 14 18 22 18s16-6 22-18c-4 24-12 37-22 37s-18-13-22-37Z" fill="#7d8792"/>'
+    : '<path d="M35 160c5-38 27-60 61-60s56 22 61 60H35Z" fill="#68737f"/>';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192"><rect width="192" height="192" rx="96" fill="#202a34"/><circle cx="96" cy="96" r="83" fill="#252f39"/>${hair}${shoulders}</svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+}
 function setProfilePhoto(data){
   const img=$('#profilePhoto'), ph=$('#profilePhotoPlaceholder');
-  if(data){img.src=data;img.style.display='block';ph.style.display='none';}
-  else{img.removeAttribute('src');img.style.display='none';ph.style.display='flex';ph.textContent=profileInitials(ITB_PROFILE?.user||ITB_USER);}
+  if(!img)return;
+  const gender=ITB_PROFILE?.profile?.genero||ITB_PROFILE?.user?.genero||ITB_USER?.genero||'';
+  img.src=data||defaultAvatarData(gender);
+  img.style.display='block';
+  if(ph)ph.style.display='none';
 }
 async function openProfile(){
   const s=getSession(); if(!s?.token){openLogin();return;}
@@ -4153,7 +4188,15 @@ function renderAttendance(){
     if($('#attendanceSummary'))$('#attendanceSummary').innerHTML='';if($('#attendanceRecordMeta'))$('#attendanceRecordMeta').textContent='';if(save)save.disabled=true;return;
   }
   if(meta)meta.innerHTML=`<div><div class="kicker">${esc(s.tipo||s.modalidad||'Clase')}</div><h3>${esc(s.titulo||'Clase')}</h3><p>${esc(attendanceFmtDate(s.fecha))} · ${esc(s.hora||'--:--')} h${s.modalidad?' · '+esc(s.modalidad):''}</p></div><span class="attendance-badge ${d.registered?'saved':'pending'}">${d.registered?'✓ Registrado':'Pendiente de registrar'}</span>`;
-  if(roster)roster.innerHTML=d.students.length?d.students.map(st=>`<label class="attendance-row" data-student="${esc(st.alumno_id)}"><input class="attendance-check" type="checkbox" ${st.presente?'checked':''} onchange="attendanceChanged()"><span class="attendance-name"><b>${esc(st.apellido||'')}${st.apellido&&st.nombre?', ':''}${esc(st.nombre||'')}</b><span>${esc(st.usuario||st.alumno_id||'')}</span></span><span class="attendance-state ${st.presente?'present':'absent'}">${st.presente?'PRESENTE':'AUSENTE'}</span></label>`).join(''):'<div class="attendance-empty">No hay alumnos activos en la nómina para esta fecha.</div>';
+  if(roster)roster.innerHTML=d.students.length?d.students.map(st=>{
+    const avatar=st.foto_data||defaultAvatarData(st.genero);
+    return `<label class="attendance-person-card ${st.presente?'present':'absent'}" data-student="${esc(st.alumno_id)}">
+      <input class="attendance-check" type="checkbox" ${st.presente?'checked':''} onchange="attendanceChanged()">
+      <img class="attendance-avatar" src="${esc(avatar)}" alt="Perfil de ${esc((st.apellido||'')+' '+(st.nombre||''))}">
+      <div class="attendance-person-name"><div class="attendance-surname">${esc(st.apellido||'')}</div><div class="attendance-given">${esc(st.nombre||'')}</div><div class="attendance-user">${esc(st.usuario||st.alumno_id||'')}</div></div>
+      <div class="attendance-state ${st.presente?'present':'absent'}">${st.presente?'PRESENTE':'AUSENTE'}</div>
+    </label>`;
+  }).join(''):'<div class="attendance-empty">No hay alumnos activos en la nómina para esta fecha.</div>';
   const rm=d.record_meta;
   if($('#attendanceRecordMeta'))$('#attendanceRecordMeta').textContent=rm?(d.registered?`Registrado por ${rm.registrado_por||'—'}${rm.registrado_en?' · '+attendanceDateTime(rm.registrado_en):''}${Number(rm.revision_nro||1)>1?` · revisión ${rm.revision_nro}`:''}`:''):'';
   if(save){save.disabled=!d.students.length;save.textContent=d.registered?'Guardar corrección':'Registrar presentismo';}
@@ -4164,7 +4207,7 @@ function attendanceChanged(updateState=true){
   let present=0;
   checks.forEach(ch=>{
     if(ch.checked)present++;
-    if(updateState){const row=ch.closest('.attendance-row'),state=row?.querySelector('.attendance-state');if(state){state.textContent=ch.checked?'PRESENTE':'AUSENTE';state.className='attendance-state '+(ch.checked?'present':'absent');}}
+    if(updateState){const row=ch.closest('.attendance-person-card'),state=row?.querySelector('.attendance-state');if(row){row.classList.toggle('present',ch.checked);row.classList.toggle('absent',!ch.checked);}if(state){state.textContent=ch.checked?'PRESENTE':'AUSENTE';state.className='attendance-state '+(ch.checked?'present':'absent');}}
   });
   const absent=checks.length-present;
   const sum=$('#attendanceSummary');if(sum)sum.innerHTML=`<span class="attendance-chip"><b>${checks.length}</b> alumnos</span><span class="attendance-chip"><b>${present}</b> presentes</span><span class="attendance-chip"><b>${absent}</b> ausentes</span><div class="attendance-tools"><button class="btn ghost" onclick="event.preventDefault();attendanceMarkAllPresent()">Marcar todos presentes</button></div>`;
@@ -4173,7 +4216,7 @@ function attendanceMarkAllPresent(){document.querySelectorAll('#attendanceRoster
 async function saveAttendance(){
   const d=ATTENDANCE_DATA,s=d.session;if(!s||!d.students.length)return;
   const ausentes=[];
-  document.querySelectorAll('#attendanceRoster .attendance-row').forEach(row=>{const ch=row.querySelector('.attendance-check');if(ch&&!ch.checked)ausentes.push(String(row.dataset.student||''));});
+  document.querySelectorAll('#attendanceRoster .attendance-person-card').forEach(row=>{const ch=row.querySelector('.attendance-check');if(ch&&!ch.checked)ausentes.push(String(row.dataset.student||''));});
   const presentes=d.students.length-ausentes.length;
   const action=d.registered?'corregir':'registrar';
   if(!confirm(`${d.registered?'CORREGIR':'REGISTRAR'} presentismo del ${attendanceFmtDate(s.fecha)}?\n\nPresentes: ${presentes}\nAusentes: ${ausentes.length}\n\n${d.registered?'Esta acción reemplazará el estado vigente de los alumnos que figuran en la nómina.':'Recién al confirmar se guardará el registro.'}`))return;
@@ -6208,12 +6251,11 @@ boot();
     <div class="profile-layout">
       <aside class="profile-photo-box">
         <img id="profilePhoto" class="profile-photo" alt="Foto de perfil">
-        <div id="profilePhotoPlaceholder" class="profile-photo-placeholder">U</div>
         <div class="profile-photo-actions">
           <label class="btn ghost" style="cursor:pointer;text-align:center">Cambiar foto<input type="file" accept="image/*" style="display:none" onchange="selectProfilePhoto(this)"></label>
           <button class="btn ghost" onclick="deleteProfilePhoto()">Quitar foto</button>
         </div>
-        <div class="profile-note">La imagen se recorta y comprime antes de enviarse.</div>
+        <div class="profile-note">Si no cargás una foto, se mostrará automáticamente la silueta de perfil correspondiente.</div>
       </aside>
       <div>
         <section class="profile-section"><h3>Identidad</h3><div class="profile-grid">
