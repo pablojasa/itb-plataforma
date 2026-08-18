@@ -1208,6 +1208,54 @@ body.app-loading .guest-loading{display:grid}
   position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(5,8,11,.02),rgba(5,8,11,.20));
 }
+
+/* ===== v0.31.0 · Unidades bloqueadas por cronograma ===== */
+.card.unit-locked{
+  cursor:not-allowed;
+  background:#171b20;
+  border-color:#2a3037;
+  box-shadow:none;
+}
+.card.unit-locked:hover{
+  transform:none;
+  border-color:#343b43;
+}
+.card.unit-locked .course-unit-cover,
+.card.unit-locked .card-img{
+  filter:grayscale(1) saturate(0) brightness(.56);
+  opacity:.72;
+}
+.card.unit-locked .course-unit-cover:after,
+.card.unit-locked .card-img:after{
+  background:rgba(10,13,17,.48);
+}
+.card.unit-locked .course-unit-num{
+  background:#252a30!important;
+  color:#7e8791!important;
+  border-color:#343b43!important;
+}
+.card.unit-locked .eyebrow,
+.card.unit-locked h3,
+.card.unit-locked .meta,
+.card.unit-locked .unit-progress-badge{
+  color:#818a94!important;
+}
+.card.unit-locked .meta{opacity:.68}
+.unit-lock-note{
+  margin-top:11px;
+  display:flex;
+  align-items:flex-start;
+  gap:7px;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid #323941;
+  background:#20252b;
+  color:#a7afb8;
+  font-size:10px;
+  line-height:1.35;
+  font-weight:750;
+}
+.unit-lock-note .lock-icon{font-size:13px;line-height:1.1}
 #course .course-grid .card{overflow:hidden}
 #course .course-grid .card .card-body{padding-top:12px}
 
@@ -2017,12 +2065,12 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.30.0 · Perfil de usuario · Seguridad · Recuperación de PIN</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.31.0 · Unidades por cronograma · Habilitación automática</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
   units:[], classes:[], videos:[], library:[], staff:[], downloads:[],
-  news:[], schedule:[], contentByUnit:{},
+  news:[], schedule:[], contentByUnit:{}, unitAccess:{},
   general:{courseTitle:'Curso de Instructores de Tiro en Armas Cortas y Largas (ITB)',brand:'TED',unitCount:0,videoCount:0,bookCount:0},
   config:{}
 };
@@ -2047,8 +2095,49 @@ function setPage(id){
 }
 $$('[data-page]').forEach(b=>b.addEventListener('click',()=>setPage(b.dataset.page)));
 
+function unitAccessInfo(uid){
+  const role=String(ITB_USER?.rol||'').toUpperCase();
+  if(['DOCENTE','ADMIN'].includes(role)){
+    return {unlocked:true,locked:false,staff_override:true,counts:null};
+  }
+  const info=DB.unitAccess?.[String(uid)];
+  // Compatibilidad segura durante despliegues escalonados: si todavía no llegó
+  // unit_access desde el backend anterior, no bloqueamos artificialmente.
+  return info || {unlocked:true,locked:false,counts:null};
+}
+function unitIsLocked(uid){
+  return String(ITB_USER?.rol||'').toUpperCase()==='ALUMNO'
+    && unitAccessInfo(uid).unlocked===false;
+}
+function formatUnitUnlockText(uid){
+  const info=unitAccessInfo(uid);
+  const fecha=String(info.unlock_date||'').slice(0,10);
+  const hora=String(info.unlock_time||'').slice(0,5);
+  if(!fecha) return 'Fecha de habilitación a confirmar';
+  const p=fecha.split('-');
+  let shown=fecha;
+  if(p.length===3){
+    const d=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));
+    if(!Number.isNaN(d.getTime())){
+      shown=new Intl.DateTimeFormat('es-AR',{day:'numeric',month:'long',year:'numeric'}).format(d);
+    }
+  }
+  return `Disponible el ${shown}${hora?` a las ${hora} h`:''}`;
+}
+function lockedUnitNotice(uid){
+  if(typeof showITBToast==='function') showITBToast('🔒 '+formatUnitUnlockText(uid));
+}
 function unitCounts(uid){
   const c=DB.contentByUnit[uid] || {};
+  const access=unitAccessInfo(uid);
+  if(access?.counts){
+    return {
+      docs:Number(access.counts.docs||0),
+      videos:Number(access.counts.videos||0),
+      games:Number(access.counts.games||0),
+      tests:Number(access.counts.tests||0)
+    };
+  }
   return {
     docs:(c.cartillas||[]).length, videos:(c.videos||[]).length,
     games:(c.juegos||[]).length, tests:(c.autoevaluaciones||[]).length
@@ -2163,13 +2252,19 @@ function renderUnits(filter=''){
   const q=filter.trim().toLowerCase();
   DB.units.filter(u=>!q || String(u.titulo).toLowerCase().includes(q) || String(u.numero).includes(q)).forEach(u=>{
     const c=unitCounts(u.id);
-    const el=document.createElement('article'); el.className='card'; el.onclick=()=>openUnit(u.id);
+    const locked=unitIsLocked(u.id);
+    const el=document.createElement('article');
+    el.className='card'+(locked?' unit-locked':'');
+    el.onclick=locked ? ()=>lockedUnitNotice(u.id) : ()=>openUnit(u.id);
     const pi=typeof unitProgressInfo==='function' ? unitProgressInfo(u.id) : {total:0,completed:0,percent:0};
-    const progressHtml=ITB_USER ? `
+    const progressHtml=ITB_USER && !locked ? `
         <div class="unit-progress-badge ${pi.total>0&&pi.percent===100?'done':''}">
           ${pi.total ? (pi.percent===100?'✓ Unidad completada':`${pi.percent}% completado`) : 'Sin recursos evaluables'}
         </div>
         ${pi.total?`<div class="unit-progress-mini"><span style="width:${pi.percent}%"></span></div>`:''}` : '';
+    const lockHtml=locked
+      ? `<div class="unit-lock-note"><span class="lock-icon">🔒</span><span>${esc(formatUnitUnlockText(u.id))}</span></div>`
+      : '';
 
     if(target.id==='unitsGrid'){
       const unitImg=unitImageAsset(u);
@@ -2183,6 +2278,7 @@ function renderUnits(filter=''){
               <h3>${esc(u.titulo)}</h3>
               <div class="meta"><span>📄 ${c.docs}</span><span>▶ ${c.videos}</span><span>🎯 ${c.games}</span><span>✓ ${c.tests}</span></div>
               ${progressHtml}
+              ${lockHtml}
             </div>
           </div>
         </div>`;
@@ -2194,11 +2290,13 @@ function renderUnits(filter=''){
           <h3>${esc(u.titulo)}</h3>
           <div class="meta"><span>📄 ${c.docs}</span><span>▶ ${c.videos}</span><span>🎯 ${c.games}</span><span>✓ ${c.tests}</span></div>
           ${progressHtml}
+          ${lockHtml}
         </div>`;
     }
     target.appendChild(el);
   });
 }
+
 $('#unitSearch').addEventListener('input',e=>renderUnits(e.target.value));
 
 function resourceCard(x,type){
@@ -2591,6 +2689,7 @@ async function confirmPinReset(){
 window.openPinReset=openPinReset;window.closePinReset=closePinReset;window.pinResetBackdrop=pinResetBackdrop;window.requestPinReset=requestPinReset;window.confirmPinReset=confirmPinReset;
 
 function logoutStudent(){
+  clearUnitUnlockTimer();
   ITB_USER=null;
   ITB_PROGRESS=[];
   ITB_QUIZ_STATUS={};
@@ -2651,6 +2750,7 @@ function progressRecord(unitId,type,resourceId){
   return ITB_PROGRESS.find(p=>String(p.unidad_id)===String(unitId)&&String(p.tipo)===String(type)&&String(p.recurso_id)===String(resourceId)&&String(p.estado)==='COMPLETADO');
 }
 async function markProgress(unitId,type,resourceId){
+  if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return;}
   const s=getSession();
   if(!s?.token){openLogin();return;}
   try{
@@ -2661,6 +2761,7 @@ async function markProgress(unitId,type,resourceId){
 }
 
 async function markProgressSilent(unitId,type,resourceId){
+  if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return false;}
   const session=getSession();
   if(!session?.token){
     console.warn('Progreso no registrado: no hay sesión de alumno.');
@@ -2692,6 +2793,7 @@ function showITBToast(text){
   window.__itbToastTimer=setTimeout(()=>t.classList.remove('show'),2200);
 }
 async function openTrackedDoc(url,title,unitId,resourceId){
+  if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return;}
   const already=!!progressRecord(unitId,'MATERIAL',resourceId);
   if(!already && getSession()?.token){
     const ok=await markProgressSilent(unitId,'MATERIAL',resourceId);
@@ -2701,6 +2803,7 @@ async function openTrackedDoc(url,title,unitId,resourceId){
   if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
 }
 async function openTrackedActivity(url,unitId,resourceId){
+  if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return;}
   const already=!!progressRecord(unitId,'ACTIVIDAD',resourceId);
   if(!already && getSession()?.token){
     const ok=await markProgressSilent(unitId,'ACTIVIDAD',resourceId);
@@ -2729,6 +2832,7 @@ function loadYouTubeAPI(){
   });
 }
 async function openTrackedVideo(url,title,unitId,resourceId){
+  if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return;}
   const id=extractYouTubeId(url);
 
   // Google Drive no expone el avance de reproducción al sitio contenedor.
@@ -4280,18 +4384,29 @@ function unitTrackables(uid){
   ].filter(x=>x.id);
 }
 function unitProgressInfo(uid){
+  const locked=unitIsLocked(uid);
   const items=unitTrackables(uid);
   let completed=items.filter(x=>progressRecord(uid,x.type,x.id)).length;
   let total=items.length;
 
   const qs=ITB_QUIZ_STATUS?.[uid];
+
+  // Para una unidad bloqueada el backend no entrega sus enlaces/recursos.
+  // Usamos únicamente los conteos seguros para que el progreso general conserve
+  // como denominador la totalidad real del curso.
+  if(locked){
+    const counts=unitAccessInfo(uid)?.counts||{};
+    total=Number(counts.docs||0)+Number(counts.videos||0)+Number(counts.games||0);
+    completed=0;
+  }
+
   if(qs?.available){
     total+=1;
-    if(qs.approved) completed+=1;
+    if(!locked && qs.approved) completed+=1;
   }
 
   const percent=ITB_USER && total ? Math.round(completed/total*100) : 0;
-  return {total,completed,percent};
+  return {total,completed,percent,locked};
 }
 function courseProgressInfo(){
   const units=(DB.units||DB.unidades||[]);
@@ -4299,9 +4414,9 @@ function courseProgressInfo(){
   const total=trackables.reduce((n,x)=>n+x.info.total,0);
   const completed=trackables.reduce((n,x)=>n+x.info.completed,0);
   const percent=ITB_USER && total ? Math.round(completed/total*100) : 0;
-  const completedUnits=trackables.filter(x=>x.info.total>0&&x.info.percent===100).length;
-  const active=trackables.find(x=>x.info.total>0&&x.info.percent<100&&x.info.completed>0)
-    || trackables.find(x=>x.info.total>0&&x.info.percent<100)
+  const completedUnits=trackables.filter(x=>x.info.total>0&&!x.info.locked&&x.info.percent===100).length;
+  const active=trackables.find(x=>!x.info.locked&&x.info.total>0&&x.info.percent<100&&x.info.completed>0)
+    || trackables.find(x=>!x.info.locked&&x.info.total>0&&x.info.percent<100)
     || null;
   const last=ITB_PROGRESS.slice().sort((a,b)=>{
     const da=new Date(a.fecha_actualizacion||0), db=new Date(b.fecha_actualizacion||0);
@@ -4309,6 +4424,7 @@ function courseProgressInfo(){
   })[0]||null;
   return {total,completed,percent,completedUnits,unitCount:trackables.filter(x=>x.info.total>0).length,active,last};
 }
+
 function renderCourseProgressCard(){
   const old=$('#courseProgressCard'); if(old) old.remove();
   const home=$('#home'); if(!home) return;
@@ -4423,6 +4539,7 @@ function renderNativeQuizBox(uid,auto){
 }
 
 async function startQuiz(unitId){
+  if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return;}
   const session=getSession();
   if(!session?.token){openLogin();return;}
 
@@ -4586,6 +4703,11 @@ window.closeQuiz=closeQuiz;
 window.quizBackdrop=quizBackdrop;
 
 function openUnit(uid){
+  if(unitIsLocked(uid)){
+    lockedUnitNotice(uid);
+    setPage('course');
+    return;
+  }
   window.__currentUnitId=uid;
   const u=DB.units.find(x=>x.id===uid); if(!u)return;
   const c=DB.contentByUnit[uid] || {cartillas:[],videos:[],juegos:[],autoevaluaciones:[]};
@@ -4960,10 +5082,12 @@ function renderHome(){
   const featured=DB.units.slice(0,6);
   $('#featuredUnits').innerHTML=featured.map(u=>{
     const c=unitCounts(u.id);
-    return `<article class="card" onclick="openUnit('${u.id}')">
+    const locked=unitIsLocked(u.id);
+    return `<article class="card${locked?' unit-locked':''}" onclick="${locked?`lockedUnitNotice('${esc(u.id)}')`:`openUnit('${esc(u.id)}')`}">
       ${unitImageAsset(u)?`<div class="card-img" ${imgStyle(unitImageAsset(u))}></div>`:`<div class="empty-cover">${esc(u.numero)}</div>`}
       <div class="card-body"><div class="eyebrow">Unidad ${String(u.numero).padStart(2,'0')}</div><h3>${esc(u.titulo)}</h3>
-      <div class="meta"><span>📄 ${c.docs}</span><span>▶ ${c.videos}</span><span>🎯 ${c.games}</span><span>✓ ${c.tests}</span></div></div></article>`;
+      <div class="meta"><span>📄 ${c.docs}</span><span>▶ ${c.videos}</span><span>🎯 ${c.games}</span><span>✓ ${c.tests}</span></div>
+      ${locked?`<div class="unit-lock-note"><span class="lock-icon">🔒</span><span>${esc(formatUnitUnlockText(u.id))}</span></div>`:''}</div></article>`;
   }).join('');
   renderNextActivity();
 }
@@ -5285,6 +5409,57 @@ window.openNews=openNews;
 window.openUnit=openUnit;
 window.setPage=setPage;
 
+
+let UNIT_UNLOCK_TIMER=null;
+let UNIT_UNLOCK_REFRESHING=false;
+
+function clearUnitUnlockTimer(){
+  if(UNIT_UNLOCK_TIMER){clearTimeout(UNIT_UNLOCK_TIMER);UNIT_UNLOCK_TIMER=null;}
+}
+function nextPendingUnitUnlock(){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO') return null;
+  const now=Date.now();
+  return Object.entries(DB.unitAccess||{})
+    .map(([uid,info])=>({uid,info,ts:info?.unlock_at?new Date(info.unlock_at).getTime():NaN}))
+    .filter(x=>x.info?.unlocked===false && Number.isFinite(x.ts) && x.ts>now)
+    .sort((a,b)=>a.ts-b.ts)[0]||null;
+}
+async function refreshUnitAccessAtSchedule(){
+  if(UNIT_UNLOCK_REFRESHING)return;
+  const s=getSession(); if(!s?.token)return;
+  UNIT_UNLOCK_REFRESHING=true;
+  try{
+    const r=await retryTransient(()=>apiJsonp({action:'sessionInit',token:s.token}),2,650);
+    if(r?.must_change_pin){
+      localStorage.removeItem('itb_session');
+      openMandatoryPinChange(r);
+      return;
+    }
+    applyInitResponse(r,false);
+    renderApp();
+    refreshCourseProgressUI();
+    if(window.__currentUnitId && !unitIsLocked(window.__currentUnitId)) openUnit(window.__currentUnitId);
+    if(typeof showITBToast==='function') showITBToast('Nueva unidad habilitada según el cronograma.');
+  }catch(e){
+    console.warn('No se pudo refrescar la habilitación automática.',e);
+  }finally{
+    UNIT_UNLOCK_REFRESHING=false;
+    scheduleNextUnitUnlockRefresh();
+  }
+}
+function scheduleNextUnitUnlockRefresh(){
+  clearUnitUnlockTimer();
+  const next=nextPendingUnitUnlock();
+  if(!next)return;
+  const remaining=next.ts-Date.now();
+  // setTimeout tiene límites prácticos; si falta mucho, reprogramamos cada 6 h.
+  const delay=Math.max(500,Math.min(remaining+700,6*60*60*1000));
+  UNIT_UNLOCK_TIMER=setTimeout(()=>{
+    if(Date.now()+250>=next.ts) refreshUnitAccessAtSchedule();
+    else scheduleNextUnitUnlockRefresh();
+  },delay);
+}
+
 function applyBootstrapPayload(remote){
   if(!remote || remote.ok===false){
     throw new Error(remote?.error || 'Respuesta inválida del backend');
@@ -5300,10 +5475,12 @@ function applyBootstrapPayload(remote){
     news: remote.noticias || [],
     schedule: remote.cronograma || [],
     contentByUnit: remote.contentByUnit || {},
+    unitAccess: remote.unit_access || {},
     general: remote.general || DB.general,
     config: remote.config || {}
   };
   applyRemoteConfig();
+  scheduleNextUnitUnlockRefresh();
 }
 
 function applyInitResponse(r,storeToken=true){
@@ -5401,7 +5578,7 @@ async function loadPublicLanding(){
 function resetPrivateDB(){
   DB={
     units:[],classes:[],videos:[],library:[],staff:[],downloads:[],
-    news:[],schedule:[],contentByUnit:{},
+    news:[],schedule:[],contentByUnit:{},unitAccess:{},
     general:{courseTitle:'Curso de Instructores de Tiro en Armas Cortas y Largas (ITB)',brand:'TED',unitCount:0,videoCount:0,bookCount:0},
     config:{}
   };
