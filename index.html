@@ -2440,7 +2440,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.39.5 · Panel Docente · Rendimiento optimizado · Horarios corregidos</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.39.6 · Acceso rápido · Panel Docente · Horarios corregidos</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2449,6 +2449,9 @@ let DB = {
   general:{courseTitle:'Curso de Instructores de Tiro en Armas Cortas y Largas (ITB)',brand:'TED',unitCount:0,videoCount:0,bookCount:0},
   config:{}
 };
+let ITB_PRIVATE_DATA_READY=false;
+let ITB_HYDRATE_PROMISE=null;
+
 const $ = s => document.querySelector(s);
 DB.schedule = DB.schedule || [];
 const $$ = s => [...document.querySelectorAll(s)];
@@ -2939,20 +2942,22 @@ async function loginStudent(){
   $('#loginError').textContent='Validando…';
   try{
     const pin_hash=await sha256(pin);
-    const r=await retryTransient(()=>apiJsonp({action:'loginInit',alumno_id,pin_hash}),2,650);
+    const r=await retryTransient(()=>apiJsonp({action:'login',alumno_id,pin_hash}),2,650);
     if(r?.must_change_pin){
       $('#loginPin').value='';
       openMandatoryPinChange(r);
       return;
     }
+    ITB_PRIVATE_DATA_READY=false;
     applyInitResponse(r,true);
+    resetPrivateDB();
     $('#loginModal').classList.remove('open');
     refreshUserUI();
     applyRoleUI();
     renderApp();
     refreshCourseProgressUI();
     showPrivateApp();
-    if(document.querySelector('#unitDetail.active')&&window.__currentUnitId) openUnit(window.__currentUnitId);
+    hydratePrivateSession(r.token,false).catch(()=>{});
   }catch(e){ $('#loginError').textContent=e.message||'No se pudo iniciar sesión.'; }
 }
 
@@ -3124,6 +3129,8 @@ async function confirmPinReset(){
 window.openPinReset=openPinReset;window.closePinReset=closePinReset;window.pinResetBackdrop=pinResetBackdrop;window.requestPinReset=requestPinReset;window.confirmPinReset=confirmPinReset;
 
 function logoutStudent(){
+  ITB_PRIVATE_DATA_READY=false;
+  ITB_HYDRATE_PROMISE=null;
   clearUnitUnlockTimer();
   ITB_USER=null;
   ITB_PROFILE=null;
@@ -3173,7 +3180,7 @@ function refreshUserUI(){
       avatar.style.display='block';
     }
     // La fotografía real se consulta en segundo plano; nunca demora el ingreso.
-    Promise.resolve().then(()=>refreshHeaderProfileAsync(false)).catch(()=>{});
+    if(ITB_PRIVATE_DATA_READY) Promise.resolve().then(()=>refreshHeaderProfileAsync(false)).catch(()=>{});
   }else{
     label.textContent='Invitado';
     if(avatar){avatar.removeAttribute('src');avatar.style.display='none';}
@@ -4624,17 +4631,21 @@ function applyRoleUI(){
   document.body.classList.toggle('teacher-mode',canTeacher);
   document.body.classList.toggle('admin-mode',isAdmin);
   document.body.classList.toggle('student-mode',role==='ALUMNO');
-  if(ITB_USER)startChatUnreadPolling();
+
+  // v0.39.6 · Durante la fase rápida de autenticación sólo configuramos la UI.
+  // Chat, alertas, perfil y revisiones comienzan cuando terminó de llegar el contenido
+  // privado, para no lanzar varias consultas concurrentes contra Apps Script.
+  if(ITB_USER && ITB_PRIVATE_DATA_READY)startChatUnreadPolling();
   else{stopChatUnreadPolling();applyChatUnreadState({has_unread:false,unread_cohorts:[]});}
-  if(ITB_USER && String(role)==='ALUMNO')startAlertPolling();
+  if(ITB_USER && ITB_PRIVATE_DATA_READY && role==='ALUMNO')startAlertPolling();
   else{stopAlertPolling();setAlertAppBadge(0);}
-  if(ITB_USER && isAdmin)scheduleAdminAttendanceReviewNotice();
+  if(ITB_USER && ITB_PRIVATE_DATA_READY && isAdmin)scheduleAdminAttendanceReviewNotice();
   else{
     if(ADMIN_ATT_REVIEW_NOTICE_TIMER){clearTimeout(ADMIN_ATT_REVIEW_NOTICE_TIMER);ADMIN_ATT_REVIEW_NOTICE_TIMER=null;}
     ADMIN_ATT_REVIEW_NOTICE_CHECKED=false;ADMIN_ATT_REVIEW_NOTICE_DATA=null;
     closeAdminAttendanceReviewNotice();
   }
-  syncNotificationOptIn();
+  if(ITB_PRIVATE_DATA_READY)syncNotificationOptIn();
 }
 
 function teacherStudentMetrics(student){
@@ -6610,6 +6621,56 @@ function applyInitResponse(r,storeToken=true){
   if(r.bootstrap) applyBootstrapPayload(r.bootstrap);
 }
 
+function privateHydrationFatal_(err){
+  const msg=String(err?.message||err||'');
+  return /Token inv[aá]lido|token vencido|sesión vencida|Alumno no encontrado|Alumno no habilitado|Usuario no habilitado/i.test(msg);
+}
+
+function hydratePrivateSession(token,logoutOnAuthFail=false){
+  const t=String(token||'').trim();
+  if(!t)return Promise.reject(new Error('Sesión requerida.'));
+  if(ITB_HYDRATE_PROMISE)return ITB_HYDRATE_PROMISE;
+  const status=$('#dataStatus');
+  if(status){status.textContent='Sesión iniciada · cargando contenido…';status.classList.remove('online');}
+
+  // Una sola llamada completa y SIN reintentos automáticos de 30 s. El ingreso ya
+  // ocurrió: si Sheets está lento, la interfaz permanece disponible y puede reintentarse.
+  ITB_HYDRATE_PROMISE=apiJsonp({action:'sessionInit',token:t},45000)
+    .then(init=>{
+      if(init?.must_change_pin){
+        localStorage.removeItem('itb_session');
+        ITB_PRIVATE_DATA_READY=false;
+        resetPrivateDB(); ITB_USER=null; ITB_PROGRESS=[]; ITB_QUIZ_STATUS={};
+        refreshUserUI();applyRoleUI();showGuestGate();openMandatoryPinChange(init);
+        return init;
+      }
+      applyInitResponse(init,false);
+      ITB_PRIVATE_DATA_READY=true;
+      if(status){status.textContent='Datos conectados a Google Sheets';status.classList.add('online');}
+      refreshUserUI();
+      applyRoleUI();
+      renderApp();
+      refreshCourseProgressUI();
+      return init;
+    })
+    .catch(err=>{
+      console.warn('No se pudo completar la carga privada.',err);
+      ITB_PRIVATE_DATA_READY=false;
+      applyRoleUI();
+      if(status){status.textContent='Sesión iniciada · contenido pendiente';status.classList.remove('online');}
+      if(logoutOnAuthFail && privateHydrationFatal_(err)){
+        localStorage.removeItem('itb_session');
+        ITB_USER=null;ITB_PROGRESS=[];ITB_QUIZ_STATUS={};resetPrivateDB();
+        refreshUserUI();applyRoleUI();showGuestGate();
+      }else{
+        showITBToast('La sesión inició, pero Google Sheets demoró la carga. Podés usar los paneles y reintentar luego.');
+      }
+      throw err;
+    })
+    .finally(()=>{ITB_HYDRATE_PROMISE=null;});
+  return ITB_HYDRATE_PROMISE;
+}
+
 function loadRemoteData(){
   const api=(window.ITB_API_URL||'').trim();
   if(!api) return Promise.resolve({remote:false});
@@ -6731,20 +6792,19 @@ async function loginFromGate(){
 
   try{
     const pin_hash=await sha256(pin);
-    const r=await retryTransient(()=>apiJsonp({action:'loginInit',alumno_id,pin_hash}),2,650);
+    const r=await retryTransient(()=>apiJsonp({action:'login',alumno_id,pin_hash}),2,650);
     if(r?.must_change_pin){
       if($('#guestPin')) $('#guestPin').value='';
       if(err) err.textContent='';
       openMandatoryPinChange(r);
       return;
     }
+    ITB_PRIVATE_DATA_READY=false;
     applyInitResponse(r,true);
+    resetPrivateDB();
 
     const status=$('#dataStatus');
-    if(status){
-      status.textContent='Datos conectados a Google Sheets';
-      status.classList.add('online');
-    }
+    if(status){status.textContent='Sesión iniciada · cargando contenido…';status.classList.remove('online');}
 
     refreshUserUI();
     applyRoleUI();
@@ -6754,6 +6814,7 @@ async function loginFromGate(){
 
     if($('#guestPin')) $('#guestPin').value='';
     if(err) err.textContent='';
+    hydratePrivateSession(r.token,false).catch(()=>{});
   }catch(e){
     ITB_USER=null; ITB_PROGRESS=[]; ITB_QUIZ_STATUS={};
     localStorage.removeItem('itb_session');
@@ -6836,44 +6897,29 @@ async function boot(){
   }
 
   try{
+    // v0.39.6 · Una sesión guardada abre inmediatamente el contenedor privado, pero
+    // con DB vacía. Ningún contenido protegido se reutiliza sin revalidación.
+    ITB_PRIVATE_DATA_READY=false;
     ITB_USER=saved.user||null;
-
-    // v0.25.3: revalidación, progreso y contenido en una sola llamada.
-    const init=await retryTransient(()=>apiJsonp({action:'sessionInit',token:saved.token}),2,700);
-    if(init?.must_change_pin){
-      localStorage.removeItem('itb_session');
-      resetPrivateDB();
-      ITB_USER=null;ITB_PROGRESS=[];ITB_QUIZ_STATUS={};
-      refreshUserUI(); applyRoleUI(); showGuestGate();
-      openMandatoryPinChange(init);
-      return;
-    }
-    applyInitResponse(init,false);
-    if(!ITB_USER) throw new Error('Sesión vencida');
-
-    if(status){
-      status.textContent='Datos conectados a Google Sheets';
-      status.classList.add('online');
-    }
-
+    ITB_PROGRESS=[];ITB_QUIZ_STATUS={};
+    resetPrivateDB();
+    if(!ITB_USER)throw new Error('Sesión incompleta');
+    if(status){status.textContent='Revalidando sesión · cargando contenido…';status.classList.remove('online');}
     refreshUserUI();
     applyRoleUI();
     renderApp();
     refreshCourseProgressUI();
     showPrivateApp();
+    hydratePrivateSession(saved.token,true).catch(()=>{});
   }catch(err){
-    console.warn('Sesión no válida o backend no disponible.',err);
+    console.warn('Sesión guardada incompleta.',err);
+    ITB_PRIVATE_DATA_READY=false;
     ITB_USER=null;ITB_PROGRESS=[];ITB_QUIZ_STATUS={};
     localStorage.removeItem('itb_session');
     resetPrivateDB();
-    refreshUserUI();
-    applyRoleUI();
-    showGuestGate();
+    refreshUserUI();applyRoleUI();showGuestGate();
     await loadPublicLanding();
-    if(status){
-      status.textContent='Acceso restringido';
-      status.classList.remove('online');
-    }
+    if(status){status.textContent='Acceso restringido';status.classList.remove('online');}
   }finally{
     document.body.classList.remove('app-loading');
     finishLaunchSplash(false);
