@@ -869,6 +869,26 @@ body.teacher-mode .teacher-only,body.admin-mode .teacher-only{display:inline-fle
 }
 @media(max-width:520px){#teacherPage .teacher-controls{grid-template-columns:1fr}}
 .teacher-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.teacher-shirt-card{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 14px
+}
+.teacher-shirt-main{min-width:220px}
+.teacher-shirt-main h3{margin:0 0 4px;font-size:13px}
+.teacher-shirt-main p{margin:0;color:var(--muted);font-size:10px}
+.teacher-shirt-chips{display:flex;gap:7px;flex-wrap:wrap;flex:1;align-items:center}
+.teacher-shirt-chip{
+  display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;
+  background:#111923;padding:6px 9px;font-size:10px;color:#dbe5ef
+}
+.teacher-shirt-chip b{font-size:12px}
+.teacher-shirt-chip.missing{border-color:#694f24;background:#251c0d;color:#efc875}
+.teacher-shirt-actions{display:flex;align-items:center;gap:8px}
+@media(max-width:720px){
+  .teacher-shirt-card{align-items:flex-start}
+  .teacher-shirt-actions{width:100%}
+  .teacher-shirt-actions .btn{width:100%}
+}
 .teacher-kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
 .teacher-kpi b{display:block;font-size:22px;margin-bottom:3px}.teacher-kpi span{font-size:10px;color:var(--muted)}
 .teacher-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:15px;background:var(--panel)}
@@ -1701,7 +1721,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 @media(max-width:700px){.profile-layout{grid-template-columns:1fr}.profile-photo-box{padding-bottom:10px}.profile-grid,.profile-security{grid-template-columns:1fr}.profile-field.full,.profile-security .full{grid-column:auto}.profile-card{padding:16px}.user-pill #profileBtn{padding-left:0;padding-right:0}}
 
 
-/* ===== v0.39.0 · Preimpresión + cierre académico + certificación QR ===== */
+/* ===== v0.39.2 · Talles de remera + curva por cohorte · v0.39.0 certificación ===== */
 .cert-academic{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;border:1px solid var(--line);font-size:9px;font-weight:900;white-space:nowrap}
 .cert-academic.approved{color:#8fe2ad;border-color:#285a3c;background:#14251b}.cert-academic.failed{color:#ffacb4;border-color:#74343b;background:#2d171b}.cert-academic.pending{color:#ffd889;border-color:#695522;background:#2b2415}.cert-academic.none{color:#adb6c0;background:#20262d}
 .student-cert-btn{border:1px solid #34556f;background:#162738;color:#a9d5ff;border-radius:9px;padding:7px 9px;font-size:10px;font-weight:850;cursor:pointer;white-space:nowrap}.student-cert-btn:hover{background:#1a3146}.student-cert-btn:disabled{opacity:.45;cursor:not-allowed}
@@ -2034,6 +2054,16 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 
   <div id="teacherKpis" class="teacher-kpis"></div>
+  <div id="teacherShirtCurve" class="teacher-shirt-card">
+    <div class="teacher-shirt-main">
+      <h3>Curva de talles de remera</h3>
+      <p>Solo alumnos vigentes de la cohorte seleccionada.</p>
+    </div>
+    <div id="teacherShirtChips" class="teacher-shirt-chips"><span class="teacher-muted">Cargando talles…</span></div>
+    <div class="teacher-shirt-actions">
+      <button class="btn ghost" onclick="copyTeacherShirtCurve()">Copiar para WhatsApp</button>
+    </div>
+  </div>
   <div id="teacherFilterSummary" class="teacher-filter-summary"></div>
   <div class="teacher-table-wrap">
     <table class="teacher-table">
@@ -2375,7 +2405,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.39.0 · Preimpresión documental · Cierre académico · QR</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.39.2 · Talles de remera · Curva por cohorte · QR</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -4940,6 +4970,76 @@ function inactivityLabel(days,last){
   return {main:`Hace ${days} días`,sub:'Inactividad',cls:'danger'};
 }
 
+
+const TEACHER_SHIRT_SIZE_ORDER=['XS','S','M','L','XL','XXL','XXXL','XXXXL'];
+
+function canonicalShirtSizeClient(value){
+  let s=String(value||'').trim().toUpperCase().replace(/\s+/g,'');
+  if(!s)return '';
+  const aliases={'2XL':'XXL','3XL':'XXXL','4XL':'XXXXL','XLL':'XXL'};
+  return aliases[s]||s;
+}
+
+function teacherStudentIsCurrentForShirtCurve(s){
+  const active=!(s?.activo===false||String(s?.activo||'SI').toUpperCase()==='NO');
+  const state=String(s?.estado||'ACTIVO').trim().toUpperCase();
+  return active && !['BAJA','FINALIZADO','DESAPROBADO','AUSENTE','INACTIVO'].includes(state);
+}
+
+function teacherShirtCurveData(){
+  const students=(TEACHER_DATA.students||[]).filter(teacherStudentIsCurrentForShirtCurve);
+  const counts={};
+  let missing=0;
+  students.forEach(s=>{
+    const size=canonicalShirtSizeClient(s.talle_remera||'');
+    if(!size){missing++;return;}
+    counts[size]=(counts[size]||0)+1;
+  });
+  const known=TEACHER_SHIRT_SIZE_ORDER.filter(s=>counts[s]>0);
+  const extra=Object.keys(counts).filter(s=>!TEACHER_SHIRT_SIZE_ORDER.includes(s)).sort((a,b)=>a.localeCompare(b,'es',{numeric:true}));
+  return {students,counts,missing,sizes:[...known,...extra]};
+}
+
+function renderTeacherShirtCurve(){
+  const host=$('#teacherShirtChips');if(!host)return;
+  const d=teacherShirtCurveData();
+  const chips=d.sizes.map(size=>`<span class="teacher-shirt-chip"><span>${esc(size)}</span><b>${d.counts[size]}</b></span>`);
+  if(d.missing) chips.push(`<span class="teacher-shirt-chip missing"><span>Sin talle</span><b>${d.missing}</b></span>`);
+  if(!chips.length) chips.push('<span class="teacher-muted">No hay talles cargados para alumnos vigentes.</span>');
+  host.innerHTML=chips.join('');
+}
+
+function teacherShirtCurveWhatsAppText(){
+  const d=teacherShirtCurveData();
+  const cohort=String(TEACHER_DATA.cohorte||'Cohorte').trim();
+  const lines=[`*Curva de talles – ${cohort}*`,`Alumnos vigentes: ${d.students.length}`,''];
+  TEACHER_SHIRT_SIZE_ORDER.forEach(size=>{
+    if(d.counts[size]) lines.push(`*${size}:* ${d.counts[size]}`);
+  });
+  Object.keys(d.counts)
+    .filter(size=>!TEACHER_SHIRT_SIZE_ORDER.includes(size))
+    .sort((a,b)=>a.localeCompare(b,'es',{numeric:true}))
+    .forEach(size=>lines.push(`*${size}:* ${d.counts[size]}`));
+  if(d.missing)lines.push(`*Sin talle:* ${d.missing}`);
+  lines.push('',`*Total:* ${d.students.length}`);
+  return lines.join('\n');
+}
+
+async function copyTeacherShirtCurve(){
+  const text=teacherShirtCurveWhatsAppText();
+  try{
+    await navigator.clipboard.writeText(text);
+    showITBToast('Curva de talles copiada.');
+  }catch(_){
+    const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');showITBToast('Curva de talles copiada.');}
+    catch(__){alert(text);}
+    finally{ta.remove();}
+  }
+}
+window.copyTeacherShirtCurve=copyTeacherShirtCurve;
+
 function renderTeacherRows(){
   const q=String($('#teacherSearch')?.value||'').trim().toLowerCase();
   const unitId=String($('#teacherUnit')?.value||'');
@@ -4956,6 +5056,7 @@ function renderTeacherRows(){
     <div class="teacher-kpi"><b>${avg}%</b><span>Progreso promedio</span></div>
     <div class="teacher-kpi"><b>${completed}</b><span>Curso al 100%</span></div>
     <div class="teacher-kpi"><b>${noActivity}</b><span>Sin actividad registrada</span></div>`;
+  renderTeacherShirtCurve();
 
   let rows=all.filter(s=>{
     const hay=[s.apellido,s.nombre,s.email,s.alumno_id].filter(Boolean).join(' ').toLowerCase();
@@ -5159,6 +5260,7 @@ function showTeacherStudent(id){
           <h3>Resumen del alumno</h3>
           <div class="student-info-row"><span>Correo electrónico</span><span>${esc(st.email||'—')}</span></div>
           <div class="student-info-row"><span>Cohorte</span><span>${esc(st.cohorte||'—')}</span></div>
+          <div class="student-info-row"><span>Talle de remera</span><span>${esc(st.talle_remera||'—')}</span></div>
           <div class="student-info-row"><span>Presentismo</span><span>${st.attendance?.porcentaje==null?'—':`${st.attendance.porcentaje}% · ${st.attendance.presentes}/${st.attendance.total}`}</span></div>
           <div class="student-info-row"><span>Rol</span><span>ALUMNO</span></div>
           <div class="student-info-row"><span>Estado</span><span style="color:#68d091">Activo</span></div>
@@ -5235,6 +5337,7 @@ function showTeacherStudent(id){
       <div class="student-info-row"><span>Nombre</span><span>${esc(st.nombre||'')}</span></div>
       <div class="student-info-row"><span>Correo</span><span>${esc(st.email||'')}</span></div>
       <div class="student-info-row"><span>Cohorte</span><span>${esc(st.cohorte||'')}</span></div>
+      <div class="student-info-row"><span>Talle de remera</span><span>${esc(st.talle_remera||'—')}</span></div>
       <div class="student-info-row"><span>Rol</span><span>ALUMNO</span></div>
     </div>`;
 
