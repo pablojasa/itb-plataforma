@@ -855,6 +855,23 @@ body.guest-mode .user-pill{display:none}
 
 .teacher-only{display:none!important}
 body.teacher-mode .teacher-only,body.admin-mode .teacher-only{display:inline-flex!important}
+
+/* ===== v0.39.4 · Navegación subordinada del Panel Docente ===== */
+.teacher-hub-tabs{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 18px;
+  padding:7px;background:#101720;border:1px solid var(--line);border-radius:14px;
+}
+.teacher-hub-tab{
+  border:1px solid transparent;background:transparent;color:#aeb8c3;border-radius:10px;
+  padding:9px 13px;font-size:11px;font-weight:700;cursor:pointer;transition:.18s ease;
+}
+.teacher-hub-tab:hover{color:#fff;background:#18222d}
+.teacher-hub-tab.active{color:#fff;background:#202d3a;border-color:#34485c;box-shadow:inset 0 -2px 0 #438ddd}
+@media(max-width:720px){
+  .teacher-hub-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:6px;margin-bottom:14px}
+  .teacher-hub-tabs::-webkit-scrollbar{display:none}
+  .teacher-hub-tab{flex:0 0 auto;white-space:nowrap;padding:9px 11px}
+}
 #teacherPage .teacher-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px}
 #teacherPage .teacher-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 #teacherPage select,#teacherPage input{background:#101720;border:1px solid var(--line);color:#fff;border-radius:10px;padding:10px 11px}
@@ -1764,11 +1781,8 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <button class="navbtn active" data-page="home" onclick="setPage('home')">Inicio</button>
   <button class="navbtn" data-page="course" onclick="setPage('course')">Curso</button>
   <button class="navbtn" data-page="chatPage" onclick="openChat()">Chat</button>
-  <button class="navbtn teacher-only" data-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   <button class="navbtn teacher-only" data-page="teacherPage" onclick="openTeacherPanel()">Panel docente</button>
-  <button class="navbtn teacher-only" data-page="attendancePage" onclick="openAttendance()">Presentismo</button>
   <button class="navbtn admin-only" data-page="adminPage" onclick="openAdminPanel()">Inscripciones</button>
-  <button class="navbtn admin-only" data-page="studentsAdminPage" onclick="openStudentAdmin()">Alumnos</button>
   <button class="navbtn" data-page="schedulePage" onclick="setPage('schedulePage')">Cronograma</button>
   <button class="navbtn" data-page="newsPage" onclick="setPage('newsPage')">Noticias</button>
   <button class="navbtn" data-page="videosPage" onclick="setPage('videosPage')">Videos</button>
@@ -1980,11 +1994,17 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 
 
 <section id="alertsPage" class="page">
+  <nav class="teacher-hub-tabs" aria-label="Herramientas del Panel Docente">
+    <button class="teacher-hub-tab admin-only" data-hub-page="studentsAdminPage" onclick="openStudentAdmin()">Alumnos</button>
+    <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
+    <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
+    <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
+  </nav>
   <div class="alert-admin-shell">
     <div class="alert-admin-head">
       <div>
-        <div class="kicker">Comunicación institucional</div>
-        <h2>Alertas a alumnos</h2>
+        <div class="kicker">Panel docente</div>
+        <h2>Alertas</h2>
         <p>Creá un aviso para todos los alumnos de una cohorte. El alumno deberá confirmarlo con “Entendido”.</p>
       </div>
     </div>
@@ -2016,11 +2036,17 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 </section>
 
 <section id="teacherPage" class="page">
+  <nav class="teacher-hub-tabs" aria-label="Herramientas del Panel Docente">
+    <button class="teacher-hub-tab admin-only" data-hub-page="studentsAdminPage" onclick="openStudentAdmin()">Alumnos</button>
+    <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
+    <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
+    <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
+  </nav>
   <div class="teacher-head">
     <div>
-      <div class="kicker">Seguimiento académico</div>
-      <h2>Panel docente</h2>
-      <p class="note">Seguimiento de avance por cohorte.</p>
+      <div class="kicker">Panel docente</div>
+      <h2>Seguimiento académico</h2>
+      <p class="note">Seguimiento de avance, unidades y autoevaluaciones por cohorte.</p>
     </div>
     <div class="teacher-controls">
       <select id="teacherCohort" title="Cohorte" onchange="loadTeacherPanel(this.value)"></select>
@@ -2054,16 +2080,6 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 
   <div id="teacherKpis" class="teacher-kpis"></div>
-  <div id="teacherShirtCurve" class="teacher-shirt-card">
-    <div class="teacher-shirt-main">
-      <h3>Curva de talles de remera</h3>
-      <p>Solo alumnos vigentes de la cohorte seleccionada.</p>
-    </div>
-    <div id="teacherShirtChips" class="teacher-shirt-chips"><span class="teacher-muted">Cargando talles…</span></div>
-    <div class="teacher-shirt-actions">
-      <button class="btn ghost" onclick="copyTeacherShirtCurve()">Copiar para WhatsApp</button>
-    </div>
-  </div>
   <div id="teacherFilterSummary" class="teacher-filter-summary"></div>
   <div class="teacher-table-wrap">
     <table class="teacher-table">
@@ -2112,10 +2128,16 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 
 
 <section id="attendancePage" class="page">
+  <nav class="teacher-hub-tabs" aria-label="Herramientas del Panel Docente">
+    <button class="teacher-hub-tab admin-only" data-hub-page="studentsAdminPage" onclick="openStudentAdmin()">Alumnos</button>
+    <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
+    <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
+    <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
+  </nav>
   <div class="attendance-shell">
     <div class="attendance-head">
       <div>
-        <div class="kicker">Seguimiento académico</div>
+        <div class="kicker">Panel docente</div>
         <h2>Presentismo</h2>
         <p>Seleccioná la fecha de clase. Todos los alumnos aparecen presentes por defecto; destildá únicamente a los ausentes.</p>
       </div>
@@ -2231,10 +2253,16 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 </div>
 
 <section id="studentsAdminPage" class="page">
+  <nav class="teacher-hub-tabs" aria-label="Herramientas del Panel Docente">
+    <button class="teacher-hub-tab admin-only" data-hub-page="studentsAdminPage" onclick="openStudentAdmin()">Alumnos</button>
+    <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
+    <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
+    <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
+  </nav>
   <div class="admin-head">
     <div>
-      <div class="kicker">Administración · Academia TED</div>
-      <h2>Gestión de alumnos</h2>
+      <div class="kicker">Panel docente · Administración</div>
+      <h2>Alumnos</h2>
       <p class="note">Consulta de cuentas, situación académica, documentación final, restablecimiento de acceso y baja administrativa.</p>
     </div>
     <div class="admin-controls">
@@ -2252,6 +2280,16 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     </div>
   </div>
   <div id="studentsAdminSummary" class="students-admin-summary"></div>
+  <div id="studentsShirtCurve" class="teacher-shirt-card">
+    <div class="teacher-shirt-main">
+      <h3>Curva de talles de remera</h3>
+      <p>Solo alumnos vigentes del curso/cohorte seleccionado.</p>
+    </div>
+    <div id="studentsShirtChips" class="teacher-shirt-chips"><span class="teacher-muted">Seleccioná un curso/cohorte para calcular la curva.</span></div>
+    <div class="teacher-shirt-actions">
+      <button id="studentsShirtCopyBtn" class="btn ghost" onclick="copyStudentAdminShirtCurve()" disabled>Copiar para WhatsApp</button>
+    </div>
+  </div>
   <div class="admin-table-wrap">
     <table class="admin-table">
       <thead><tr><th>Alumno</th><th>Usuario</th><th>Curso / cohorte</th><th>Email</th><th>Estado</th><th>Académico</th><th>Seguridad</th><th></th></tr></thead>
@@ -2395,17 +2433,14 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button class="active" data-page="home" onclick="setPage('home')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V21h14V10.5"/><path d="M9.5 21v-6h5v6"/></svg></span>Inicio</button>
  <button data-page="course" onclick="setPage('course')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Curso</button>
  <button data-page="chatPage" onclick="openChat()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></span>Chat</button>
- <button class="teacher-only" data-page="alertsPage" onclick="openAlertAdmin()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0112 0v4l2 3H4l2-3z"/><path d="M9 18h6"/><path d="M12 3v1"/></svg></span>Alertas</button>
- <button class="teacher-only" data-page="teacherPage" onclick="openTeacherPanel()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v13H4z"/><path d="M8 21h8M12 18v3"/><path d="M8 9h8M8 13h5"/></svg></span>Docente</button>
- <button class="teacher-only" data-page="attendancePage" onclick="openAttendance()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v15H4z"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="m8 14 2 2 5-5"/></svg></span>Presente</button>
+ <button class="teacher-only" data-page="teacherPage" onclick="openTeacherPanel()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v13H4z"/><path d="M8 21h8M12 18v3"/><path d="M8 9h8M8 13h5"/></svg></span>Panel</button>
  <button class="admin-only" data-page="adminPage" onclick="openAdminPanel()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="M17.5 15.5v4M15.5 17.5h4"/></svg></span>Admin</button>
- <button class="admin-only" data-page="studentsAdminPage" onclick="openStudentAdmin()"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Alumnos</button>
  <button data-page="schedulePage" onclick="setPage('schedulePage')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></span>Agenda</button>
  <button data-page="newsPage" onclick="setPage('newsPage')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h11a2 2 0 0 1 2 2v14H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M18 8h3v10a2 2 0 0 1-2 2h-1"/><path d="M7 8h7M7 12h7M7 16h4"/></svg></span>Noticias</button>
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.39.2 · Talles de remera · Curva por cohorte · QR</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.39.4 · Panel Docente organizado · Horarios corregidos</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2430,7 +2465,10 @@ function setPage(id){
   if(!page) return;
   $$('.page').forEach(p=>p.classList.remove('active'));
   page.classList.add('active');
-  $$('.navbtn,.mobile-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  const teacherHubPages=['teacherPage','attendancePage','alertsPage','studentsAdminPage'];
+  const mainNavId=teacherHubPages.includes(id)?'teacherPage':id;
+  $$('.navbtn,.mobile-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===mainNavId));
+  $$('.teacher-hub-tab').forEach(b=>b.classList.toggle('active',b.dataset.hubPage===id));
   window.scrollTo({top:0,behavior:'smooth'});
 }
 $$('[data-page]').forEach(b=>b.addEventListener('click',()=>setPage(b.dataset.page)));
@@ -3379,8 +3417,69 @@ function applyStudentAdminFilters(){
     }
     return true;
   });
-  renderStudentAdminSummary();renderStudentAdminRows();
+  renderStudentAdminSummary();renderStudentAdminShirtCurve();renderStudentAdminRows();
 }
+const ADMIN_SHIRT_SIZE_ORDER=['XS','S','M','L','XL','XXL','XXXL','XXXXL'];
+function canonicalShirtSizeClient(value){
+  let s=String(value||'').trim().toUpperCase().replace(/\s+/g,'');
+  if(!s)return '';
+  const aliases={'2XL':'XXL','3XL':'XXXL','4XL':'XXXXL','XLL':'XXL'};
+  return aliases[s]||s;
+}
+function studentAdminShirtCurveData(){
+  const cid=String($('#studentsAdminCourse')?.value||'').trim();
+  if(!cid)return {selected:false,cid:'',cohort:'',students:[],counts:{},missing:0,sizes:[]};
+  const course=(ADMIN_STUDENTS_ALL.courses||[]).find(c=>String(c.curso_id||'')===cid)||{};
+  const students=(ADMIN_STUDENTS_ALL.students||[]).filter(s=>{
+    const active=studentAdminBool(s?.activo,true);
+    const state=String(s?.estado||'ACTIVO').trim().toUpperCase();
+    return String(s?.curso_id||'')===cid && active && state==='ACTIVO';
+  });
+  const counts={};let missing=0;
+  students.forEach(s=>{
+    const size=canonicalShirtSizeClient(s.talle_remera||'');
+    if(!size){missing++;return;}
+    counts[size]=(counts[size]||0)+1;
+  });
+  const known=ADMIN_SHIRT_SIZE_ORDER.filter(size=>counts[size]>0);
+  const extra=Object.keys(counts).filter(size=>!ADMIN_SHIRT_SIZE_ORDER.includes(size)).sort((a,b)=>a.localeCompare(b,'es',{numeric:true}));
+  return {selected:true,cid,cohort:String(course.cohorte||students[0]?.cohorte||course.nombre_corto||cid),students,counts,missing,sizes:[...known,...extra]};
+}
+function renderStudentAdminShirtCurve(){
+  const host=$('#studentsShirtChips'),btn=$('#studentsShirtCopyBtn');if(!host)return;
+  const d=studentAdminShirtCurveData();
+  if(!d.selected){
+    host.innerHTML='<span class="teacher-muted">Seleccioná un curso/cohorte para calcular la curva.</span>';
+    if(btn)btn.disabled=true;
+    return;
+  }
+  const chips=d.sizes.map(size=>`<span class="teacher-shirt-chip"><span>${esc(size)}</span><b>${d.counts[size]}</b></span>`);
+  if(d.missing)chips.push(`<span class="teacher-shirt-chip missing"><span>Sin talle</span><b>${d.missing}</b></span>`);
+  if(!chips.length)chips.push('<span class="teacher-muted">No hay alumnos vigentes con talle cargado en esta cohorte.</span>');
+  host.innerHTML=chips.join('');
+  if(btn)btn.disabled=d.students.length===0;
+}
+function studentAdminShirtCurveWhatsAppText(){
+  const d=studentAdminShirtCurveData();
+  if(!d.selected)return '';
+  const lines=[`*Curva de talles – ${d.cohort||d.cid}*`,`Alumnos vigentes: ${d.students.length}`,''];
+  ADMIN_SHIRT_SIZE_ORDER.forEach(size=>{if(d.counts[size])lines.push(`*${size}:* ${d.counts[size]}`);});
+  Object.keys(d.counts).filter(size=>!ADMIN_SHIRT_SIZE_ORDER.includes(size)).sort((a,b)=>a.localeCompare(b,'es',{numeric:true})).forEach(size=>lines.push(`*${size}:* ${d.counts[size]}`));
+  if(d.missing)lines.push(`*Sin talle:* ${d.missing}`);
+  lines.push('',`*Total:* ${d.students.length}`);
+  return lines.join('\n');
+}
+async function copyStudentAdminShirtCurve(){
+  const text=studentAdminShirtCurveWhatsAppText();
+  if(!text){showITBToast('Seleccioná primero un curso/cohorte.');return;}
+  try{await navigator.clipboard.writeText(text);showITBToast('Curva de talles copiada.');}
+  catch(_){
+    const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');showITBToast('Curva de talles copiada.');}catch(__){alert(text);}finally{ta.remove();}
+  }
+}
+window.copyStudentAdminShirtCurve=copyStudentAdminShirtCurve;
+
 function renderStudentAdminSummary(){
   const t=$('#studentsAdminSummary');if(!t)return;
   const rows=ADMIN_STUDENTS_ROWS||[];
@@ -4971,74 +5070,6 @@ function inactivityLabel(days,last){
 }
 
 
-const TEACHER_SHIRT_SIZE_ORDER=['XS','S','M','L','XL','XXL','XXXL','XXXXL'];
-
-function canonicalShirtSizeClient(value){
-  let s=String(value||'').trim().toUpperCase().replace(/\s+/g,'');
-  if(!s)return '';
-  const aliases={'2XL':'XXL','3XL':'XXXL','4XL':'XXXXL','XLL':'XXL'};
-  return aliases[s]||s;
-}
-
-function teacherStudentIsCurrentForShirtCurve(s){
-  const active=!(s?.activo===false||String(s?.activo||'SI').toUpperCase()==='NO');
-  const state=String(s?.estado||'ACTIVO').trim().toUpperCase();
-  return active && !['BAJA','FINALIZADO','DESAPROBADO','AUSENTE','INACTIVO'].includes(state);
-}
-
-function teacherShirtCurveData(){
-  const students=(TEACHER_DATA.students||[]).filter(teacherStudentIsCurrentForShirtCurve);
-  const counts={};
-  let missing=0;
-  students.forEach(s=>{
-    const size=canonicalShirtSizeClient(s.talle_remera||'');
-    if(!size){missing++;return;}
-    counts[size]=(counts[size]||0)+1;
-  });
-  const known=TEACHER_SHIRT_SIZE_ORDER.filter(s=>counts[s]>0);
-  const extra=Object.keys(counts).filter(s=>!TEACHER_SHIRT_SIZE_ORDER.includes(s)).sort((a,b)=>a.localeCompare(b,'es',{numeric:true}));
-  return {students,counts,missing,sizes:[...known,...extra]};
-}
-
-function renderTeacherShirtCurve(){
-  const host=$('#teacherShirtChips');if(!host)return;
-  const d=teacherShirtCurveData();
-  const chips=d.sizes.map(size=>`<span class="teacher-shirt-chip"><span>${esc(size)}</span><b>${d.counts[size]}</b></span>`);
-  if(d.missing) chips.push(`<span class="teacher-shirt-chip missing"><span>Sin talle</span><b>${d.missing}</b></span>`);
-  if(!chips.length) chips.push('<span class="teacher-muted">No hay talles cargados para alumnos vigentes.</span>');
-  host.innerHTML=chips.join('');
-}
-
-function teacherShirtCurveWhatsAppText(){
-  const d=teacherShirtCurveData();
-  const cohort=String(TEACHER_DATA.cohorte||'Cohorte').trim();
-  const lines=[`*Curva de talles – ${cohort}*`,`Alumnos vigentes: ${d.students.length}`,''];
-  TEACHER_SHIRT_SIZE_ORDER.forEach(size=>{
-    if(d.counts[size]) lines.push(`*${size}:* ${d.counts[size]}`);
-  });
-  Object.keys(d.counts)
-    .filter(size=>!TEACHER_SHIRT_SIZE_ORDER.includes(size))
-    .sort((a,b)=>a.localeCompare(b,'es',{numeric:true}))
-    .forEach(size=>lines.push(`*${size}:* ${d.counts[size]}`));
-  if(d.missing)lines.push(`*Sin talle:* ${d.missing}`);
-  lines.push('',`*Total:* ${d.students.length}`);
-  return lines.join('\n');
-}
-
-async function copyTeacherShirtCurve(){
-  const text=teacherShirtCurveWhatsAppText();
-  try{
-    await navigator.clipboard.writeText(text);
-    showITBToast('Curva de talles copiada.');
-  }catch(_){
-    const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
-    document.body.appendChild(ta);ta.select();
-    try{document.execCommand('copy');showITBToast('Curva de talles copiada.');}
-    catch(__){alert(text);}
-    finally{ta.remove();}
-  }
-}
-window.copyTeacherShirtCurve=copyTeacherShirtCurve;
 
 function renderTeacherRows(){
   const q=String($('#teacherSearch')?.value||'').trim().toLowerCase();
@@ -5056,7 +5087,6 @@ function renderTeacherRows(){
     <div class="teacher-kpi"><b>${avg}%</b><span>Progreso promedio</span></div>
     <div class="teacher-kpi"><b>${completed}</b><span>Curso al 100%</span></div>
     <div class="teacher-kpi"><b>${noActivity}</b><span>Sin actividad registrada</span></div>`;
-  renderTeacherShirtCurve();
 
   let rows=all.filter(s=>{
     const hay=[s.apellido,s.nombre,s.email,s.alumno_id].filter(Boolean).join(' ').toLowerCase();
