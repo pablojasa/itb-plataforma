@@ -2332,10 +2332,12 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
       <button onclick="closeRegistrationCampaignModal()">✕</button>
     </div>
     <div class="campaign-form">
-      <label>Número de curso<input id="campaignNumber" type="number" min="1" max="999" placeholder="24" oninput="updateCampaignPreview()"></label>
+      <label>Número de curso<input id="campaignNumber" type="number" min="1" max="999" placeholder="24" oninput="updateCampaignPreview()"><small style="text-transform:none;color:var(--muted);font-weight:600">Genera el curso_id. Ej.: 24 → ITB_024.</small></label>
+      <label>Numeración romana<input id="campaignRoman" type="text" maxlength="12" placeholder="XXIV" oninput="this.value=this.value.toUpperCase();updateCampaignPreview()"><small style="text-transform:none;color:var(--muted);font-weight:600">Se usa en TED XXIV y en el nombre completo.</small></label>
       <label>Fecha y hora de apertura<input id="campaignOpenAt" type="datetime-local" oninput="updateCampaignPreview()"></label>
       <label>Fecha de inicio del curso<input id="campaignStartDate" type="date" oninput="updateCampaignPreview()"></label>
       <label>Día habitual de cursada<select id="campaignDay" onchange="updateCampaignPreview()"><option value="">Seleccionar</option><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option></select></label>
+      <label>Link del grupo de WhatsApp<input id="campaignWhatsapp" type="url" placeholder="https://chat.whatsapp.com/..." oninput="updateCampaignPreview()"></label>
       <label class="full">Horario habitual<div class="campaign-time-row"><input id="campaignTimeStart" type="time" oninput="updateCampaignPreview()"><input id="campaignTimeEnd" type="time" oninput="updateCampaignPreview()"></div></label>
     </div>
     <div id="campaignPreview" class="campaign-preview">Completá los datos para previsualizar la convocatoria.</div>
@@ -2604,7 +2606,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <div class="integrator-modal-actions"><button class="btn ghost" onclick="closeIntegratorExposure()">Cancelar</button><button class="btn primary" onclick="saveIntegratorExposureEvaluation()">Guardar evaluación definitiva</button></div>
 </div></div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.42.0 · Convocatorias reutilizables · Trabajo Integrador</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.42.1 · Convocatorias TED · Numeración romana y WhatsApp</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3987,13 +3989,13 @@ function renderAdminRegistrationCampaign(){
   const label=status==='ABIERTA'?'INSCRIPCIONES ABIERTAS':'CONVOCATORIA PROGRAMADA';
   target.innerHTML=`<div class="campaign-card">
     <div class="campaign-main"><span class="campaign-status ${cls}">${label}</span>
-      <h3>${esc(c.nombre_corto||c.curso_id||'Curso ITB')}</h3>
+      <h3>${esc(c.nombre_completo||c.nombre_corto||c.curso_id||'Curso TED')}</h3>
       <p>${status==='PROGRAMADA'?'La convocatoria ya está publicada y se habilitará automáticamente al llegar la fecha indicada.':'El formulario público está recibiendo inscripciones.'}</p>
       <div class="campaign-facts">
         <span class="campaign-fact">Apertura: ${esc(fmtCampaignDate(c.inscripcion_desde,true))}</span>
         <span class="campaign-fact">Inicio: ${esc(fmtCampaignDate(c.fecha_inicio,false))}</span>
         <span class="campaign-fact">${esc(c.dia_cursada||'Día pendiente')} · ${esc(c.horario_cursada||'Horario pendiente')}</span>
-        <span class="campaign-fact">Inscriptos: ${count}</span>
+        <span class="campaign-fact">Inscriptos: ${count}</span><span class="campaign-fact">WhatsApp: ${c.whatsapp_link?'configurado ✓':'pendiente'}</span>
       </div>
     </div>
     <div class="campaign-actions">
@@ -4010,6 +4012,8 @@ function openRegistrationCampaignModal(){
   if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN')return;
   const modal=$('#campaignModal');if(!modal)return;
   $('#campaignNumber').value='';
+  $('#campaignRoman').value='';
+  $('#campaignWhatsapp').value='';
   const now=new Date();now.setMinutes(Math.ceil(now.getMinutes()/5)*5,0,0);
   $('#campaignOpenAt').value=localDateTimeValue(now);
   $('#campaignStartDate').value='';
@@ -4024,21 +4028,25 @@ function closeRegistrationCampaignModal(){
   $('#campaignModal')?.classList.remove('open');document.body.style.overflow='';
 }
 function updateCampaignPreview(){
-  const num=$('#campaignNumber')?.value||'—',op=$('#campaignOpenAt')?.value||'',st=$('#campaignStartDate')?.value||'',day=$('#campaignDay')?.value||'—',h1=$('#campaignTimeStart')?.value||'—',h2=$('#campaignTimeEnd')?.value||'—';
+  const num=$('#campaignNumber')?.value||'—',roman=($('#campaignRoman')?.value||'—').toUpperCase(),op=$('#campaignOpenAt')?.value||'',st=$('#campaignStartDate')?.value||'',day=$('#campaignDay')?.value||'—',h1=$('#campaignTimeStart')?.value||'—',h2=$('#campaignTimeEnd')?.value||'—',wa=$('#campaignWhatsapp')?.value||'';
   const openText=op?fmtCampaignDate(new Date(op),true):'—';
   const startText=st?fmtCampaignDate(new Date(st+'T12:00:00'),false):'—';
-  $('#campaignPreview').innerHTML=`<b>ITB ${esc(num)}</b><br>Curso de Instructores de Tiro en Armas Cortas y Largas<br>Apertura: ${esc(openText)}<br>Inicio: ${esc(startText)}<br>Cursada: ${esc(day)} · ${esc(h1)} a ${esc(h2)} hs`;
+  const internal=num!=='—'?`ITB_${String(num).padStart(3,'0')}`:'—';
+  $('#campaignPreview').innerHTML=`<b>Curso de Instructores de Tiro en Armas Cortas y Largas — TED ${esc(roman)}</b><br>Nombre corto: TED ${esc(roman)} · curso_id: ${esc(internal)}<br>Apertura: ${esc(openText)}<br>Inicio: ${esc(startText)}<br>Cursada: ${esc(day)} · ${esc(h1)} a ${esc(h2)} hs<br>WhatsApp: ${wa?'configurado ✓':'pendiente'}`;
 }
 async function publishRegistrationCampaign(){
   const status=$('#campaignStatusMsg'),btn=$('#campaignPublishBtn');
-  const num=$('#campaignNumber')?.value||'',openAt=$('#campaignOpenAt')?.value||'',start=$('#campaignStartDate')?.value||'',day=$('#campaignDay')?.value||'',h1=$('#campaignTimeStart')?.value||'',h2=$('#campaignTimeEnd')?.value||'';
-  if(!num||!openAt||!start||!day||!h1||!h2){status.textContent='Completá todos los datos de la convocatoria.';return;}
-  const summary=`ITB ${num}\nApertura: ${fmtCampaignDate(new Date(openAt),true)}\nInicio: ${fmtCampaignDate(new Date(start+'T12:00:00'),false)}\nCursada: ${day} · ${h1} a ${h2} hs`;
+  const num=$('#campaignNumber')?.value||'',roman=($('#campaignRoman')?.value||'').trim().toUpperCase(),openAt=$('#campaignOpenAt')?.value||'',start=$('#campaignStartDate')?.value||'',day=$('#campaignDay')?.value||'',h1=$('#campaignTimeStart')?.value||'',h2=$('#campaignTimeEnd')?.value||'',whatsapp=($('#campaignWhatsapp')?.value||'').trim();
+  if(!num||!roman||!openAt||!start||!day||!h1||!h2||!whatsapp){status.textContent='Completá todos los datos de la convocatoria, incluida la numeración romana y el link de WhatsApp.';return;}
+  if(!/^[IVXLCDM]+$/.test(roman)){status.textContent='La numeración romana debe contener sólo I, V, X, L, C, D o M.';return;}
+  if(!/^https:\/\/(chat\.whatsapp\.com|whatsapp\.com)\//i.test(whatsapp)){status.textContent='Ingresá un link válido del grupo de WhatsApp.';return;}
+  const fullName=`Curso de Instructores de Tiro en Armas Cortas y Largas — TED ${roman}`;
+  const summary=`${fullName}\ncurso_id: ITB_${String(num).padStart(3,'0')}\nApertura: ${fmtCampaignDate(new Date(openAt),true)}\nInicio: ${fmtCampaignDate(new Date(start+'T12:00:00'),false)}\nCursada: ${day} · ${h1} a ${h2} hs`;
   if(!confirm(`¿Publicar esta convocatoria?\n\n${summary}\n\nLa URL pública quedará asociada a esta edición.`))return;
   const sess=getSession();if(!sess?.token)return;
   btn.disabled=true;status.textContent='Publicando convocatoria…';
   try{
-    const r=await apiJsonpLong({action:'adminRegistrationCampaignCreate',token:sess.token,numero_curso:num,apertura:openAt,fecha_inicio:start,dia_cursada:day,hora_inicio:h1,hora_fin:h2},60000);
+    const r=await apiJsonpLong({action:'adminRegistrationCampaignCreate',token:sess.token,numero_curso:num,numero_romano:roman,apertura:openAt,fecha_inicio:start,dia_cursada:day,hora_inicio:h1,hora_fin:h2,whatsapp_link:whatsapp},60000);
     closeRegistrationCampaignModal();
     await loadAdminRegistrations(true);
     if($('#adminCourse') && r.curso_id){$('#adminCourse').value=r.curso_id;applyAdminFiltersLocal();}
