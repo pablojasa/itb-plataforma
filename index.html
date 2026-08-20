@@ -1765,6 +1765,15 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 .student-badges-block .itb-badge-title{font-size:10px}.student-badges-block .itb-badge-meta{font-size:8px}
 @media(max-width:700px){.itb-badges-grid,.student-badges-block .itb-badges-grid{grid-template-columns:1fr}.itb-badge-card.final{grid-column:auto}.profile-badges-head{flex-direction:column}}
 
+/* ===== v0.40.1 · Insignias destacadas en Inicio y Curso ===== */
+.dashboard-badges-mount{margin:16px 0 18px}.dashboard-badges-card{border:1px solid var(--line);background:linear-gradient(180deg,#0f1821 0%,#0d1319 100%);border-radius:20px;padding:18px 18px 16px;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.dashboard-badges-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}.dashboard-badges-head h2{margin:0;font-size:24px}.dashboard-badges-head p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
+.dashboard-badges-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.dashboard-badges-grid .itb-badge-card{grid-template-columns:1fr;padding:12px 10px;justify-items:center;text-align:center;min-height:170px}.dashboard-badges-grid .itb-badge-seal{width:58px;height:58px}.dashboard-badges-grid .itb-badge-copy{display:flex;flex-direction:column;align-items:center}.dashboard-badges-grid .itb-badge-title{font-size:10px}.dashboard-badges-grid .itb-badge-meta{font-size:8px;margin-top:6px}.dashboard-badges-grid .itb-badge-state{margin-top:8px}.dashboard-badges-grid .itb-badge-progress{width:100%;margin-top:8px}
+.dashboard-badge-final{display:flex;justify-content:center;margin-top:14px}.dashboard-badge-final .itb-badge-card{width:min(420px,100%)}
+.dashboard-badges-placeholder{border:1px dashed #394550;border-radius:16px;padding:16px;color:var(--muted);font-size:12px;line-height:1.55;background:#10171f}
+.home-badges-slot{margin-bottom:8px}.course-badges-mount{margin-bottom:0}
+@media(max-width:1150px){.dashboard-badges-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.dashboard-badges-card{padding:15px}.dashboard-badges-head{flex-direction:column}.dashboard-badges-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-badges-grid .itb-badge-card{min-height:150px}.dashboard-badges-grid .itb-badge-title{font-size:9.5px}}
 
 /* ===== v0.39.2 · Talles de remera + curva por cohorte · v0.39.0 certificación ===== */
 .cert-academic{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;border:1px solid var(--line);font-size:9px;font-weight:900;white-space:nowrap}
@@ -1887,12 +1896,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <a id="zoomBtn" class="btn ghost" href="#" target="_blank" rel="noopener">Clase por Zoom</a></div>
  </div></div>
  <div id="notificationOptIn" class="notification-optin"><div><strong>Activá las notificaciones</strong><span>Recibí avisos del equipo docente mientras usás la app instalada.</span></div><button class="btn ghost" onclick="enableSystemNotifications()">Activar notificaciones</button></div>
- <div class="metrics">
-  <div class="metric"><b id="metricUnits">0</b><span>Unidades del programa</span></div>
-  <div class="metric"><b id="metricVideos">0</b><span>Videos disponibles</span></div>
-  <div class="metric"><b id="metricBooks">0</b><span>Recursos de biblioteca</span></div>
-  <div class="metric"><b id="metricActivities">0</b><span>Actividades y evaluaciones</span></div>
- </div>
+ <div id="homeBadgesMount" class="dashboard-badges-mount"></div>
  <div class="two-col">
   <div><div class="section-head"><div><h2>Unidades del curso</h2><p>Acceso directo a la estructura académica.</p></div><button class="btn ghost" onclick="setPage('course')">Ver todas</button></div><div id="featuredUnits" class="grid"></div></div>
   <aside><div class="section-head"><div><h2>Próxima actividad</h2><p>Se actualiza automáticamente desde el cronograma.</p></div></div>
@@ -1929,12 +1933,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 <section id="course" class="page">
   <div class="course-dashboard">
 
-    <div class="course-stats">
-      <div class="course-stat"><b id="courseStatUnits">0</b><span>Unidades del programa</span></div>
-      <div class="course-stat"><b id="courseStatVideos">0</b><span>Videos disponibles</span></div>
-      <div class="course-stat"><b id="courseStatLibrary">0</b><span>Recursos de biblioteca</span></div>
-      <div class="course-stat"><b id="courseStatActivities">0</b><span>Actividades y evaluaciones</span></div>
-    </div>
+    <div id="courseBadgesMount" class="dashboard-badges-mount course-badges-mount"></div>
 
     <div id="courseProgressMount" class="course-progress-wrap"></div>
 
@@ -2468,7 +2467,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.40.0 · Insignias académicas · Acceso rápido</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.40.1 · Insignias destacadas · Inicio y Curso</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2556,10 +2555,7 @@ function unitCounts(uid){
 function renderCourseDashboard(){
   if(!$('#course')) return;
 
-  $('#courseStatUnits').textContent=(DB.units||[]).length;
-  $('#courseStatVideos').textContent=visibleVideosForCurrentUser().length;
-  $('#courseStatLibrary').textContent=(DB.library||[]).length;
-  $('#courseStatActivities').textContent=(DB.juegos||[]).length+(DB.autoevaluaciones||[]).length;
+  renderDashboardBadges('#courseBadgesMount');
 
   const mount=$('#courseProgressMount');
   if(mount){
@@ -5679,6 +5675,32 @@ function studentBadgesMarkup(student){
   </div>`;
 }
 
+function dashboardBadgesMarkup(result){
+  if(!result) return '<div class="dashboard-badges-placeholder">Las insignias aparecerán cuando se cargue tu progreso académico.</div>';
+  const thematic=result.thematic.map(b=>badgeCardMarkup(b)).join('');
+  const finalCard=badgeCardMarkup(result.final);
+  return `<section class="dashboard-badges-card">
+    <div class="dashboard-badges-head">
+      <div><h2>Insignias del curso</h2><p>Completá cada bloque al 100% para desbloquear las insignias temáticas. La insignia final requiere además aprobar el curso.</p></div>
+      <div class="badge-summary"><span class="badge-summary-pill"><strong>${result.obtained}/${result.total}</strong> temáticas</span></div>
+    </div>
+    <div class="dashboard-badges-grid">${thematic}</div>
+    <div class="dashboard-badge-final">${finalCard}</div>
+  </section>`;
+}
+
+function renderDashboardBadges(targetSel){
+  const mount=$(targetSel); if(!mount) return;
+  const isStudent=String(ITB_USER?.rol||'').toUpperCase()==='ALUMNO';
+  if(!isStudent){ mount.innerHTML=''; return; }
+  if(!ITB_PRIVATE_DATA_READY || !(DB.units||[]).length){
+    mount.innerHTML='<div class="dashboard-badges-placeholder">Cargando tus insignias…</div>';
+    return;
+  }
+  const result=badgeResultsForState(ITB_PROGRESS,ITB_QUIZ_STATUS,ITB_USER?.condicion_final||'');
+  mount.innerHTML=dashboardBadgesMarkup(result);
+}
+
 function courseProgressInfo(){
   const units=(DB.units||DB.unidades||[]);
   const trackables=units.map(u=>({u,info:unitProgressInfo(u.id)}));
@@ -5697,6 +5719,7 @@ function courseProgressInfo(){
 }
 
 function renderCourseProgressCard(){
+  renderDashboardBadges('#homeBadgesMount');
   const old=$('#courseProgressCard'); if(old) old.remove();
   const home=$('#home'); if(!home) return;
   const two=home.querySelector('.two-col');
@@ -5741,6 +5764,8 @@ function decorateUnitCardsWithProgress(){
 function refreshCourseProgressUI(){
   renderCourseProgressCard();
   renderCourseDashboard();
+  renderDashboardBadges('#homeBadgesMount');
+  renderDashboardBadges('#courseBadgesMount');
   const search=$('#unitSearch');
   renderUnits(search ? search.value : '');
   if($('#profileModal')?.classList.contains('open')) renderProfileBadges(ITB_USER?.condicion_final||'');
@@ -6356,10 +6381,7 @@ function renderSchedule(){
 window.setScheduleFilter=setScheduleFilter;
 
 function renderHome(){
-  $('#metricUnits').textContent=DB.general.unitCount;
-  $('#metricVideos').textContent=visibleVideosForCurrentUser().length;
-  $('#metricBooks').textContent=DB.general.bookCount;
-  $('#metricActivities').textContent=DB.units.reduce((n,u)=>n+unitCounts(u.id).games+unitCounts(u.id).tests,0);
+  renderDashboardBadges('#homeBadgesMount');
   const featured=DB.units.slice(0,6);
   $('#featuredUnits').innerHTML=featured.map(u=>{
     const c=unitCounts(u.id);
