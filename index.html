@@ -1552,6 +1552,19 @@ body.admin-mode .admin-only{display:inline-flex!important}
 @media(max-width:900px){.admin-kpis{grid-template-columns:repeat(3,1fr)}.admin-head{align-items:stretch;flex-direction:column}.admin-controls{width:100%}.admin-controls input{min-width:0;flex:1}}
 @media(max-width:680px){.admin-kpis{grid-template-columns:repeat(2,1fr)}.admin-detail-grid{grid-template-columns:1fr}.admin-detail-section.full{grid-column:auto}.admin-fields{grid-template-columns:1fr}.admin-controls>*{width:100%}}
 
+/* ===== v0.42.0 · Convocatoria reutilizable de inscripción ===== */
+.admin-campaign-mgmt{margin:0 0 16px}
+.campaign-card{border:1px solid #35424f;border-radius:18px;background:linear-gradient(145deg,#121b24,#0d141b);padding:17px 18px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.campaign-main h3{margin:5px 0 6px;font-size:19px}.campaign-main p{margin:0;color:var(--muted);font-size:10px;line-height:1.5}.campaign-facts{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.campaign-fact{border:1px solid #34414d;background:#111922;border-radius:999px;padding:6px 9px;font-size:9px;color:#c8d1da}
+.campaign-status{display:inline-flex;border:1px solid #43505c;border-radius:999px;padding:5px 8px;font-size:8px;font-weight:950;letter-spacing:.05em}.campaign-status.open{color:#8fe0aa;border-color:#346649;background:#11251a}.campaign-status.scheduled{color:#f0d084;border-color:#6b592c;background:#282111}.campaign-status.closed{color:#adb7c1;background:#1b232c}
+.campaign-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.campaign-actions button{white-space:nowrap}.campaign-close-btn{border:1px solid #794147;background:#2b171a;color:#f5a2aa;border-radius:10px;padding:10px 12px;font-weight:900;cursor:pointer}
+.campaign-modal{position:fixed;inset:0;z-index:18000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(3,7,11,.9);backdrop-filter:blur(7px)}.campaign-modal.open{display:flex}
+.campaign-dialog{width:min(680px,96vw);max-height:92vh;overflow:auto;background:#0e151c;border:1px solid #35414d;border-radius:20px;padding:20px;box-shadow:0 30px 90px rgba(0,0,0,.58)}
+.campaign-modal-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.campaign-modal-head h3{margin:4px 0 5px}.campaign-modal-head p{margin:0;color:var(--muted);font-size:10px}.campaign-modal-head button{border:0;background:none;color:#d5dde5;font-size:25px;cursor:pointer}
+.campaign-form{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:16px}.campaign-form label{display:grid;gap:6px;font-size:9px;font-weight:900;color:#c7d0d9;text-transform:uppercase;letter-spacing:.04em}.campaign-form label.full{grid-column:1/-1}.campaign-form input,.campaign-form select{width:100%;background:#0a1118;border:1px solid #35424f;border-radius:10px;color:#fff;padding:11px;font:inherit}
+.campaign-time-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.campaign-preview{margin-top:14px;border:1px solid #394653;background:#111922;border-radius:12px;padding:12px;color:#cbd4dd;font-size:10px;line-height:1.55}.campaign-preview b{color:#fff}.campaign-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px;flex-wrap:wrap}.campaign-status-msg{min-height:18px;margin-top:9px;font-size:10px;color:#f2a6ad}
+@media(max-width:700px){.campaign-card{align-items:stretch;flex-direction:column}.campaign-actions{justify-content:flex-start}.campaign-actions>*{width:100%}.campaign-form{grid-template-columns:1fr}.campaign-form label.full{grid-column:auto}}
+
 
 
 /* ===== Acciones administrativas de inscripción ===== */
@@ -2285,6 +2298,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 
 
+  <div id="adminCampaignMgmt" class="admin-campaign-mgmt"></div>
   <div id="adminCourseMgmt" class="admin-course-mgmt"></div>
   <div id="adminKpis" class="admin-kpis"></div>
 
@@ -2309,6 +2323,26 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     </table>
   </div>
 </section>
+
+
+<div id="campaignModal" class="campaign-modal" onclick="if(event.target===this)closeRegistrationCampaignModal()">
+  <div class="campaign-dialog" role="dialog" aria-modal="true" aria-labelledby="campaignModalTitle">
+    <div class="campaign-modal-head">
+      <div><div class="kicker">Nueva convocatoria</div><h3 id="campaignModalTitle">Abrir inscripciones para el próximo curso</h3><p>La URL pública de inscripción seguirá siendo la misma. Sólo cambiará la edición activa.</p></div>
+      <button onclick="closeRegistrationCampaignModal()">✕</button>
+    </div>
+    <div class="campaign-form">
+      <label>Número de curso<input id="campaignNumber" type="number" min="1" max="999" placeholder="24" oninput="updateCampaignPreview()"></label>
+      <label>Fecha y hora de apertura<input id="campaignOpenAt" type="datetime-local" oninput="updateCampaignPreview()"></label>
+      <label>Fecha de inicio del curso<input id="campaignStartDate" type="date" oninput="updateCampaignPreview()"></label>
+      <label>Día habitual de cursada<select id="campaignDay" onchange="updateCampaignPreview()"><option value="">Seleccionar</option><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option></select></label>
+      <label class="full">Horario habitual<div class="campaign-time-row"><input id="campaignTimeStart" type="time" oninput="updateCampaignPreview()"><input id="campaignTimeEnd" type="time" oninput="updateCampaignPreview()"></div></label>
+    </div>
+    <div id="campaignPreview" class="campaign-preview">Completá los datos para previsualizar la convocatoria.</div>
+    <div id="campaignStatusMsg" class="campaign-status-msg"></div>
+    <div class="campaign-modal-actions"><button class="btn ghost" onclick="closeRegistrationCampaignModal()">Cancelar</button><button id="campaignPublishBtn" class="btn primary" onclick="publishRegistrationCampaign()">Publicar / abrir inscripciones</button></div>
+  </div>
+</div>
 
 <div id="adminDetailBackdrop" class="admin-detail-backdrop" onclick="if(event.target===this)closeAdminDetail()">
   <div class="admin-detail-card">
@@ -2570,7 +2604,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <div class="integrator-modal-actions"><button class="btn ghost" onclick="closeIntegratorExposure()">Cancelar</button><button class="btn primary" onclick="saveIntegratorExposureEvaluation()">Guardar evaluación definitiva</button></div>
 </div></div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.41.0 · Trabajo Integrador · Grupos, entregas y rúbricas</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.42.0 · Convocatorias reutilizables · Trabajo Integrador</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3805,7 +3839,7 @@ async function prepareCertificationBatch(){
 window.openCertification=openCertification;window.closeCertificationModal=closeCertificationModal;window.saveAcademicClosure=saveAcademicClosure;window.prepareCertificatePair=prepareCertificatePair;window.invalidateCertificatePair=invalidateCertificatePair;window.reissueCertificatePair=reissueCertificatePair;window.openCertificationBatch=openCertificationBatch;window.closeCertificationBatch=closeCertificationBatch;window.loadCertificationRoster=loadCertificationRoster;window.prepareCertificationBatch=prepareCertificationBatch;
 
 
-let ADMIN_REG_ALL={courses:[],registrations:[]};
+let ADMIN_REG_ALL={courses:[],registrations:[],campaign:{status:'CERRADA',course:null}};
 let ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
 let ADMIN_LAST_CREDENTIALS=[];
 
@@ -3881,6 +3915,7 @@ function applyAdminFiltersLocal(){
     registrations:rows
   };
 
+  renderAdminRegistrationCampaign();
   renderAdminCourseManagement();
   renderAdminKpis();
   renderAdminRows();
@@ -3902,7 +3937,7 @@ async function loadAdminRegistrations(force=false){
     // v0.25.3: se descarga el padrón completo UNA vez.
     // Los cambios de curso/estado se filtran localmente, sin otra llamada a Apps Script.
     const r=await apiJsonp({action:'adminRegistrations',token:sess.token,curso_id:'',estado:''});
-    ADMIN_REG_ALL={courses:r.courses||[],registrations:r.registrations||[]};
+    ADMIN_REG_ALL={courses:r.courses||[],registrations:r.registrations||[],campaign:r.campaign||{status:'CERRADA',course:null}};
 
     const courseSel=$('#adminCourse');
     if(courseSel){
@@ -3916,6 +3951,114 @@ async function loadAdminRegistrations(force=false){
     if($('#adminRows')) $('#adminRows').innerHTML=`<tr><td colspan="8" class="admin-empty">${esc(e.message||'No se pudo cargar el panel ADMIN.')}</td></tr>`;
   }
 }
+
+
+function fmtCampaignDate(v,withTime=false){
+  if(!v)return '—';
+  const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);
+  const opts=withTime
+    ? {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}
+    : {day:'2-digit',month:'2-digit',year:'numeric'};
+  return new Intl.DateTimeFormat('es-AR',opts).format(d)+(withTime?' h':'');
+}
+function registrationFormUrl(){
+  const api=(window.ITB_API_URL||'').trim();
+  if(!api)return '';
+  return api+(api.includes('?')?'&':'?')+'page=inscripcion';
+}
+function openPublicRegistrationForm(){
+  const url=registrationFormUrl();
+  if(!url){alert('No está configurada la URL del backend.');return;}
+  window.open(url,'_blank','noopener');
+}
+function renderAdminRegistrationCampaign(){
+  const target=$('#adminCampaignMgmt');if(!target)return;
+  const data=ADMIN_REG_ALL.campaign||{status:'CERRADA',course:null};
+  const status=String(data.status||'CERRADA').toUpperCase(),c=data.course||null;
+  if(!c || status==='CERRADA'){
+    target.innerHTML=`<div class="campaign-card">
+      <div class="campaign-main"><span class="campaign-status closed">INSCRIPCIONES CERRADAS</span><h3>No hay una convocatoria publicada</h3><p>Cuando corresponda, creá la próxima edición desde acá. El formulario público conservará siempre la misma URL.</p></div>
+      <div class="campaign-actions"><button class="btn primary" onclick="openRegistrationCampaignModal()">Abrir inscripciones para próximo curso</button></div>
+    </div>`;
+    return;
+  }
+  const count=(ADMIN_REG_ALL.registrations||[]).filter(r=>String(r.curso_id||'')===String(c.curso_id||'')).length;
+  const cls=status==='ABIERTA'?'open':'scheduled';
+  const label=status==='ABIERTA'?'INSCRIPCIONES ABIERTAS':'CONVOCATORIA PROGRAMADA';
+  target.innerHTML=`<div class="campaign-card">
+    <div class="campaign-main"><span class="campaign-status ${cls}">${label}</span>
+      <h3>${esc(c.nombre_corto||c.curso_id||'Curso ITB')}</h3>
+      <p>${status==='PROGRAMADA'?'La convocatoria ya está publicada y se habilitará automáticamente al llegar la fecha indicada.':'El formulario público está recibiendo inscripciones.'}</p>
+      <div class="campaign-facts">
+        <span class="campaign-fact">Apertura: ${esc(fmtCampaignDate(c.inscripcion_desde,true))}</span>
+        <span class="campaign-fact">Inicio: ${esc(fmtCampaignDate(c.fecha_inicio,false))}</span>
+        <span class="campaign-fact">${esc(c.dia_cursada||'Día pendiente')} · ${esc(c.horario_cursada||'Horario pendiente')}</span>
+        <span class="campaign-fact">Inscriptos: ${count}</span>
+      </div>
+    </div>
+    <div class="campaign-actions">
+      <button class="btn ghost" onclick="openPublicRegistrationForm()">Abrir formulario</button>
+      <button class="campaign-close-btn" onclick="closeCurrentRegistrationCampaign('${esc(c.curso_id||'')}','${esc(c.nombre_corto||c.curso_id||'curso')}')">Cerrar inscripciones</button>
+    </div>
+  </div>`;
+}
+function localDateTimeValue(d){
+  const pad=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function openRegistrationCampaignModal(){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN')return;
+  const modal=$('#campaignModal');if(!modal)return;
+  $('#campaignNumber').value='';
+  const now=new Date();now.setMinutes(Math.ceil(now.getMinutes()/5)*5,0,0);
+  $('#campaignOpenAt').value=localDateTimeValue(now);
+  $('#campaignStartDate').value='';
+  $('#campaignDay').value='';
+  $('#campaignTimeStart').value='19:00';
+  $('#campaignTimeEnd').value='21:00';
+  $('#campaignStatusMsg').textContent='';
+  updateCampaignPreview();
+  modal.classList.add('open');document.body.style.overflow='hidden';
+}
+function closeRegistrationCampaignModal(){
+  $('#campaignModal')?.classList.remove('open');document.body.style.overflow='';
+}
+function updateCampaignPreview(){
+  const num=$('#campaignNumber')?.value||'—',op=$('#campaignOpenAt')?.value||'',st=$('#campaignStartDate')?.value||'',day=$('#campaignDay')?.value||'—',h1=$('#campaignTimeStart')?.value||'—',h2=$('#campaignTimeEnd')?.value||'—';
+  const openText=op?fmtCampaignDate(new Date(op),true):'—';
+  const startText=st?fmtCampaignDate(new Date(st+'T12:00:00'),false):'—';
+  $('#campaignPreview').innerHTML=`<b>ITB ${esc(num)}</b><br>Curso de Instructores de Tiro en Armas Cortas y Largas<br>Apertura: ${esc(openText)}<br>Inicio: ${esc(startText)}<br>Cursada: ${esc(day)} · ${esc(h1)} a ${esc(h2)} hs`;
+}
+async function publishRegistrationCampaign(){
+  const status=$('#campaignStatusMsg'),btn=$('#campaignPublishBtn');
+  const num=$('#campaignNumber')?.value||'',openAt=$('#campaignOpenAt')?.value||'',start=$('#campaignStartDate')?.value||'',day=$('#campaignDay')?.value||'',h1=$('#campaignTimeStart')?.value||'',h2=$('#campaignTimeEnd')?.value||'';
+  if(!num||!openAt||!start||!day||!h1||!h2){status.textContent='Completá todos los datos de la convocatoria.';return;}
+  const summary=`ITB ${num}\nApertura: ${fmtCampaignDate(new Date(openAt),true)}\nInicio: ${fmtCampaignDate(new Date(start+'T12:00:00'),false)}\nCursada: ${day} · ${h1} a ${h2} hs`;
+  if(!confirm(`¿Publicar esta convocatoria?\n\n${summary}\n\nLa URL pública quedará asociada a esta edición.`))return;
+  const sess=getSession();if(!sess?.token)return;
+  btn.disabled=true;status.textContent='Publicando convocatoria…';
+  try{
+    const r=await apiJsonpLong({action:'adminRegistrationCampaignCreate',token:sess.token,numero_curso:num,apertura:openAt,fecha_inicio:start,dia_cursada:day,hora_inicio:h1,hora_fin:h2},60000);
+    closeRegistrationCampaignModal();
+    await loadAdminRegistrations(true);
+    if($('#adminCourse') && r.curso_id){$('#adminCourse').value=r.curso_id;applyAdminFiltersLocal();}
+  }catch(e){status.textContent=e.message||'No se pudo publicar la convocatoria.';}
+  finally{btn.disabled=false;}
+}
+async function closeCurrentRegistrationCampaign(courseId,courseName){
+  if(!confirm(`¿Cerrar las inscripciones de ${courseName}?\n\nEl formulario dejará de aceptar nuevas solicitudes. Las inscripciones recibidas se conservarán.`))return;
+  const sess=getSession();if(!sess?.token)return;
+  try{
+    await apiJsonpLong({action:'adminRegistrationCampaignClose',token:sess.token,curso_id:courseId},60000);
+    await loadAdminRegistrations(true);
+  }catch(e){alert(e.message||'No se pudieron cerrar las inscripciones.');}
+}
+window.openRegistrationCampaignModal=openRegistrationCampaignModal;
+window.closeRegistrationCampaignModal=closeRegistrationCampaignModal;
+window.updateCampaignPreview=updateCampaignPreview;
+window.publishRegistrationCampaign=publishRegistrationCampaign;
+window.closeCurrentRegistrationCampaign=closeCurrentRegistrationCampaign;
+window.openPublicRegistrationForm=openPublicRegistrationForm;
 
 
 function selectedAdminCourse(){
