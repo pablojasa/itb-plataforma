@@ -1737,6 +1737,34 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 .pin-reset-step{display:none}.pin-reset-step.active{display:block}.pin-reset-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 @media(max-width:700px){.profile-layout{grid-template-columns:1fr}.profile-photo-box{padding-bottom:10px}.profile-grid,.profile-security{grid-template-columns:1fr}.profile-field.full,.profile-security .full{grid-column:auto}.profile-card{padding:16px}.user-pill #profileBtn{padding-left:0;padding-right:0}}
 
+/* ===== v0.40.0 · Insignias académicas ===== */
+.profile-badges-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+.profile-badges-head h3{margin:0}.profile-badges-head p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.45}
+.badge-summary{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge-summary-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #3a4652;background:#121a22;border-radius:999px;padding:6px 9px;font-size:9px;color:#cbd3db;font-weight:850;white-space:nowrap}
+.badge-summary-pill strong{color:#f5d995;font-size:11px}
+.itb-badges-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.itb-badge-card{--badge-accent:#8fa1b3;display:grid;grid-template-columns:58px minmax(0,1fr);gap:11px;align-items:center;border:1px solid #303a45;background:#111820;border-radius:14px;padding:11px;min-width:0;position:relative;overflow:hidden}
+.itb-badge-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 0 0,color-mix(in srgb,var(--badge-accent) 12%,transparent),transparent 44%);pointer-events:none}
+.itb-badge-card.locked{opacity:.62;filter:saturate(.55)}
+.itb-badge-card.unlocked{border-color:color-mix(in srgb,var(--badge-accent) 55%,#303a45);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--badge-accent) 8%,transparent)}
+.itb-badge-card.final{grid-column:1/-1;background:linear-gradient(135deg,#181711,#111820 60%);border-color:#5c5132}
+.itb-badge-seal{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;position:relative;background:#0d1319;border:2px solid color-mix(in srgb,var(--badge-accent) 62%,#3b4651);box-shadow:inset 0 0 0 4px #151e27}
+.itb-badge-seal:after{content:"";position:absolute;inset:5px;border:1px dashed color-mix(in srgb,var(--badge-accent) 52%,transparent);border-radius:50%}
+.itb-badge-seal svg{width:27px;height:27px;position:relative;z-index:2;stroke:var(--badge-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.itb-badge-card.unlocked .itb-badge-seal{box-shadow:0 0 20px color-mix(in srgb,var(--badge-accent) 16%,transparent),inset 0 0 0 4px #151e27}
+.itb-badge-copy{min-width:0;position:relative;z-index:1}.itb-badge-title{font-size:11px;font-weight:950;color:#eef2f5;line-height:1.2}
+.itb-badge-meta{margin-top:4px;color:#9ea9b4;font-size:8.5px;line-height:1.35}
+.itb-badge-state{display:inline-flex;margin-top:7px;border-radius:999px;padding:4px 7px;font-size:7.5px;font-weight:950;letter-spacing:.05em;border:1px solid #3b4651;color:#aeb8c2;background:#18212a}
+.itb-badge-card.unlocked .itb-badge-state{color:#f6dda0;border-color:color-mix(in srgb,var(--badge-accent) 55%,#665b3a);background:#282416}
+.itb-badge-progress{height:4px;border-radius:999px;background:#28313a;margin-top:7px;overflow:hidden}
+.itb-badge-progress span{display:block;height:100%;border-radius:inherit;background:var(--badge-accent)}
+.itb-badges-empty{border:1px dashed #394550;border-radius:12px;padding:14px;color:var(--muted);font-size:10px;line-height:1.5}
+.student-badges-block{margin-top:12px}.student-badges-block .itb-badges-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.student-badges-block .itb-badge-card{grid-template-columns:44px minmax(0,1fr);padding:9px}.student-badges-block .itb-badge-seal{width:42px;height:42px}.student-badges-block .itb-badge-seal svg{width:21px;height:21px}
+.student-badges-block .itb-badge-title{font-size:10px}.student-badges-block .itb-badge-meta{font-size:8px}
+@media(max-width:700px){.itb-badges-grid,.student-badges-block .itb-badges-grid{grid-template-columns:1fr}.itb-badge-card.final{grid-column:auto}.profile-badges-head{flex-direction:column}}
+
 
 /* ===== v0.39.2 · Talles de remera + curva por cohorte · v0.39.0 certificación ===== */
 .cert-academic{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;border:1px solid var(--line);font-size:9px;font-weight:900;white-space:nowrap}
@@ -2440,7 +2468,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
  <button data-page="library" onclick="setPage('library')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2z"/><path d="M7 4v17M9.5 8H16"/></svg></span>Biblioteca</button>
  <button data-page="team" onclick="setPage('team')"><span class="mobile-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.7-7 6-7s6 3 6 7"/><path d="M14 14c3.6-.7 7 1.8 7 5.5"/></svg></span>Equipo</button>
 </nav>
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.39.6 · Acceso rápido · Panel Docente · Horarios corregidos</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.40.0 · Insignias académicas · Acceso rápido</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3046,7 +3074,10 @@ function renderProfile(r){
   $('#profileEmail').value=p.email||''; $('#profilePhone').value=p.telefono||''; $('#profileDependency').value=p.dependencia||'';
   $('#profileBirth').value=(String(p.fecha_nacimiento||'').match(/^\d{4}-\d{2}-\d{2}/)||[''])[0];
   if($('#profileGender'))$('#profileGender').value=p.genero||'';
-  setProfilePhoto(p.foto_data||''); $('#profileStatus').textContent='';
+  if(u?.condicion_final!==undefined && ITB_USER) ITB_USER={...ITB_USER,condicion_final:u.condicion_final||''};
+  setProfilePhoto(p.foto_data||'');
+  renderProfileBadges(u?.condicion_final||ITB_USER?.condicion_final||'');
+  $('#profileStatus').textContent='';
 }
 async function saveProfile(){
   const s=getSession(), st=$('#profileStatus'); if(!s?.token)return;
@@ -5293,6 +5324,7 @@ function showTeacherStudent(id){
 
   const started=unitRows.filter(x=>x.percent>0&&x.percent<100).length;
   const notStarted=unitRows.filter(x=>x.total>0&&x.percent===0).length;
+  const badgesHtml=studentBadgesMarkup(st);
 
   $('#studentTabSummary').innerHTML=`
     <div class="student-summary-grid">
@@ -5319,6 +5351,7 @@ function showTeacherStudent(id){
           </div>
           <div class="teacher-muted" style="margin-top:10px">${m.last?'Última actividad registrada en la plataforma.':'Aún no se registraron avances en el curso.'}</div>
         </div>
+        ${badgesHtml}
       </div>
 
       <div class="student-units-card">
@@ -5523,6 +5556,129 @@ function unitProgressInfo(uid){
   const percent=ITB_USER && total ? Math.round(completed/total*100) : 0;
   return {total,completed,percent,locked};
 }
+
+/* ===== v0.40.0 · Insignias académicas =====
+   No existe una segunda regla de progreso: cada insignia reutiliza unitProgressInfo().
+   Por eso una autoevaluación sólo aporta a la insignia cuando ya figura APROBADA
+   conforme la regla vigente del curso (mínimo 70% / 7 sobre 10).
+*/
+const ITB_BADGES=[
+  {id:'marco_instructor',nombre:'Marco del Instructor',unidades:['UNI_001','UNI_002','UNI_003'],accent:'#d5b15f'},
+  {id:'fundamentos_armamento',nombre:'Fundamentos del Armamento',unidades:['UNI_004','UNI_005','UNI_006'],accent:'#9aa8b6'},
+  {id:'sistemas_armas',nombre:'Especialista en Sistemas de Armas',unidades:['UNI_007','UNI_008','UNI_009','UNI_010'],accent:'#d78b54'},
+  {id:'dominio_balistico',nombre:'Dominio Balístico',unidades:['UNI_011','UNI_012','UNI_013','UNI_014','UNI_015'],accent:'#6fb2c8'},
+  {id:'seguridad_operativa',nombre:'Seguridad Operativa',unidades:['UNI_016','UNI_017','UNI_021'],accent:'#71be8d'},
+  {id:'formacion_instructor',nombre:'Formación del Instructor',unidades:['UNI_018','UNI_019','UNI_020'],accent:'#9d8bd0'}
+];
+
+function badgeIconSvg(id){
+  const icons={
+    marco_instructor:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v17M5 6h14M7 6l-4 7h8L7 6Zm10 0-4 7h8l-4-7ZM8 21h8"/></svg>',
+    fundamentos_armamento:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3Z"/><path d="m9 12 2 2 4-5"/></svg>',
+    sistemas_armas:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>',
+    dominio_balistico:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17c4-8 8-10 18-10"/><path d="m17 4 4 3-3 4"/><path d="M4 20h16"/></svg>',
+    seguridad_operativa:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3Z"/><path d="M8.5 12.5 11 15l4.5-6"/></svg>',
+    formacion_instructor:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 8 9-5 9 5-9 5-9-5Z"/><path d="M7 11v5c3 2 7 2 10 0v-5"/><path d="M21 8v6"/></svg>',
+    formacion_itb:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 15 7l6 .8-4.5 4.1 1.2 6-5.7-3-5.7 3 1.2-6L3 7.8 9 7l3-5Z"/><path d="m9.5 11.5 1.7 1.7 3.5-3.8"/></svg>'
+  };
+  return icons[id]||icons.formacion_itb;
+}
+
+function badgeResultsForState(progress,quizStatus,academicCondition){
+  const oldProgress=ITB_PROGRESS, oldQuiz=ITB_QUIZ_STATUS;
+  ITB_PROGRESS=progress||[];
+  ITB_QUIZ_STATUS=quizStatus||{};
+  let thematic=[];
+  try{
+    thematic=ITB_BADGES.map(def=>{
+      const unitStates=def.unidades.map(uid=>{
+        const info=unitProgressInfo(uid);
+        const unit=(DB.units||[]).find(u=>String(u.id)===String(uid));
+        return {uid,numero:unit?.numero||Number(String(uid).replace(/\D/g,''))||'',titulo:unit?.titulo||uid,info};
+      });
+      const done=unitStates.filter(x=>x.info.total>0&&x.info.percent===100).length;
+      return {...def,unitStates,done,total:def.unidades.length,unlocked:done===def.unidades.length};
+    });
+  }finally{
+    ITB_PROGRESS=oldProgress;
+    ITB_QUIZ_STATUS=oldQuiz;
+  }
+
+  const obtained=thematic.filter(x=>x.unlocked).length;
+  const academicApproved=String(academicCondition||'').trim().toUpperCase()==='APROBADO';
+  const final={
+    id:'formacion_itb',
+    nombre:'Formación ITB Completa',
+    unidades:[],
+    accent:'#e0bf67',
+    done:obtained,
+    total:thematic.length,
+    thematic_complete:obtained===thematic.length,
+    academic_approved:academicApproved,
+    unlocked:obtained===thematic.length&&academicApproved
+  };
+  return {thematic,final,obtained,total:thematic.length};
+}
+
+function badgeCardMarkup(b,compact=false){
+  const pct=b.total?Math.round((Number(b.done||0)/Number(b.total))*100):0;
+  let meta='';
+  if(b.id==='formacion_itb'){
+    meta=b.unlocked
+      ? 'Todas las insignias temáticas obtenidas · curso aprobado'
+      : `${b.done}/${b.total} insignias temáticas · ${b.academic_approved?'curso aprobado':'cierre académico pendiente'}`;
+  }else{
+    const missing=(b.unitStates||[]).filter(x=>x.info.percent!==100).map(x=>'U'+String(x.numero).padStart(2,'0'));
+    meta=b.unlocked
+      ? `${b.total}/${b.total} unidades completadas`
+      : `${b.done}/${b.total} unidades · ${missing.length?'faltan '+missing.join(', '):'en progreso'}`;
+  }
+  return `<div class="itb-badge-card ${b.unlocked?'unlocked':'locked'} ${b.id==='formacion_itb'?'final':''}" style="--badge-accent:${b.accent}">
+    <div class="itb-badge-seal">${badgeIconSvg(b.id)}</div>
+    <div class="itb-badge-copy">
+      <div class="itb-badge-title">${esc(b.nombre)}</div>
+      <div class="itb-badge-meta">${esc(meta)}</div>
+      <div class="itb-badge-progress"><span style="width:${pct}%"></span></div>
+      <span class="itb-badge-state">${b.unlocked?'OBTENIDA':'BLOQUEADA'}</span>
+    </div>
+  </div>`;
+}
+
+function badgeCollectionMarkup(result){
+  if(!result)return '<div class="itb-badges-empty">Todavía no hay información suficiente para calcular insignias.</div>';
+  return [...result.thematic,result.final].map(b=>badgeCardMarkup(b)).join('');
+}
+
+function renderProfileBadges(academicCondition){
+  const section=$('#profileBadgesSection'),grid=$('#profileBadgesGrid'),summary=$('#profileBadgesSummary');
+  if(!section||!grid||!summary)return;
+  const isStudent=String(ITB_USER?.rol||'').toUpperCase()==='ALUMNO';
+  section.style.display=isStudent?'':'none';
+  if(!isStudent)return;
+
+  if(!ITB_PRIVATE_DATA_READY || !(DB.units||[]).length){
+    summary.innerHTML='<span class="badge-summary-pill"><strong>—</strong> cargando</span>';
+    grid.innerHTML='<div class="itb-badges-empty">Las insignias aparecerán cuando termine de cargar tu progreso académico.</div>';
+    return;
+  }
+  const result=badgeResultsForState(ITB_PROGRESS,ITB_QUIZ_STATUS,academicCondition||ITB_USER?.condicion_final||'');
+  summary.innerHTML=`<span class="badge-summary-pill"><strong>${result.obtained}/${result.total}</strong> temáticas</span>
+    <span class="badge-summary-pill">${result.final.unlocked?'★ Insignia final obtenida':'Insignia final pendiente'}</span>`;
+  grid.innerHTML=badgeCollectionMarkup(result);
+}
+
+function studentBadgesMarkup(student){
+  const result=badgeResultsForState(student?.progress||[],student?.quiz_status||{},student?.condicion_final||'');
+  return `<div class="student-badges-block student-progress-card">
+    <h3>Insignias</h3>
+    <div class="badge-summary" style="margin-bottom:9px">
+      <span class="badge-summary-pill"><strong>${result.obtained}/${result.total}</strong> temáticas obtenidas</span>
+      <span class="badge-summary-pill">${result.final.unlocked?'★ Formación ITB Completa':'Final pendiente'}</span>
+    </div>
+    <div class="itb-badges-grid">${badgeCollectionMarkup(result)}</div>
+  </div>`;
+}
+
 function courseProgressInfo(){
   const units=(DB.units||DB.unidades||[]);
   const trackables=units.map(u=>({u,info:unitProgressInfo(u.id)}));
@@ -5587,6 +5743,7 @@ function refreshCourseProgressUI(){
   renderCourseDashboard();
   const search=$('#unitSearch');
   renderUnits(search ? search.value : '');
+  if($('#profileModal')?.classList.contains('open')) renderProfileBadges(ITB_USER?.condicion_final||'');
 }
 
 
@@ -7042,6 +7199,13 @@ boot();
           <div class="profile-field"><label>Rol</label><div id="profileIdentityRole" class="profile-readonly">—</div></div>
           <div class="profile-field full"><label>Curso / cohorte</label><div id="profileIdentityCourse" class="profile-readonly">—</div></div>
         </div><div class="profile-note" style="margin-top:8px">Los datos de identidad, usuario, rol y curso no pueden modificarse desde el perfil.</div></section>
+        <section id="profileBadgesSection" class="profile-section" style="display:none">
+          <div class="profile-badges-head">
+            <div><h3>Mis insignias</h3><p>Se obtienen automáticamente al completar al 100% todas las unidades de cada bloque.</p></div>
+            <div id="profileBadgesSummary" class="badge-summary"></div>
+          </div>
+          <div id="profileBadgesGrid" class="itb-badges-grid"></div>
+        </section>
         <section class="profile-section"><h3>Datos de contacto</h3><div class="profile-grid">
           <div class="profile-field"><label>Correo electrónico</label><input id="profileEmail" type="email" autocomplete="email"></div>
           <div class="profile-field"><label>Teléfono</label><input id="profilePhone" autocomplete="tel"></div>
