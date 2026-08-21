@@ -541,7 +541,14 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
 .doc-modal-frame iframe{width:100%;height:100%;border:0;background:white}
 .doc-modal-foot{padding:8px 12px;color:var(--muted);font-size:10px;border-top:1px solid var(--line)}
 .unitws-doc-item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:9px;align-items:center}
-.unitws-doc-icon{width:44px;height:54px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;background:#161d25;font-size:10px;font-weight:900;color:#cdd4dc}
+.unitws-doc-icon{width:44px;height:54px;border-radius:10px;border:1px solid #344252;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#f7f9fc 0%,#eef3f8 100%);position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+.unitws-doc-icon::before{content:'';position:absolute;top:0;right:0;width:11px;height:11px;background:linear-gradient(135deg,#dfe6ee 0%,#ffffff 100%);clip-path:polygon(0 0,100% 0,100% 100%);border-left:1px solid rgba(45,61,79,.16);border-bottom:1px solid rgba(45,61,79,.16)}
+.unitws-doc-glyph{font-size:18px;line-height:1;filter:drop-shadow(0 1px 0 rgba(255,255,255,.45))}
+.unitws-doc-ext{margin-top:5px;padding:2px 6px;border-radius:999px;font-size:8px;font-weight:950;letter-spacing:.04em;line-height:1}
+.unitws-doc-icon.pdf .unitws-doc-glyph{color:#ef4444}.unitws-doc-icon.pdf .unitws-doc-ext{background:#ef4444;color:#fff}
+.unitws-doc-icon.doc .unitws-doc-glyph{color:#3b82f6}.unitws-doc-icon.doc .unitws-doc-ext{background:#2563eb;color:#fff}
+.unitws-doc-icon.ppt .unitws-doc-glyph{color:#f97316}.unitws-doc-icon.ppt .unitws-doc-ext{background:#ea580c;color:#fff}
+.unitws-doc-icon.xls .unitws-doc-glyph{color:#22c55e}.unitws-doc-icon.xls .unitws-doc-ext{background:#16a34a;color:#fff}
 .library-view-btn{margin-top:8px}
 
 
@@ -2752,7 +2759,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.1 · Actividades Wordwall integradas · Videos clasificados</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.2 · Iconos visuales para material teórico</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3044,6 +3051,16 @@ function docTypeLabel(url){
   if(s.includes('/spreadsheets/')) return 'XLS';
   if(s.includes('drive.google.com')) return 'PDF';
   return 'DOC';
+}
+function docTypeClass(url){
+  const t=docTypeLabel(url);
+  return t==='PDF'?'pdf':t==='PPT'?'ppt':t==='XLS'?'xls':'doc';
+}
+function docTypeIconHtml(url){
+  const t=docTypeLabel(url);
+  const cls=docTypeClass(url);
+  const glyph=t==='PDF'?'📄':t==='PPT'?'📊':t==='XLS'?'📈':'📝';
+  return `<div class="unitws-doc-icon ${cls}" aria-hidden="true"><span class="unitws-doc-glyph">${glyph}</span><span class="unitws-doc-ext">${t}</span></div>`;
 }
 function openDocModal(url,title){
   const preview=googleDrivePreviewUrl(url);
@@ -6899,7 +6916,7 @@ function openUnit(uid){
 
     if(type==='Material de estudio'){
       return `<div class="unitws-item unitws-doc-item">
-        <div class="unitws-doc-icon">${esc(docTypeLabel(url))}</div>
+        ${docTypeIconHtml(url)}
         <div>
           <b>${esc(title)}</b>
           <small>${type}</small>
