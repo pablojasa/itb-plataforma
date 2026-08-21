@@ -496,6 +496,22 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
 .unitws-video-info small{display:block;color:var(--muted);font-size:9px;margin:4px 0}
 .unitws-video-link{font-size:10px;color:#69acf0;text-decoration:none;cursor:pointer}
 .unitws-video-link:hover{text-decoration:underline}
+.unitws-video-group{display:grid;gap:8px}.unitws-video-group+.unitws-video-group{margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+.unitws-video-group-head{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:9px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:#d8e0e8}
+.unitws-video-group-head span:last-child{font-weight:700;color:var(--muted);letter-spacing:0;text-transform:none}
+.unitws-video-badge{display:inline-flex;align-items:center;border-radius:999px;padding:3px 6px;margin:2px 0 4px;font-size:8px;font-weight:950;letter-spacing:.04em}
+.unitws-video-badge.required{color:#91c8ff;border:1px solid #315d8d;background:#102238}
+.unitws-video-badge.optional{color:#c8b2ef;border:1px solid #574574;background:#20192b}
+.unitws-video-note{font-size:8px;color:var(--muted);line-height:1.35;margin-top:3px}
+.unitws-activity-item{display:grid;grid-template-columns:48px minmax(0,1fr);gap:9px;align-items:center}
+.unitws-activity-thumb{width:48px;height:48px;border-radius:9px;border:1px solid var(--line);object-fit:cover;background:#15202a}
+.unitws-activity-icon{width:48px;height:48px;border-radius:9px;border:1px solid #295f54;background:linear-gradient(145deg,#102c27,#143e35);display:grid;place-items:center;font-size:21px}
+.unitws-activity-meta{min-width:0}.unitws-activity-meta b{display:block}.unitws-activity-open{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#69acf0;cursor:pointer;margin-top:3px}.unitws-activity-open:hover{text-decoration:underline}
+.activity-modal{position:fixed;inset:0;background:rgba(4,7,10,.88);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;z-index:14500}
+.activity-modal.open{display:flex}.activity-modal-card{width:min(1180px,97vw);height:min(90vh,920px);background:#0f151c;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.58);display:flex;flex-direction:column}
+.activity-modal-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}.activity-modal-title{font-size:14px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.activity-modal-actions{display:flex;align-items:center;gap:9px}.activity-modal-external{font-size:10px;color:#69acf0;text-decoration:none}.activity-modal-close{border:1px solid var(--line);background:#171e27;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px}
+.activity-modal-frame{flex:1;min-height:0;background:#fff}.activity-modal-frame iframe{width:100%;height:100%;border:0;background:#fff}.activity-modal-foot{padding:8px 12px;border-top:1px solid var(--line);font-size:9px;color:var(--muted)}
 .video-modal{position:fixed;inset:0;background:rgba(4,7,10,.84);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:22px;z-index:9999}
 .video-modal.open{display:flex}
 .video-modal-card{width:min(980px,96vw);background:#0f151c;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5)}
@@ -509,6 +525,7 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
  .unitws-video-item{grid-template-columns:78px minmax(0,1fr)}
  .unitws-video-thumb{width:78px;height:49px}
  .video-modal{padding:10px}
+ .activity-modal{padding:8px}.activity-modal-card{height:94vh}
 }
 
 
@@ -2735,7 +2752,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.43.0 · Encuesta de satisfacción · Convocatorias TED</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.0 · Actividades integradas · Videos obligatorios/complementarios</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2813,13 +2830,17 @@ function unitCounts(uid){
   if(access?.counts){
     return {
       docs:Number(access.counts.docs||0),
-      videos:Number(access.counts.videos||0),
+      videos:Number(access.counts.videos_total ?? access.counts.videos ?? 0),
+      videos_required:Number(access.counts.videos||0),
+      videos_optional:Number(access.counts.videos_complementarios||0),
       games:Number(access.counts.games||0),
       tests:Number(access.counts.tests||0)
     };
   }
   return {
     docs:(c.cartillas||[]).length, videos:(c.videos||[]).length,
+    videos_required:(c.videos||[]).filter(videoIsRequired).length,
+    videos_optional:(c.videos||[]).filter(v=>!videoIsRequired(v)).length,
     games:(c.juegos||[]).length, tests:(c.autoevaluaciones||[]).length
   };
 }
@@ -3561,14 +3582,31 @@ async function openTrackedDoc(url,title,unitId,resourceId){
   openDocModal(url,title);
   if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
 }
-async function openTrackedActivity(url,unitId,resourceId){
+function openActivityModal(url,title){
+  const modal=$('#activityModal'),frame=$('#activityModalFrame'),ttl=$('#activityModalTitle'),ext=$('#activityModalExternal');
+  if(!modal||!frame)return;
+  ttl.textContent=title||'Actividad interactiva';
+  ext.href=url||'#';
+  frame.src=url||'about:blank';
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeActivityModal(){
+  const modal=$('#activityModal'),frame=$('#activityModalFrame');
+  if(frame)frame.src='about:blank';
+  modal?.classList.remove('open');
+  document.body.style.overflow='';
+}
+function activityModalBackdrop(e){if(e?.target?.id==='activityModal')closeActivityModal();}
+
+async function openTrackedActivity(url,unitId,resourceId,title){
   if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return;}
   const already=!!progressRecord(unitId,'ACTIVIDAD',resourceId);
   if(!already && getSession()?.token){
     const ok=await markProgressSilent(unitId,'ACTIVIDAD',resourceId);
     if(ok) showITBToast('Actividad registrada como completada.');
   }
-  window.open(url,'_blank','noopener');
+  openActivityModal(url,title||'Actividad interactiva');
   if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
 }
 
@@ -3590,7 +3628,14 @@ function loadYouTubeAPI(){
     },150);
   });
 }
-async function openTrackedVideo(url,title,unitId,resourceId){
+function videoRequirement(v){
+  const raw=String(v?.tipo_video ?? v?.clasificacion_video ?? v?.clasificacion ?? v?.obligatorio ?? '').trim().toUpperCase();
+  if(['COMPLEMENTARIO','COMPLEMENTARIA','OPTATIVO','OPTATIVA','OPCIONAL','NO','FALSE','0'].includes(raw))return 'COMPLEMENTARIO';
+  return 'OBLIGATORIO';
+}
+function videoIsRequired(v){return videoRequirement(v)==='OBLIGATORIO';}
+
+async function openTrackedVideo(url,title,unitId,resourceId,requirement){
   if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return;}
   const id=extractYouTubeId(url);
 
@@ -3602,7 +3647,7 @@ async function openTrackedVideo(url,title,unitId,resourceId){
       const already=!!progressRecord(unitId,'VIDEO',resourceId);
       if(!already && getSession()?.token){
         const ok=await markProgressSilent(unitId,'VIDEO',resourceId);
-        if(ok) showITBToast('Video registrado como completado.');
+        if(ok) showITBToast(String(requirement||'OBLIGATORIO')==='COMPLEMENTARIO'?'Video complementario registrado como visto.':'Video registrado como completado.');
       }
       openVideoModal(url,title);
       if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
@@ -3616,7 +3661,7 @@ async function openTrackedVideo(url,title,unitId,resourceId){
   $('#videoModalTitle').textContent=title||'Video';
   $('#videoModal').classList.add('open');
   document.body.style.overflow='hidden';
-  ITB_YT_TRACK={unitId,resourceId,done:!!progressRecord(unitId,'VIDEO',resourceId)};
+  ITB_YT_TRACK={unitId,resourceId,requirement:String(requirement||'OBLIGATORIO'),done:!!progressRecord(unitId,'VIDEO',resourceId)};
 
   await loadYouTubeAPI();
 
@@ -3658,13 +3703,13 @@ async function completeTrackedVideo(){
   if(getSession()?.token){
     const ok=await markProgressSilent(unitId,'VIDEO',resourceId);
     if(ok){
-      showITBToast('Video registrado como completado.');
+      showITBToast(ITB_YT_TRACK?.requirement==='COMPLEMENTARIO'?'Video complementario registrado como visto.':'Video registrado como completado.');
       if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
     }
   }
 }
 
-window.openLogin=openLogin; window.closeLogin=closeLogin; window.loginStudent=loginStudent; window.logoutStudent=logoutStudent; window.markProgress=markProgress; window.openTrackedDoc=openTrackedDoc; window.openTrackedActivity=openTrackedActivity; window.openTrackedVideo=openTrackedVideo;
+window.openLogin=openLogin; window.closeLogin=closeLogin; window.loginStudent=loginStudent; window.logoutStudent=logoutStudent; window.markProgress=markProgress; window.openTrackedDoc=openTrackedDoc; window.openTrackedActivity=openTrackedActivity; window.openActivityModal=openActivityModal; window.closeActivityModal=closeActivityModal; window.activityModalBackdrop=activityModalBackdrop; window.openTrackedVideo=openTrackedVideo;
 
 
 
@@ -6298,7 +6343,7 @@ function unitTrackables(uid){
   const c=DB.contentByUnit?.[uid] || {cartillas:[],videos:[],juegos:[]};
   return [
     ...(c.cartillas||[]).map(x=>({type:'MATERIAL',id:x.id||x.name||x.nombre})),
-    ...(c.videos||[]).map(x=>({type:'VIDEO',id:x.id||x.name||x.nombre})),
+    ...(c.videos||[]).filter(videoIsRequired).map(x=>({type:'VIDEO',id:x.id||x.name||x.nombre})),
     ...(c.juegos||[]).map(x=>({type:'ACTIVIDAD',id:x.id||x.name||x.nombre}))
   ].filter(x=>x.id);
 }
@@ -6791,6 +6836,8 @@ function openUnit(uid){
   // Incluye materiales + videos + actividades + autoevaluación nativa aprobada.
   const unitPi=unitProgressInfo(uid);
   const progress=unitPi.percent;
+  const requiredVideos=(c.videos||[]).filter(videoIsRequired);
+  const optionalVideos=(c.videos||[]).filter(v=>!videoIsRequired(v));
 
   const items=(arr,type)=>arr.length?arr.slice(0,5).map(x=>{
     const url=x.link||x.videos||x.url||x.enlace||'';
@@ -6798,13 +6845,18 @@ function openUnit(uid){
 
     if(type==='Contenido audiovisual'){
       const thumb=youtubeThumb(url);
+      const requirement=videoRequirement(x);
+      const required=requirement==='OBLIGATORIO';
+      const rid=x.id||x.name||x.nombre||title;
+      const done=!!progressRecord(uid,'VIDEO',rid);
       return `<div class="unitws-item unitws-video-item">
         ${thumb?`<img class="unitws-video-thumb" src="${esc(thumb)}" alt="" loading="lazy">`:`<div class="unitws-video-thumb"></div>`}
         <div class="unitws-video-info">
           <b>${esc(title)}</b>
-          <small>${type}</small>
-          ${url?`<span class="unitws-video-link" onclick="openTrackedVideo('${esc(url)}','${esc(title)}','${esc(uid)}','${esc(x.id||x.name||x.nombre||title)}')">▶ Ver video</span>`:''}
-          ${(()=>{const rid=x.id||x.name||x.nombre||title;const done=!!progressRecord(uid,'VIDEO',rid);return done?`<div class="progress-action done">✓ Completado</div>`:''})()}
+          <span class="unitws-video-badge ${required?'required':'optional'}">${required?'OBLIGATORIO':'COMPLEMENTARIO'}</span>
+          <div class="unitws-video-note">${required?'Aporta al progreso de la unidad.':'Material adicional · no modifica el porcentaje.'}</div>
+          ${url?`<span class="unitws-video-link" onclick="openTrackedVideo('${esc(url)}','${esc(title)}','${esc(uid)}','${esc(rid)}','${requirement}')">▶ Ver video</span>`:''}
+          ${done?`<div class="progress-action done">✓ ${required?'Completado':'Visto'}</div>`:''}
         </div>
       </div>`;
     }
@@ -6825,7 +6877,14 @@ function openUnit(uid){
     const rid=x.id||x.name||x.nombre||title;
     const done=trackType?!!progressRecord(uid,trackType,rid):false;
     if(trackType==='ACTIVIDAD'){
-      return `<div class="unitws-item"><b>${esc(title)}</b><small>${type}</small>${url?`<a href="#" onclick="openTrackedActivity('${esc(url)}','${esc(uid)}','${esc(rid)}');return false;">Realizar actividad ↗</a>`:''}${done?`<div class="progress-action done">✓ Completado</div>`:''}</div>`;
+      const img=x.imagen||x.image||'';
+      return `<div class="unitws-item unitws-activity-item">
+        ${img?`<img class="unitws-activity-thumb" src="${esc(img)}" alt="" loading="lazy">`:`<div class="unitws-activity-icon">✦</div>`}
+        <div class="unitws-activity-meta"><b>${esc(title)}</b><small>${type}</small>
+          ${url?`<span class="unitws-activity-open" onclick="openTrackedActivity('${esc(url)}','${esc(uid)}','${esc(rid)}','${esc(title)}')">Realizar actividad</span>`:''}
+          ${done?`<div class="progress-action done">✓ Completado</div>`:''}
+        </div>
+      </div>`;
     }
     return `<div class="unitws-item"><b>${esc(title)}</b><small>${type}</small>${url?`<a href="${esc(url)}" target="_blank" rel="noopener">Abrir ↗</a>`:''}</div>`;
   }).join(''):'<div class="unitws-empty">Todavía no hay contenidos vinculados.</div>';
@@ -6843,17 +6902,23 @@ function openUnit(uid){
   $('#unitWorkspace').innerHTML=`<div class="unitws">
    <div class="unitws-head">
     <div><div class="unitws-back" onclick="setPage('course')">← Volver a Unidades</div><h1>Unidad ${esc(u.numero||'')}</h1><div class="unitws-title">${esc(u.titulo||'')}</div><div class="unitws-desc">${esc(u.descripcion||'Contenidos y recursos correspondientes a esta unidad.')}</div>
-     <div class="unitws-chips"><span class="unitws-chip">${c.cartillas.length} materiales</span><span class="unitws-chip">${c.videos.length} videos</span><span class="unitws-chip">${c.juegos.length} actividades</span><span class="unitws-chip">${classes.length} clases vinculadas</span></div>
+     <div class="unitws-chips"><span class="unitws-chip">${c.cartillas.length} materiales</span><span class="unitws-chip">${requiredVideos.length} videos obligatorios</span>${optionalVideos.length?`<span class="unitws-chip">${optionalVideos.length} complementarios</span>`:''}<span class="unitws-chip">${c.juegos.length} actividades</span><span class="unitws-chip">${classes.length} clases vinculadas</span></div>
     </div>
-    <aside class="unitws-progress"><h3>Mi progreso en la unidad</h3>${ITB_USER?'':'<div class="note" style="margin-bottom:8px">Ingresá para registrar tu progreso.</div>'}<div class="unitws-ring" style="background:conic-gradient(#438ddd 0 ${progress}%,#253342 ${progress}% 100%)"><b>${progress}%</b></div><div class="unitws-checks"><div><span>Material teórico</span><span>${c.cartillas.filter(x=>progressRecord(uid,'MATERIAL',x.id||x.name||x.nombre)).length}/${c.cartillas.length}</span></div><div><span>Videos</span><span>${c.videos.filter(x=>progressRecord(uid,'VIDEO',x.id||x.name||x.nombre)).length}/${c.videos.length}</span></div><div><span>Actividades</span><span>${c.juegos.filter(x=>progressRecord(uid,'ACTIVIDAD',x.id||x.name||x.nombre)).length}/${c.juegos.length}</span></div><div><span>Autoevaluación</span><span class="${quizStatus(uid).approved?'uw-ok':'uw-no'}">${quizStatus(uid).available?(quizStatus(uid).approved?`✓ ${quizStatus(uid).best_score}/10`:`${quizStatus(uid).best_score===null?'Pendiente':quizStatus(uid).best_score+'/10'}`):'—'}</span></div></div></aside>
+    <aside class="unitws-progress"><h3>Mi progreso en la unidad</h3>${ITB_USER?'':'<div class="note" style="margin-bottom:8px">Ingresá para registrar tu progreso.</div>'}<div class="unitws-ring" style="background:conic-gradient(#438ddd 0 ${progress}%,#253342 ${progress}% 100%)"><b>${progress}%</b></div><div class="unitws-checks"><div><span>Material teórico</span><span>${c.cartillas.filter(x=>progressRecord(uid,'MATERIAL',x.id||x.name||x.nombre)).length}/${c.cartillas.length}</span></div><div><span>Videos obligatorios</span><span>${requiredVideos.filter(x=>progressRecord(uid,'VIDEO',x.id||x.name||x.nombre)).length}/${requiredVideos.length}</span></div>${optionalVideos.length?`<div><span>Complementarios vistos</span><span>${optionalVideos.filter(x=>progressRecord(uid,'VIDEO',x.id||x.name||x.nombre)).length}/${optionalVideos.length}</span></div>`:''}<div><span>Actividades</span><span>${c.juegos.filter(x=>progressRecord(uid,'ACTIVIDAD',x.id||x.name||x.nombre)).length}/${c.juegos.length}</span></div><div><span>Autoevaluación</span><span class="${quizStatus(uid).approved?'uw-ok':'uw-no'}">${quizStatus(uid).available?(quizStatus(uid).approved?`✓ ${quizStatus(uid).best_score}/10`:`${quizStatus(uid).best_score===null?'Pendiente':quizStatus(uid).best_score+'/10'}`):'—'}</span></div></div></aside>
    </div>
    <div class="unitws-strip"><div><b>Clases vinculadas a esta unidad</b><div class="note">${classes.length} en el cronograma</div></div><div class="unitws-stripmeta"><span>${past.length} pasada${past.length===1?'':'s'}</span><span>${next?'Próxima: '+next.fecha+' · '+next.hora:'Sin próxima clase'}</span><span>${future.length} futura${future.length===1?'':'s'}</span></div><button class="btn ghost" onclick="setPage('schedulePage')">Ver cronograma</button></div>
-   <div class="unitws-cols"><div class="unitws-col"><h3>1. Material teórico</h3>${items(c.cartillas,'Material de estudio')}</div><div class="unitws-col"><h3>2. Videos de la unidad</h3>${items(c.videos,'Contenido audiovisual')}</div><div class="unitws-col"><h3>3. Actividades</h3>${items(c.juegos,'Actividad interactiva')}</div><div class="unitws-col"><h3>4. Autoevaluación</h3>${evalBox}</div><div class="unitws-col"><h3>5. Clases del cronograma</h3>${classBox}</div></div>
+   <div class="unitws-cols"><div class="unitws-col"><h3>1. Material teórico</h3>${items(c.cartillas,'Material de estudio')}</div><div class="unitws-col"><h3>2. Videos de la unidad</h3>
+      ${requiredVideos.length?`<div class="unitws-video-group"><div class="unitws-video-group-head"><span>Obligatorios</span><span>Aportan al progreso</span></div>${items(requiredVideos,'Contenido audiovisual')}</div>`:'<div class="unitws-empty">No hay videos obligatorios.</div>'}
+      ${optionalVideos.length?`<div class="unitws-video-group"><div class="unitws-video-group-head"><span>Complementarios</span><span>No afectan el progreso</span></div>${items(optionalVideos,'Contenido audiovisual')}</div>`:''}
+    </div><div class="unitws-col"><h3>3. Actividades</h3>${items(c.juegos,'Actividad interactiva')}</div><div class="unitws-col"><h3>4. Autoevaluación</h3>${evalBox}</div><div class="unitws-col"><h3>5. Clases del cronograma</h3>${classBox}</div></div>
    <div class="unitws-objective"><h3>Objetivo de la unidad</h3><p>${esc(u.objetivo||u.descripcion||'Integrar los contenidos, recursos y actividades previstos para esta unidad.')}</p></div>
   </div>`;
   setPage('unitDetail');
 }
 window.openUnit=openUnit;
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && $('#activityModal')?.classList.contains('open')) closeActivityModal();
+});
 
 function renderLibrary(filter=''){
   const q=filter.trim().toLowerCase();
@@ -7928,6 +7993,23 @@ boot();
         <button id="alertAckBtn" class="btn primary" onclick="acknowledgeCurrentAlert()">Entendido</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div id="activityModal" class="activity-modal" onclick="activityModalBackdrop(event)">
+  <div class="activity-modal-card" role="dialog" aria-modal="true" aria-labelledby="activityModalTitle">
+    <div class="activity-modal-head">
+      <div id="activityModalTitle" class="activity-modal-title">Actividad interactiva</div>
+      <div class="activity-modal-actions">
+        <a id="activityModalExternal" class="activity-modal-external" href="#" target="_blank" rel="noopener">Abrir aparte ↗</a>
+        <button class="activity-modal-close" onclick="closeActivityModal()" aria-label="Cerrar">×</button>
+      </div>
+    </div>
+    <div class="activity-modal-frame">
+      <iframe id="activityModalFrame" src="" title="Actividad interactiva"
+        allow="fullscreen; autoplay; clipboard-read; clipboard-write"></iframe>
+    </div>
+    <div class="activity-modal-foot">Actividad integrada en Academia TED. “Abrir aparte” queda disponible sólo como alternativa si el proveedor externo impide la visualización embebida.</div>
   </div>
 </div>
 
