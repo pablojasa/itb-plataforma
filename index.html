@@ -511,7 +511,7 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
 .activity-modal.open{display:flex}.activity-modal-card{width:min(1180px,97vw);height:min(90vh,920px);background:#0f151c;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.58);display:flex;flex-direction:column}
 .activity-modal-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}.activity-modal-title{font-size:14px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .activity-modal-actions{display:flex;align-items:center;gap:9px}.activity-modal-external{font-size:10px;color:#69acf0;text-decoration:none}.activity-modal-close{border:1px solid var(--line);background:#171e27;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px}
-.activity-modal-frame{flex:1;min-height:0;background:#fff}.activity-modal-frame iframe{width:100%;height:100%;border:0;background:#fff}.activity-modal-foot{padding:8px 12px;border-top:1px solid var(--line);font-size:9px;color:var(--muted)}
+.activity-modal-frame{flex:1;min-height:0;background:#fff;position:relative}.activity-modal-frame iframe{width:100%;height:100%;border:0;background:#fff}.activity-modal-loading{position:absolute;inset:0;display:none;place-items:center;background:#101821;color:#d5dde5;text-align:center;padding:24px;z-index:2}.activity-modal-loading.show{display:grid}.activity-modal-loading b{display:block;font-size:15px;margin-bottom:7px}.activity-modal-loading span{font-size:10px;color:var(--muted);line-height:1.5}.activity-modal-foot{padding:8px 12px;border-top:1px solid var(--line);font-size:9px;color:var(--muted)}
 .video-modal{position:fixed;inset:0;background:rgba(4,7,10,.84);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:22px;z-index:9999}
 .video-modal.open{display:flex}
 .video-modal-card{width:min(980px,96vw);background:#0f151c;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5)}
@@ -2752,7 +2752,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.0 · Actividades integradas · Videos obligatorios/complementarios</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.1 · Actividades Wordwall integradas · Videos clasificados</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3582,22 +3582,44 @@ async function openTrackedDoc(url,title,unitId,resourceId){
   openDocModal(url,title);
   if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
 }
-function openActivityModal(url,title){
+function activityModalMessage(title,text){
+  const box=$('#activityModalLoading');
+  if(!box)return;
+  box.innerHTML=`<div><b>${esc(title||'Preparando actividad…')}</b><span>${esc(text||'')}</span></div>`;
+  box.classList.add('show');
+}
+function activityModalHideMessage(){
+  $('#activityModalLoading')?.classList.remove('show');
+}
+function openActivityModal(url,title,externalUrl){
   const modal=$('#activityModal'),frame=$('#activityModalFrame'),ttl=$('#activityModalTitle'),ext=$('#activityModalExternal');
   if(!modal||!frame)return;
   ttl.textContent=title||'Actividad interactiva';
-  ext.href=url||'#';
+  ext.href=externalUrl||url||'#';
+  frame.onload=()=>activityModalHideMessage();
   frame.src=url||'about:blank';
   modal.classList.add('open');
   document.body.style.overflow='hidden';
 }
 function closeActivityModal(){
   const modal=$('#activityModal'),frame=$('#activityModalFrame');
-  if(frame)frame.src='about:blank';
+  if(frame){frame.onload=null;frame.src='about:blank';}
+  activityModalHideMessage();
   modal?.classList.remove('open');
   document.body.style.overflow='';
 }
 function activityModalBackdrop(e){if(e?.target?.id==='activityModal')closeActivityModal();}
+
+async function resolveActivityEmbedUrl(url){
+  const raw=String(url||'').trim();
+  if(!/^https:\/\/(?:[a-z0-9-]+\.)?wordwall\.net\//i.test(raw))return raw;
+  if(/\/embed\//i.test(raw))return raw;
+  const sess=getSession();
+  if(!sess?.token)throw new Error('Iniciá sesión para abrir la actividad.');
+  const r=await apiJsonpLong({action:'activityEmbedResolve',token:sess.token,url:raw},35000);
+  if(!r?.url)throw new Error('No se pudo obtener la versión integrada de Wordwall.');
+  return r.url;
+}
 
 async function openTrackedActivity(url,unitId,resourceId,title){
   if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return;}
@@ -3606,8 +3628,22 @@ async function openTrackedActivity(url,unitId,resourceId,title){
     const ok=await markProgressSilent(unitId,'ACTIVIDAD',resourceId);
     if(ok) showITBToast('Actividad registrada como completada.');
   }
-  openActivityModal(url,title||'Actividad interactiva');
-  if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
+
+  // Abrimos el modal primero para que la interfaz responda instantáneamente.
+  openActivityModal('about:blank',title||'Actividad interactiva',url);
+  activityModalMessage('Preparando actividad…','Wordwall se cargará mediante su modo oficial de inserción para evitar el bucle de consentimiento de cookies.');
+
+  try{
+    const embedUrl=await resolveActivityEmbedUrl(url);
+    const frame=$('#activityModalFrame');
+    if(frame)frame.src=embedUrl;
+  }catch(e){
+    const frame=$('#activityModalFrame');
+    if(frame)frame.src='about:blank';
+    activityModalMessage('No pudimos integrar esta actividad',`${e.message||'El proveedor externo rechazó la carga.'} Podés usar “Abrir aparte” arriba a la derecha.`);
+  }
+
+  if(window.__currentUnitId===unitId)setTimeout(()=>openUnit(unitId),250);
 }
 
 /* YouTube: se completa al alcanzar el 90% reproducido. */
@@ -8006,10 +8042,11 @@ boot();
       </div>
     </div>
     <div class="activity-modal-frame">
+      <div id="activityModalLoading" class="activity-modal-loading"><div><b>Preparando actividad…</b><span>Estamos cargando la versión integrada del recurso.</span></div></div>
       <iframe id="activityModalFrame" src="" title="Actividad interactiva"
         allow="fullscreen; autoplay; clipboard-read; clipboard-write"></iframe>
     </div>
-    <div class="activity-modal-foot">Actividad integrada en Academia TED. “Abrir aparte” queda disponible sólo como alternativa si el proveedor externo impide la visualización embebida.</div>
+    <div class="activity-modal-foot">Actividad integrada en Academia TED mediante el modo de inserción del proveedor. “Abrir aparte” queda disponible como alternativa.</div>
   </div>
 </div>
 
