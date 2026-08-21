@@ -540,6 +540,17 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
 .doc-modal-frame{flex:1;min-height:0;background:#111}
 .doc-modal-frame iframe{width:100%;height:100%;border:0;background:white}
 .doc-modal-foot{padding:8px 12px;color:var(--muted);font-size:10px;border-top:1px solid var(--line)}
+.summary-modal{position:fixed;inset:0;background:rgba(4,7,10,.88);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;z-index:14100}
+.summary-modal.open{display:flex}
+.summary-modal-card{width:min(1180px,97vw);height:min(90vh,920px);background:#0f151c;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.55);display:flex;flex-direction:column}
+.summary-modal-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+.summary-modal-title{font-size:14px;font-weight:850;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.summary-modal-actions{display:flex;gap:8px;align-items:center}
+.summary-modal-open{font-size:11px;color:#6eb0f4;text-decoration:none}
+.summary-modal-close{border:1px solid var(--line);background:#171e27;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px}
+.summary-modal-frame{flex:1;min-height:0;background:#fff;position:relative}
+.summary-modal-frame iframe{width:100%;height:100%;border:0;background:#fff}
+.summary-modal-foot{padding:8px 12px;color:var(--muted);font-size:10px;border-top:1px solid var(--line)}
 .unitws-doc-item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:9px;align-items:center}
 .unitws-doc-icon{width:44px;height:54px;border-radius:10px;border:1px solid #344252;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#f7f9fc 0%,#eef3f8 100%);position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
 .unitws-doc-icon::before{content:'';position:absolute;top:0;right:0;width:11px;height:11px;background:linear-gradient(135deg,#dfe6ee 0%,#ffffff 100%);clip-path:polygon(0 0,100% 0,100% 100%);border-left:1px solid rgba(45,61,79,.16);border-bottom:1px solid rgba(45,61,79,.16)}
@@ -2759,7 +2770,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.2 · Iconos visuales para material teórico</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.3 · Resúmenes de clase en modal</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3062,6 +3073,32 @@ function docTypeIconHtml(url){
   const glyph=t==='PDF'?'📄':t==='PPT'?'📊':t==='XLS'?'📈':'📝';
   return `<div class="unitws-doc-icon ${cls}" aria-hidden="true"><span class="unitws-doc-glyph">${glyph}</span><span class="unitws-doc-ext">${t}</span></div>`;
 }
+function classSummaryPreviewUrl(url){
+  const drivePreview=googleDrivePreviewUrl(url);
+  if(drivePreview)return drivePreview;
+  return String(url||'').trim();
+}
+function openClassSummaryModal(url,title){
+  const raw=String(url||'').trim();
+  if(!raw)return;
+  const modal=$('#summaryModal'),frame=$('#summaryModalFrame'),ttl=$('#summaryModalTitle'),ext=$('#summaryModalExternal');
+  if(!modal||!frame)return;
+  ttl.textContent=title||'Resumen de la clase';
+  ext.href=raw;
+  frame.src=classSummaryPreviewUrl(raw);
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeClassSummaryModal(){
+  const modal=$('#summaryModal'),frame=$('#summaryModalFrame');
+  if(frame)frame.src='';
+  modal?.classList.remove('open');
+  document.body.style.overflow='';
+}
+function summaryModalBackdrop(e){
+  if(e && e.target && e.target.id==='summaryModal')closeClassSummaryModal();
+}
+
 function openDocModal(url,title){
   const preview=googleDrivePreviewUrl(url);
   if(!preview){
@@ -3088,11 +3125,15 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     closeDocModal();
     closeVideoModal();
+    closeClassSummaryModal();
   }
 });
 window.openDocModal=openDocModal;
 window.closeDocModal=closeDocModal;
 window.docModalBackdrop=docModalBackdrop;
+window.openClassSummaryModal=openClassSummaryModal;
+window.closeClassSummaryModal=closeClassSummaryModal;
+window.summaryModalBackdrop=summaryModalBackdrop;
 
 function extractYouTubeId(url){
   if(!url) return '';
@@ -6946,7 +6987,7 @@ function openUnit(uid){
   const classBox=classes.length?classes.slice(-5).map(x=>{
     const d=parseLocalDateTime(x), isPast=d&&d<now, status=effectiveScheduleStatus(x), mod=String(x.modalidad||'').toUpperCase(), typ=String(x.tipo||'').toUpperCase();
     let link='';
-    if(mod==='VIRTUAL'&&isPast&&x.resumen_url) link=`<a href="${esc(x.resumen_url)}" target="_blank" rel="noopener">Ver resumen ↗</a>`;
+    if(mod==='VIRTUAL'&&isPast&&x.resumen_url) link=`<a href="#" onclick="openClassSummaryModal('${esc(x.resumen_url)}','${esc(x.titulo||'Resumen de la clase')}');return false;">Ver resumen</a>`;
     else if(mod==='VIRTUAL'&&!isPast) link=`<a href="${esc((DB.config&&DB.config.zoom_url)||'#')}" target="_blank" rel="noopener">Ingresar a Zoom ↗</a>`;
     else if(x.maps_url) link=`<a href="${esc(x.maps_url)}" target="_blank" rel="noopener">Ver ubicación ↗</a>`;
     return `<div class="unitws-item unitws-class ${typ==='PRACTICA'?'practice':''} ${isPast?'past':''}"><b>${esc(x.titulo||'Actividad')}</b><small>${esc(x.fecha||'')} · ${esc(x.hora||'')}<br>${esc(x.lugar||x.modalidad||'')} · ${esc(status)}</small>${link}</div>`;
@@ -7220,7 +7261,7 @@ function renderSchedule(){
     }
 
     if(modality==='VIRTUAL' && isPastStatus && item.resumen_url){
-      buttons.push(`<a class="btn summary-btn" href="${esc(item.resumen_url)}" target="_blank" rel="noopener">Ver resumen de la clase ↗</a>`);
+      buttons.push(`<button class="btn summary-btn" onclick="openClassSummaryModal('${esc(item.resumen_url)}','${esc(item.titulo||'Resumen de la clase')}')">Ver resumen de la clase</button>`);
     }
 
     if(item.maps_url) buttons.push(`<a class="btn ghost" href="${esc(item.maps_url)}" target="_blank" rel="noopener">Ver ubicación ↗</a>`);
@@ -8082,6 +8123,23 @@ boot();
   </div>
 </div>
 
+
+<div id="summaryModal" class="summary-modal" onclick="summaryModalBackdrop(event)">
+  <div class="summary-modal-card" role="dialog" aria-modal="true" aria-labelledby="summaryModalTitle">
+    <div class="summary-modal-head">
+      <div id="summaryModalTitle" class="summary-modal-title">Resumen de la clase</div>
+      <div class="summary-modal-actions">
+        <a id="summaryModalExternal" class="summary-modal-open" href="#" target="_blank" rel="noopener">Abrir aparte ↗</a>
+        <button class="summary-modal-close" onclick="closeClassSummaryModal()" aria-label="Cerrar">×</button>
+      </div>
+    </div>
+    <div class="summary-modal-frame">
+      <iframe id="summaryModalFrame" src="" title="Resumen de la clase"
+        allow="clipboard-read; clipboard-write"></iframe>
+    </div>
+    <div class="summary-modal-foot">El resumen se muestra dentro de Academia TED. Si el proveedor impide la visualización integrada, podés usar “Abrir aparte”.</div>
+  </div>
+</div>
 
 <div id="docModal" class="doc-modal" onclick="docModalBackdrop(event)">
   <div class="doc-modal-card" role="dialog" aria-modal="true" aria-labelledby="docModalTitle">
