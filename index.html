@@ -1814,6 +1814,40 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 @media(max-width:900px){.integrator-tools-grid,.integrator-groups-grid{grid-template-columns:1fr}.integrator-pool-card{grid-template-columns:1fr}.integrator-summary{grid-template-columns:repeat(2,1fr)}.integrator-student-grid{grid-template-columns:1fr}.integrator-grades{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:650px){.integrator-admin-head,.integrator-student-head{flex-direction:column}.integrator-form-grid,.integrator-date-grid{grid-template-columns:1fr}.integrator-rubric-row{grid-template-columns:1fr repeat(4,1fr)}.integrator-summary{grid-template-columns:1fr 1fr}.integrator-final-preview{grid-template-columns:1fr}.integrator-resource-links{display:grid}.integrator-resource-links a{justify-content:center}}
 
+
+/* ===== v0.43.0 · Encuesta de satisfacción ===== */
+.survey-course-shell{margin:0 0 22px;border:1px solid #34414d;background:linear-gradient(145deg,#121a22,#0d141a);border-radius:18px;padding:18px}
+.survey-course-head{display:flex;justify-content:space-between;gap:16px;align-items:center}.survey-course-head h2{margin:4px 0 4px}.survey-course-head p{margin:0;color:var(--muted);font-size:10px}
+.survey-course-card{margin-top:12px;border-top:1px solid #2d3944;padding-top:12px;color:#c9d2da;font-size:11px;line-height:1.55}.survey-course-card b{color:#fff}
+.survey-overlay{position:fixed;inset:0;z-index:19000;background:rgba(2,6,10,.9);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:16px}.survey-overlay.open{display:flex}
+.survey-invite-dialog{width:min(500px,95vw);background:#0f161d;border:1px solid #384550;border-radius:22px;padding:24px;text-align:center;box-shadow:0 28px 85px rgba(0,0,0,.58)}
+.survey-invite-icon,.survey-thanks-icon{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;margin:0 auto 13px;border:1px solid #2f6d46;background:#12261a;color:#85dea4;font-size:28px;font-weight:950}.survey-invite-dialog h2{margin:7px 0 8px}.survey-invite-dialog p{color:#aeb8c2;font-size:11px;line-height:1.6;margin:0 auto;max-width:430px}.survey-invite-actions{display:flex;justify-content:center;gap:9px;margin-top:18px;flex-wrap:wrap}
+.survey-dialog{width:min(920px,97vw);max-height:94vh;overflow:auto;background:#0e151c;border:1px solid #394651;border-radius:22px;box-shadow:0 30px 90px rgba(0,0,0,.62)}
+.survey-modal-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:18px 20px;background:rgba(14,21,28,.97);border-bottom:1px solid #2f3a45;backdrop-filter:blur(7px)}.survey-modal-head h2{margin:4px 0}.survey-modal-head p{margin:0;color:var(--muted);font-size:10px}.survey-x{border:1px solid #35424e;background:#151e27;color:#fff;border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:19px}
+#surveyFormView,#surveyPreviewView{padding:18px 20px 22px}.survey-voluntary-note{border:1px solid #3a4652;background:#111922;border-radius:12px;padding:12px;color:#bdc7d0;font-size:10px;line-height:1.55}.survey-voluntary-note b{color:#fff}
+.survey-progress-line{display:flex;justify-content:space-between;gap:10px;margin:13px 2px 16px;color:#8f9ba6;font-size:9px;flex-wrap:wrap}
+.survey-section-block{margin:0 0 18px}.survey-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #2b3741;padding-bottom:8px;margin-bottom:10px}.survey-section-title span{font-size:12px;font-weight:950;color:#f0c97d;text-transform:uppercase;letter-spacing:.05em}.survey-section-title small{color:#7f8b96;font-size:9px}
+.survey-question-card{border:1px solid #303c47;background:#101820;border-radius:15px;padding:15px 15px 13px;margin-bottom:9px;scroll-margin-top:90px}.survey-question-card.unanswered{border-color:#3a4652}.survey-question-card.answered{border-color:#385348}
+.survey-q-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.survey-q-number{font-size:9px;color:#83909b;font-weight:900;margin-bottom:5px}.survey-q-text{font-size:12px;font-weight:850;line-height:1.45;color:#eef2f5}.survey-q-value{min-width:70px;text-align:right;font-size:18px;font-weight:950;color:#f0c97d}.survey-q-value span{display:block;color:#8f9aa4;font-size:8px;font-weight:700;margin-top:3px}
+.survey-range-wrap{margin-top:13px}.survey-range{width:100%;height:25px;background:transparent;appearance:none;-webkit-appearance:none;cursor:pointer}.survey-range:focus{outline:none}.survey-range::-webkit-slider-runnable-track{height:6px;background:linear-gradient(90deg,#5f2529,#806e3e,#2d6844);border-radius:999px;border:1px solid #46515a}.survey-range::-moz-range-track{height:6px;background:#59636d;border-radius:999px;border:0}.survey-range::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#f0c97d;border:3px solid #111820;margin-top:-9px;box-shadow:0 0 0 1px #c69e4b}.survey-range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#f0c97d;border:3px solid #111820}.survey-range.unanswered::-webkit-slider-thumb{opacity:0}.survey-range.unanswered::-moz-range-thumb{opacity:0}
+.survey-range-labels{display:flex;justify-content:space-between;gap:12px;color:#8e99a4;font-size:8px;line-height:1.35}.survey-range-labels span:last-child{text-align:right}.survey-selected-label{text-align:center;color:#cbd4dc;font-size:9px;min-height:14px;margin-top:4px;font-weight:800}
+.survey-open-section{margin-top:22px}.survey-open-q{display:grid;gap:7px;margin-bottom:12px}.survey-open-q label{font-size:11px;font-weight:850;line-height:1.45}.survey-open-q textarea{width:100%;resize:vertical;min-height:88px;background:#0a1117;border:1px solid #34414c;border-radius:11px;color:#fff;padding:11px;font:inherit;line-height:1.5}
+.survey-error{min-height:19px;margin-top:9px;color:#f3a1a8;font-size:10px}.survey-modal-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:13px}
+.survey-preview-intro h3{margin:0 0 4px}.survey-preview-intro p{margin:0 0 14px;color:#9da8b3;font-size:10px}.survey-preview-list{display:grid;gap:8px}.survey-preview-item{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;border:1px solid #303b46;background:#101820;border-radius:12px;padding:11px 12px}.survey-preview-item .text{font-size:10px;line-height:1.45;color:#c9d1d9}.survey-preview-item .answer{text-align:right}.survey-preview-item .answer b{display:block;color:#f0c97d;font-size:14px}.survey-preview-item .answer span{font-size:8px;color:#89959f}.survey-preview-item button{border:0;background:none;color:#85a9c9;font-size:8px;padding:3px 0;cursor:pointer}
+.survey-preview-comments{margin-top:17px}.survey-preview-comment{border:1px solid #303b46;background:#0f171f;border-radius:12px;padding:11px;margin-bottom:8px}.survey-preview-comment b{display:block;font-size:10px;margin-bottom:6px}.survey-preview-comment p{margin:0;color:#aeb8c1;font-size:10px;line-height:1.5;white-space:pre-wrap}
+.survey-thanks{text-align:center;padding:48px 22px}.survey-thanks h2{margin:5px 0}.survey-thanks p{color:#9ba7b1;font-size:11px;margin:0 0 17px}
+.survey-staff-shell{padding:4px 0 30px}.survey-staff-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:15px}.survey-staff-head h2{margin:4px 0}.survey-staff-head p{margin:0;color:var(--muted);font-size:10px}.survey-staff-controls{display:flex;gap:8px;flex-wrap:wrap}.survey-staff-controls select{background:#101820;border:1px solid #35414d;color:#fff;border-radius:10px;padding:10px}
+.survey-staff-participation{border:1px solid #36434f;background:#101820;border-radius:16px;padding:14px 16px;margin-bottom:13px}.survey-part-top{display:flex;justify-content:space-between;gap:15px;align-items:flex-end}.survey-part-top h3{margin:0 0 4px}.survey-part-top p{margin:0;color:#8f9aa5;font-size:9px}.survey-part-pct{font-size:28px;font-weight:950;color:#f0c97d}.survey-part-track{height:8px;background:#1c2731;border-radius:999px;overflow:hidden;margin-top:10px}.survey-part-track span{display:block;height:100%;background:#477d59;border-radius:999px}.survey-part-meta{display:flex;gap:11px;flex-wrap:wrap;margin-top:8px;color:#9da8b2;font-size:9px}
+.survey-kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:14px}.survey-kpi{border:1px solid #34414c;background:#101820;border-radius:14px;padding:12px}.survey-kpi b{display:block;font-size:22px;color:#f0c97d}.survey-kpi span{display:block;font-size:8px;color:#909ba6;margin-top:5px;line-height:1.35}
+.survey-staff-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:13px}.survey-staff-card{border:1px solid #34414c;background:#0e151c;border-radius:17px;padding:14px}.survey-question-stats{display:grid;gap:7px}.survey-stat-row{border:1px solid #2f3a45;background:#101820;border-radius:11px;padding:10px}.survey-stat-top{display:flex;justify-content:space-between;gap:12px}.survey-stat-top b{font-size:9px;line-height:1.4}.survey-stat-top span{color:#f0c97d;font-size:12px;font-weight:950;white-space:nowrap}.survey-stat-meta{font-size:8px;color:#85919c;margin-top:4px}.survey-dist{display:flex;gap:4px;margin-top:7px;height:5px}.survey-dist span{background:#52606b;border-radius:999px;min-width:2px}
+.survey-open-block{margin-bottom:14px}.survey-open-block h4{font-size:10px;margin:0 0 7px;color:#d8dee4}.survey-comment{border-left:2px solid #586674;padding:7px 9px;margin-bottom:7px;color:#aeb8c2;font-size:9px;line-height:1.5;background:#111922;border-radius:0 8px 8px 0;white-space:pre-wrap}
+@media(max-width:1050px){.survey-kpi-grid{grid-template-columns:repeat(3,1fr)}.survey-staff-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.survey-course-head,.survey-staff-head{flex-direction:column;align-items:stretch}.survey-course-head button,.survey-staff-controls>*{width:100%}.survey-dialog{width:100%;max-height:96vh;border-radius:17px}.survey-modal-head{padding:15px}.survey-q-head{display:block}.survey-q-value{text-align:left;margin-top:7px}.survey-q-value span{display:inline;margin-left:6px}.survey-preview-item{grid-template-columns:1fr}.survey-preview-item .answer{text-align:left}.survey-kpi-grid{grid-template-columns:repeat(2,1fr)}.survey-invite-actions>*{width:100%}}
+
+
+.survey-manual-enable{border:1px dashed #5f5637;background:#1b1911;border-radius:14px;padding:12px 14px;margin-bottom:13px;display:flex;justify-content:space-between;gap:14px;align-items:center}.survey-manual-enable>div:first-child{display:grid;gap:4px}.survey-manual-enable b{font-size:10px;color:#f0c97d}.survey-manual-enable span{font-size:9px;color:#a9a28d;line-height:1.45}.survey-manual-controls{display:flex;gap:8px;min-width:min(460px,50%)}.survey-manual-controls select{flex:1;background:#101820;border:1px solid #42483d;color:#fff;border-radius:10px;padding:9px}
+@media(max-width:800px){.survey-manual-enable{flex-direction:column;align-items:stretch}.survey-manual-controls{min-width:0}.survey-manual-controls>*{width:100%}}
+
 </style></head>
 <body class="guest-mode app-loading">
 <div id="pwaLaunchSplash" class="pwa-launch-splash" aria-label="Iniciando Academia TED">
@@ -1996,6 +2030,14 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
       <div id="studentIntegratorMount" class="integrator-student-card"><div class="teacher-empty">Abrí esta sección para cargar la información de tu grupo.</div></div>
     </section>
 
+    <section id="studentSurveySection" class="student-only survey-course-shell" style="display:none">
+      <div class="survey-course-head">
+        <div><div class="kicker">Encuesta final</div><h2>Encuesta de satisfacción</h2><p>Tu opinión nos ayuda a mejorar las próximas ediciones del curso.</p></div>
+        <button id="studentSurveyAction" class="btn ghost" onclick="openSurveyFromCourse()">Completar encuesta</button>
+      </div>
+      <div id="studentSurveyMount" class="survey-course-card"></div>
+    </section>
+
     <div class="course-toolbar">
       <div>
         <h2>Unidades del curso</h2>
@@ -2058,6 +2100,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
     <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
     <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
+    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
     <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   </nav>
   <div class="alert-admin-shell">
@@ -2101,6 +2144,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
     <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
     <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
+    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
     <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   </nav>
   <div class="teacher-head">
@@ -2194,6 +2238,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
     <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
     <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
+    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
     <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   </nav>
   <div class="attendance-shell">
@@ -2229,6 +2274,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
     <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
     <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
+    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
     <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   </nav>
   <div class="integrator-admin-shell">
@@ -2268,6 +2314,43 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <div class="section-head"><div><h2>Grupos activos</h2><p>La composición puede modificarse mientras sea necesario.</p></div></div>
     <div id="integratorGroups" class="integrator-groups-grid"><div class="teacher-empty">Seleccioná una cohorte.</div></div>
     <div id="integratorDissolvedWrap"></div>
+  </div>
+</section>
+
+
+<section id="surveyStaffPage" class="page">
+  <nav class="teacher-hub-tabs" aria-label="Herramientas del Panel Docente">
+    <button class="teacher-hub-tab admin-only" data-hub-page="studentsAdminPage" onclick="openStudentAdmin()">Alumnos</button>
+    <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
+    <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
+    <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
+    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
+    <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
+  </nav>
+  <div class="survey-staff-shell">
+    <div class="survey-staff-head">
+      <div><div class="kicker">Panel docente</div><h2>Encuesta de satisfacción</h2><p>Resultados agregados y anónimos por edición del curso.</p></div>
+      <div class="survey-staff-controls">
+        <select id="surveyStaffCourse" onchange="loadSurveyStaff(this.value,true)"></select>
+        <button class="btn ghost" onclick="loadSurveyStaff($('#surveyStaffCourse').value,true)">Actualizar</button>
+      </div>
+    </div>
+    <div id="surveyStaffParticipation" class="survey-staff-participation"></div>
+    <div id="surveyManualEnable" class="survey-manual-enable admin-only">
+      <div><b>Habilitación manual</b><span>Uso transitorio mientras el examen teórico final continúe fuera de la plataforma. Cuando el examen sea interno, la encuesta se habilitará automáticamente al entregarlo.</span></div>
+      <div class="survey-manual-controls"><select id="surveyManualStudent"></select><button class="btn ghost" onclick="enableSurveyStudentManually()">Habilitar encuesta</button></div>
+    </div>
+    <div id="surveyStaffKpis" class="survey-kpi-grid"></div>
+    <div class="survey-staff-grid">
+      <section class="survey-staff-card">
+        <div class="section-head"><div><h2>Detalle por pregunta</h2><p>Promedio y cantidad de respuestas recibidas.</p></div></div>
+        <div id="surveyQuestionStats" class="survey-question-stats"><div class="teacher-empty">Seleccioná un curso.</div></div>
+      </section>
+      <section class="survey-staff-card">
+        <div class="section-head"><div><h2>Comentarios abiertos</h2><p>Se muestran sin identificar al cursante.</p></div></div>
+        <div id="surveyOpenComments" class="survey-open-comments"><div class="teacher-empty">Sin respuestas abiertas.</div></div>
+      </section>
+    </div>
   </div>
 </section>
 
@@ -2393,6 +2476,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
     <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
     <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
+    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
     <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   </nav>
   <div class="admin-head">
@@ -2606,7 +2690,52 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <div class="integrator-modal-actions"><button class="btn ghost" onclick="closeIntegratorExposure()">Cancelar</button><button class="btn primary" onclick="saveIntegratorExposureEvaluation()">Guardar evaluación definitiva</button></div>
 </div></div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.42.2 · Convocatorias TED · Identidad visual</footer>
+
+<div id="surveyInviteModal" class="survey-overlay" onclick="if(event.target===this)closeSurveyInvite()">
+  <div class="survey-invite-dialog">
+    <div class="survey-invite-icon">✓</div>
+    <div class="kicker" id="surveyInviteKicker">Encuesta de satisfacción</div>
+    <h2 id="surveyInviteTitle">Tenés una encuesta de satisfacción pendiente</h2>
+    <p id="surveyInviteText">Tu opinión nos ayuda a mejorar las próximas ediciones del curso. La encuesta es breve, voluntaria y no tiene ninguna incidencia sobre tus calificaciones.</p>
+    <div class="survey-invite-actions">
+      <button class="btn ghost" id="surveyInviteLaterBtn" onclick="deferSurveyInvite()">Cerrar</button>
+      <button class="btn primary" onclick="startSurveyFromInvite()">Completar encuesta</button>
+    </div>
+  </div>
+</div>
+
+<div id="surveyModal" class="survey-overlay" onclick="if(event.target===this)closeSurveyModal()">
+  <div class="survey-dialog">
+    <div class="survey-modal-head">
+      <div><div class="kicker">Academia TED</div><h2>Encuesta de satisfacción</h2><p id="surveyCourseLabel">Curso de Instructores de Tiro</p></div>
+      <button class="survey-x" onclick="closeSurveyModal()">✕</button>
+    </div>
+    <div id="surveyFormView">
+      <div class="survey-voluntary-note"><b>Encuesta voluntaria.</b> Las valoraciones cerradas son necesarias sólo si decidís enviarla. Las tres preguntas abiertas son opcionales. Las respuestas se procesan de forma anónima.</div>
+      <div class="survey-progress-line"><span id="surveyAnsweredCount">0 de 21 valoraciones respondidas</span><span>Deslizá el control sobre la escala</span></div>
+      <div id="surveyQuestions"></div>
+      <div class="survey-open-section">
+        <div class="survey-section-title"><span>Comentarios finales</span><small>Opcionales</small></div>
+        <div id="surveyOpenQuestions"></div>
+      </div>
+      <div id="surveyFormError" class="survey-error"></div>
+      <div class="survey-modal-actions"><button class="btn ghost" onclick="closeSurveyModal()">Cerrar</button><button class="btn primary" onclick="reviewSurveyAnswers()">Revisar respuestas</button></div>
+    </div>
+    <div id="surveyPreviewView" style="display:none">
+      <div class="survey-preview-intro"><h3>Revisión de tus respuestas</h3><p>Verificá especialmente las valoraciones numéricas. La encuesta todavía no fue enviada.</p></div>
+      <div id="surveyPreviewList" class="survey-preview-list"></div>
+      <div id="surveyPreviewComments" class="survey-preview-comments"></div>
+      <div id="surveySubmitError" class="survey-error"></div>
+      <div class="survey-modal-actions"><button class="btn ghost" onclick="backToSurveyEdit()">← Volver y corregir</button><button id="surveySubmitBtn" class="btn primary" onclick="confirmSurveySubmit()">Confirmar y enviar encuesta</button></div>
+    </div>
+    <div id="surveyThankYouView" class="survey-thanks" style="display:none">
+      <div class="survey-thanks-icon">✓</div><h2>Gracias por tu participación</h2><p>Tus respuestas fueron registradas correctamente.</p>
+      <button class="btn primary" onclick="finishSurveyFlow()">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.43.0 · Encuesta de satisfacción · Convocatorias TED</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2634,12 +2763,13 @@ function setPage(id){
   if(!page) return;
   $$('.page').forEach(p=>p.classList.remove('active'));
   page.classList.add('active');
-  const teacherHubPages=['teacherPage','attendancePage','integratorStaffPage','alertsPage','studentsAdminPage'];
+  const teacherHubPages=['teacherPage','attendancePage','integratorStaffPage','surveyStaffPage','alertsPage','studentsAdminPage'];
   const mainNavId=teacherHubPages.includes(id)?'teacherPage':id;
   $$('.navbtn,.mobile-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===mainNavId));
   $$('.teacher-hub-tab').forEach(b=>b.classList.toggle('active',b.dataset.hubPage===id));
   if(id==='course' && String(ITB_USER?.rol||'').toUpperCase()==='ALUMNO'){
     Promise.resolve().then(()=>loadIntegratorMyData(false)).catch(()=>{});
+    Promise.resolve().then(()=>loadSurveyMyStatus(false)).catch(()=>{});
   }
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -3320,6 +3450,9 @@ function logoutStudent(){
   MY_ATTENDANCE_DATA={presentes:0,ausentes:0,total:0,porcentaje:null,revisiones_pendientes:0,items:[]};
   MY_ATTENDANCE_LOADED=false;MY_ATTENDANCE_LOADING=false;MY_ATTENDANCE_PROMISE=null;MY_ATTENDANCE_LOADED_AT=0;MY_ATTENDANCE_REVIEW_SESSION='';
   ADMIN_ATT_REVIEW_NOTICE_CHECKED=false;ADMIN_ATT_REVIEW_NOTICE_DATA=null;
+  SURVEY_DATA=null;SURVEY_ANSWERS={};SURVEY_COMMENTS={};SURVEY_NOTICE_CHECKED=false;SURVEY_NOTICE_LOADING=false;SURVEY_STAFF_DATA=null;SURVEY_POST_EXAM_CONTEXT=null;
+  if(SURVEY_NOTICE_TIMER){clearTimeout(SURVEY_NOTICE_TIMER);SURVEY_NOTICE_TIMER=null;}
+  $('#surveyInviteModal')?.classList.remove('open');$('#surveyModal')?.classList.remove('open');
   if(ADMIN_ATT_REVIEW_NOTICE_TIMER){clearTimeout(ADMIN_ATT_REVIEW_NOTICE_TIMER);ADMIN_ATT_REVIEW_NOTICE_TIMER=null;}
   $('#myAttendanceModal')?.classList.remove('open');$('#attendanceReviewModal')?.classList.remove('open');$('#adminAttendanceReviewModal')?.classList.remove('open');
   localStorage.removeItem('itb_session');
@@ -4997,6 +5130,297 @@ function uploadIntegratorPlanForm(groupId,fileName,data){return new Promise((res
 window.openIntegratorStaff=openIntegratorStaff;window.loadIntegratorStaff=loadIntegratorStaff;window.generateIntegratorGroups=generateIntegratorGroups;window.applyIntegratorBulkDates=applyIntegratorBulkDates;window.openIntegratorGroupEdit=openIntegratorGroupEdit;window.closeIntegratorGroupModal=closeIntegratorGroupModal;window.saveIntegratorGroup=saveIntegratorGroup;window.dissolveIntegratorGroup=dissolveIntegratorGroup;window.openIntegratorSubmission=openIntegratorSubmission;window.openIntegratorReturn=openIntegratorReturn;window.closeIntegratorReturnModal=closeIntegratorReturnModal;window.confirmIntegratorReturn=confirmIntegratorReturn;window.setIntegratorRubricScore=setIntegratorRubricScore;window.openIntegratorPlanRubric=openIntegratorPlanRubric;window.closeIntegratorPlanRubric=closeIntegratorPlanRubric;window.saveIntegratorPlanEvaluation=saveIntegratorPlanEvaluation;window.openIntegratorExposure=openIntegratorExposure;window.closeIntegratorExposure=closeIntegratorExposure;window.saveIntegratorExposureEvaluation=saveIntegratorExposureEvaluation;window.loadIntegratorMyData=loadIntegratorMyData;window.submitIntegratorPlan=submitIntegratorPlan;
 
 
+
+/* ===== v0.43.0 · Encuesta de satisfacción ===== */
+let SURVEY_DATA=null;
+let SURVEY_ANSWERS={};
+let SURVEY_COMMENTS={};
+let SURVEY_NOTICE_CHECKED=false;
+let SURVEY_NOTICE_LOADING=false;
+let SURVEY_NOTICE_TIMER=null;
+let SURVEY_STAFF_DATA=null;
+let SURVEY_POST_EXAM_CONTEXT=null;
+
+function surveyDismissKey(){
+  const s=getSession(),sid=String(ITB_USER?.alumno_id||'');
+  return `itb_survey_dismissed_${sid}_${String(s?.token||'').slice(0,12)}`;
+}
+function surveyQuestionById(id){return (SURVEY_DATA?.questions||[]).find(q=>q.id===id)||null;}
+function surveyValueLabel(q,val){
+  const n=Number(val);
+  if(!q)return String(val);
+  if(Array.isArray(q.labels)){
+    const idx=n-Number(q.min||0);
+    return q.labels[idx]||String(n);
+  }
+  if(q.id==='q21'){
+    if(n<=6)return 'Baja probabilidad de recomendación';
+    if(n<=8)return 'Probabilidad media de recomendación';
+    return 'Alta probabilidad de recomendación';
+  }
+  return String(n);
+}
+function renderSurveyCourseCard(){
+  const sec=$('#studentSurveySection'),mount=$('#studentSurveyMount'),btn=$('#studentSurveyAction');
+  if(!sec||!mount||String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO')return;
+  const st=String(SURVEY_DATA?.status||'NO_HABILITADA').toUpperCase();
+  if(st==='NO_HABILITADA'){sec.style.display='none';return;}
+  sec.style.display='';
+  if(st==='COMPLETADA'){
+    mount.innerHTML=`<b>Encuesta completada ✓</b><br>Gracias por haber compartido tu experiencia. Las respuestas ya fueron registradas y no pueden modificarse.`;
+    if(btn){btn.style.display='none';}
+  }else{
+    mount.innerHTML=`<b>Encuesta pendiente</b><br>Podés completarla cuando quieras. Es voluntaria y tus respuestas no tienen incidencia sobre las calificaciones.`;
+    if(btn){btn.style.display='';btn.textContent='Completar encuesta';}
+  }
+}
+async function loadSurveyMyStatus(force=false){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO'||!ITB_PRIVATE_DATA_READY)return SURVEY_DATA;
+  if(SURVEY_DATA&&!force){renderSurveyCourseCard();return SURVEY_DATA;}
+  const s=getSession();if(!s?.token)return null;
+  try{
+    SURVEY_DATA=await retryTransient(()=>apiJsonp({action:'surveyMyStatus',token:s.token}),1,500);
+    renderSurveyCourseCard();
+    return SURVEY_DATA;
+  }catch(e){
+    console.warn('Encuesta no disponible.',e);
+    return null;
+  }
+}
+function maybeShowSurveyNotice(){
+  if(String(SURVEY_DATA?.status||'').toUpperCase()!=='PENDIENTE')return;
+  try{if(sessionStorage.getItem(surveyDismissKey())==='1')return;}catch(_){}
+  if($('#alertModal')?.classList.contains('open')){
+    SURVEY_NOTICE_TIMER=setTimeout(maybeShowSurveyNotice,1800);
+    return;
+  }
+  openSurveyInvite(false);
+}
+function scheduleSurveyPendingNotice(){
+  if(SURVEY_NOTICE_CHECKED||SURVEY_NOTICE_LOADING||String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO'||!ITB_PRIVATE_DATA_READY)return;
+  SURVEY_NOTICE_LOADING=true;
+  setTimeout(async()=>{
+    try{
+      await loadSurveyMyStatus(true);
+      SURVEY_NOTICE_CHECKED=true;
+      maybeShowSurveyNotice();
+    }finally{SURVEY_NOTICE_LOADING=false;}
+  },1500);
+}
+function openSurveyInvite(postExam=false){
+  const modal=$('#surveyInviteModal');if(!modal)return;
+  const isPost=!!postExam;
+  $('#surveyInviteKicker').textContent=isPost?'Examen teórico final entregado':'Encuesta de satisfacción';
+  $('#surveyInviteTitle').textContent=isPost?'Antes de mostrarte la nota…':'Tenés una encuesta de satisfacción pendiente';
+  $('#surveyInviteText').textContent=isPost
+    ? 'Tu examen fue registrado correctamente. Antes de mostrarte el resultado, te invitamos a completar una breve encuesta sobre tu experiencia en el curso. Es voluntaria y no tiene ninguna incidencia sobre tu calificación.'
+    : 'Tu opinión nos ayuda a mejorar las próximas ediciones del curso. La encuesta es breve, voluntaria y no tiene ninguna incidencia sobre tus calificaciones.';
+  $('#surveyInviteLaterBtn').textContent=isPost?'Hacerla en otro momento':'Cerrar';
+  modal.classList.add('open');document.body.style.overflow='hidden';
+}
+function closeSurveyInvite(skipReveal=false){
+  $('#surveyInviteModal')?.classList.remove('open');document.body.style.overflow='';
+  if(!skipReveal)revealPostExamGrade();
+}
+function deferSurveyInvite(){
+  try{sessionStorage.setItem(surveyDismissKey(),'1');}catch(_){}
+  closeSurveyInvite(true);
+  revealPostExamGrade();
+}
+function startSurveyFromInvite(){closeSurveyInvite(true);openSurveyModal();}
+async function openSurveyFromCourse(){
+  const d=await loadSurveyMyStatus(false);
+  if(String(d?.status||'').toUpperCase()==='PENDIENTE')openSurveyModal();
+}
+function surveyInputMarkup(q,index){
+  const answered=Object.prototype.hasOwnProperty.call(SURVEY_ANSWERS,q.id),val=answered?SURVEY_ANSWERS[q.id]:q.min;
+  const label=answered?surveyValueLabel(q,val):'Sin responder';
+  return `<article id="surveyCard_${q.id}" class="survey-question-card ${answered?'answered':'unanswered'}">
+    <div class="survey-q-head"><div><div class="survey-q-number">Pregunta ${index+1} de ${SURVEY_DATA.questions.length}</div><div class="survey-q-text">${esc(q.text)}</div></div>
+    <div class="survey-q-value" id="surveyValue_${q.id}">${answered?`${val} / ${q.max}`:'—'}<span>${esc(label)}</span></div></div>
+    <div class="survey-range-wrap">
+      <input class="survey-range ${answered?'':'unanswered'}" id="surveyRange_${q.id}" type="range" min="${q.min}" max="${q.max}" step="1" value="${val}" oninput="surveySetAnswer('${q.id}',this.value)">
+      <div class="survey-range-labels"><span>${q.min} · ${esc(q.low)}</span><span>${q.max} · ${esc(q.high)}</span></div>
+      <div class="survey-selected-label" id="surveySelected_${q.id}">${answered?esc(label):'Tocá o deslizá sobre la escala para responder'}</div>
+    </div>
+  </article>`;
+}
+function renderSurveyForm(){
+  const qs=SURVEY_DATA?.questions||[],groups=[];
+  qs.forEach((q,i)=>{
+    let g=groups.find(x=>x.section===q.section);
+    if(!g){g={section:q.section,items:[]};groups.push(g);}
+    g.items.push({q,i});
+  });
+  $('#surveyQuestions').innerHTML=groups.map(g=>`<section class="survey-section-block"><div class="survey-section-title"><span>${esc(g.section)}</span><small>${g.items.length} preguntas</small></div>${g.items.map(x=>surveyInputMarkup(x.q,x.i)).join('')}</section>`).join('');
+  $('#surveyOpenQuestions').innerHTML=(SURVEY_DATA?.open_questions||[]).map((q,i)=>`<div class="survey-open-q"><label for="surveyOpen_${q.id}">${i+1}. ${esc(q.text)}</label><textarea id="surveyOpen_${q.id}" maxlength="1800" placeholder="Respuesta opcional…" oninput="SURVEY_COMMENTS['${q.id}']=this.value">${esc(SURVEY_COMMENTS[q.id]||'')}</textarea></div>`).join('');
+  updateSurveyAnsweredCount();
+}
+function openSurveyModal(){
+  if(!SURVEY_DATA||String(SURVEY_DATA.status||'').toUpperCase()!=='PENDIENTE')return;
+  $('#surveyCourseLabel').textContent=SURVEY_DATA?.course?.nombre||'Curso de Instructores de Tiro';
+  $('#surveyFormView').style.display='';
+  $('#surveyPreviewView').style.display='none';
+  $('#surveyThankYouView').style.display='none';
+  $('#surveyFormError').textContent='';
+  renderSurveyForm();
+  $('#surveyModal').classList.add('open');document.body.style.overflow='hidden';
+}
+function closeSurveyModal(){
+  $('#surveyModal')?.classList.remove('open');document.body.style.overflow='';
+  revealPostExamGrade();
+}
+function surveySetAnswer(id,value){
+  const q=surveyQuestionById(id),n=Number(value);if(!q)return;
+  SURVEY_ANSWERS[id]=n;
+  const card=$('#surveyCard_'+id),range=$('#surveyRange_'+id),valueEl=$('#surveyValue_'+id),sel=$('#surveySelected_'+id),label=surveyValueLabel(q,n);
+  card?.classList.remove('unanswered');card?.classList.add('answered');range?.classList.remove('unanswered');
+  if(valueEl)valueEl.innerHTML=`${n} / ${q.max}<span>${esc(label)}</span>`;
+  if(sel)sel.textContent=label;
+  updateSurveyAnsweredCount();
+}
+function updateSurveyAnsweredCount(){
+  const total=SURVEY_DATA?.questions?.length||0,count=(SURVEY_DATA?.questions||[]).filter(q=>Object.prototype.hasOwnProperty.call(SURVEY_ANSWERS,q.id)).length;
+  if($('#surveyAnsweredCount'))$('#surveyAnsweredCount').textContent=`${count} de ${total} valoraciones respondidas`;
+}
+function reviewSurveyAnswers(){
+  const qs=SURVEY_DATA?.questions||[],missing=qs.filter(q=>!Object.prototype.hasOwnProperty.call(SURVEY_ANSWERS,q.id));
+  if(missing.length){
+    $('#surveyFormError').textContent=`Todavía quedan ${missing.length} ${missing.length===1?'valoración sin responder':'valoraciones sin responder'}.`;
+    $('#surveyCard_'+missing[0].id)?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  $('#surveyFormError').textContent='';
+  $('#surveyPreviewList').innerHTML=qs.map((q,i)=>{
+    const v=SURVEY_ANSWERS[q.id],label=surveyValueLabel(q,v);
+    return `<div class="survey-preview-item"><div class="text"><b>${i+1}.</b> ${esc(q.text)}</div><div class="answer"><b>${v} / ${q.max}</b><span>${esc(label)}</span><button onclick="editSurveyQuestion('${q.id}')">Editar</button></div></div>`;
+  }).join('');
+  $('#surveyPreviewComments').innerHTML=(SURVEY_DATA?.open_questions||[]).map(q=>`<div class="survey-preview-comment"><b>${esc(q.text)}</b><p>${esc((SURVEY_COMMENTS[q.id]||'').trim()||'Sin respuesta')}</p></div>`).join('');
+  $('#surveyFormView').style.display='none';$('#surveyPreviewView').style.display='';$('#surveyThankYouView').style.display='none';
+  $('#surveyDialogTop')?.scrollIntoView({block:'start'});
+  $('#surveyModal').scrollTop=0;
+}
+function editSurveyQuestion(id){
+  $('#surveyPreviewView').style.display='none';$('#surveyFormView').style.display='';
+  setTimeout(()=>$('#surveyCard_'+id)?.scrollIntoView({behavior:'smooth',block:'center'}),30);
+}
+function backToSurveyEdit(){$('#surveyPreviewView').style.display='none';$('#surveyFormView').style.display='';$('#surveyModal').scrollTop=0;}
+async function confirmSurveySubmit(){
+  if(!confirm('¿Confirmás el envío de la encuesta?\n\nUna vez enviada, las respuestas no podrán modificarse.'))return;
+  const btn=$('#surveySubmitBtn'),err=$('#surveySubmitError'),s=getSession();if(!s?.token)return;
+  btn.disabled=true;err.textContent='Enviando encuesta…';
+  try{
+    await apiJsonpLong({action:'surveySubmit',token:s.token,answers_json:JSON.stringify(SURVEY_ANSWERS),comments_json:JSON.stringify(SURVEY_COMMENTS)},60000);
+    SURVEY_DATA={...(SURVEY_DATA||{}),status:'COMPLETADA'};
+    try{sessionStorage.removeItem(surveyDismissKey());}catch(_){}
+    renderSurveyCourseCard();
+    $('#surveyPreviewView').style.display='none';$('#surveyFormView').style.display='none';$('#surveyThankYouView').style.display='';
+    err.textContent='';
+  }catch(e){err.textContent=e.message||'No se pudo enviar la encuesta.';}
+  finally{btn.disabled=false;}
+}
+function finishSurveyFlow(){
+  $('#surveyModal')?.classList.remove('open');document.body.style.overflow='';
+  revealPostExamGrade();
+}
+
+/**
+ * Hook frontend para el futuro examen teórico final.
+ * El submit del examen deberá llamar:
+ *   ITBSurveyBeforeFinalGrade(resultado, fnQueMuestraLaNota)
+ * después de que el backend active surveyActivateAfterFinalExam_().
+ * Si la encuesta falla, la nota se muestra igualmente.
+ */
+async function ITBSurveyBeforeFinalGrade(result,renderGrade){
+  SURVEY_POST_EXAM_CONTEXT={result,render:typeof renderGrade==='function'?renderGrade:null,shown:false};
+  try{
+    const d=await loadSurveyMyStatus(true);
+    if(String(d?.status||'').toUpperCase()==='PENDIENTE'){openSurveyInvite(true);return;}
+  }catch(_){}
+  revealPostExamGrade();
+}
+function revealPostExamGrade(){
+  const ctx=SURVEY_POST_EXAM_CONTEXT;if(!ctx||ctx.shown)return;
+  ctx.shown=true;SURVEY_POST_EXAM_CONTEXT=null;
+  try{ctx.render?.(ctx.result);}catch(e){console.error(e);}
+}
+
+function surveyFmt(v,max=5){return v===null||v===undefined||v===''?'—':`${Number(v).toFixed(2).replace(/\.00$/,'')} / ${max}`;}
+async function openSurveyStaff(){
+  const role=String(ITB_USER?.rol||'').toUpperCase();if(!['ADMIN','DOCENTE'].includes(role))return;
+  setPage('surveyStaffPage');await loadSurveyStaff($('#surveyStaffCourse')?.value||'',false);
+}
+async function loadSurveyStaff(courseId='',force=false){
+  const role=String(ITB_USER?.rol||'').toUpperCase();if(!['ADMIN','DOCENTE'].includes(role))return;
+  if(SURVEY_STAFF_DATA&&!force&&!courseId){renderSurveyStaff();return;}
+  const mount=$('#surveyQuestionStats');if(mount)mount.innerHTML='<div class="teacher-empty">Cargando resultados…</div>';
+  try{
+    const s=getSession();SURVEY_STAFF_DATA=await apiJsonpLong({action:'surveyStaffResults',token:s.token,curso_id:courseId||''},60000);renderSurveyStaff();
+  }catch(e){if(mount)mount.innerHTML=`<div class="teacher-empty">${esc(e.message||'No se pudieron cargar los resultados.')}</div>`;}
+}
+function surveyDistributionMarkup(q){
+  const total=Number(q.count||0);if(!total)return '';
+  const pieces=[];for(let n=Number(q.min);n<=Number(q.max);n++){const c=Number(q.distribution?.[String(n)]||0),pct=total?Math.max(2,(c/total)*100):2;pieces.push(`<span title="${n}: ${c}" style="width:${pct}%"></span>`);}
+  return `<div class="survey-dist">${pieces.join('')}</div>`;
+}
+function renderSurveyStaff(){
+  const d=SURVEY_STAFF_DATA;if(!d)return;
+  const sel=$('#surveyStaffCourse');
+  if(sel){
+    const current=d.curso_id||'';
+    sel.innerHTML=(d.courses||[]).map(c=>`<option value="${esc(c.curso_id)}" ${String(c.curso_id)===String(current)?'selected':''}>${esc(c.nombre_corto||c.curso_id)}</option>`).join('');
+  }
+  const manual=$('#surveyManualStudent');
+  if(manual){
+    manual.innerHTML=(d.students||[]).map(s=>`<option value="${esc(s.alumno_id)}">${esc(s.apellido)}, ${esc(s.nombre)} · ${esc(s.survey_status||'NO_HABILITADA')}</option>`).join('')||'<option value="">Sin alumnos vigentes</option>';
+  }
+  const p=d.participation||{},pct=p.percent==null?0:Number(p.percent);
+  $('#surveyStaffParticipation').innerHTML=`<div class="survey-part-top"><div><h3>${esc(d.course?.nombre_completo||d.course?.nombre_corto||'Encuesta del curso')}</h3><p>Participación sobre alumnos que ya finalizaron el examen teórico y tienen la encuesta habilitada.</p></div><div class="survey-part-pct">${p.percent==null?'—':p.percent+'%'}</div></div><div class="survey-part-track"><span style="width:${Math.min(100,Math.max(0,pct))}%"></span></div><div class="survey-part-meta"><span>Habilitados: <b>${p.eligible||0}</b></span><span>Respondieron: <b>${p.completed||0}</b></span><span>Pendientes: <b>${p.pending||0}</b></span></div>`;
+  const k=d.kpis||{};
+  const kpis=[
+    [surveyFmt(k.satisfaccion_general,5),'Satisfacción general'],
+    [surveyFmt(k.contenidos,5),'Contenidos'],
+    [surveyFmt(k.instructores,5),'Instructores'],
+    [surveyFmt(k.practicas,5),'Prácticas'],
+    [surveyFmt(k.plataforma,5),'Plataforma'],
+    [surveyFmt(k.evaluaciones,5),'Evaluaciones'],
+    [surveyFmt(k.recomendacion,10),'Recomendación'],
+    [k.nps==null?'—':String(k.nps),'NPS'],
+    [k.duracion_adecuada_pct==null?'—':k.duracion_adecuada_pct+'%','Duración: “Adecuada”']
+  ];
+  $('#surveyStaffKpis').innerHTML=kpis.map(x=>`<div class="survey-kpi"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></div>`).join('');
+  $('#surveyQuestionStats').innerHTML=(d.questions||[]).map((q,i)=>`<div class="survey-stat-row"><div class="survey-stat-top"><b>${i+1}. ${esc(q.text)}</b><span>${q.average==null?'—':Number(q.average).toFixed(2)} / ${q.max}</span></div><div class="survey-stat-meta">${q.count||0} respuestas · ${esc(q.low)} → ${esc(q.high)}</div>${surveyDistributionMarkup(q)}</div>`).join('')||'<div class="teacher-empty">Todavía no hay respuestas.</div>';
+  $('#surveyOpenComments').innerHTML=(d.comments||[]).map(block=>`<div class="survey-open-block"><h4>${esc(block.text)}</h4>${(block.items||[]).length?(block.items||[]).map(t=>`<div class="survey-comment">${esc(t)}</div>`).join(''):'<div class="teacher-empty">Sin comentarios.</div>'}</div>`).join('');
+}
+async function enableSurveyStudentManually(){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN')return;
+  const sid=$('#surveyManualStudent')?.value;if(!sid){alert('Seleccioná un alumno.');return;}
+  const label=$('#surveyManualStudent')?.selectedOptions?.[0]?.textContent||'el alumno';
+  if(!confirm(`¿Habilitar la encuesta de satisfacción para ${label}?\n\nUsá esta opción sólo como reemplazo transitorio del disparador del examen final.`))return;
+  try{
+    await apiJsonpLong({action:'surveyAdminEnableStudent',token:getSession().token,alumno_id:sid},60000);
+    await loadSurveyStaff($('#surveyStaffCourse').value,true);
+    showITBToast('Encuesta habilitada.');
+  }catch(e){alert(e.message||'No se pudo habilitar la encuesta.');}
+}
+
+window.openSurveyFromCourse=openSurveyFromCourse;
+window.closeSurveyInvite=closeSurveyInvite;
+window.deferSurveyInvite=deferSurveyInvite;
+window.startSurveyFromInvite=startSurveyFromInvite;
+window.closeSurveyModal=closeSurveyModal;
+window.surveySetAnswer=surveySetAnswer;
+window.reviewSurveyAnswers=reviewSurveyAnswers;
+window.editSurveyQuestion=editSurveyQuestion;
+window.backToSurveyEdit=backToSurveyEdit;
+window.confirmSurveySubmit=confirmSurveySubmit;
+window.finishSurveyFlow=finishSurveyFlow;
+window.ITBSurveyBeforeFinalGrade=ITBSurveyBeforeFinalGrade;
+window.openSurveyStaff=openSurveyStaff;
+window.loadSurveyStaff=loadSurveyStaff;
+window.enableSurveyStudentManually=enableSurveyStudentManually;
+
+
 let TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
 let TEACHER_FILTER='all';
 let TEACHER_SORT='name';
@@ -5016,6 +5440,7 @@ function applyRoleUI(){
   else{stopChatUnreadPolling();applyChatUnreadState({has_unread:false,unread_cohorts:[]});}
   if(ITB_USER && ITB_PRIVATE_DATA_READY && role==='ALUMNO')startAlertPolling();
   else{stopAlertPolling();setAlertAppBadge(0);}
+  if(ITB_USER && ITB_PRIVATE_DATA_READY && role==='ALUMNO')scheduleSurveyPendingNotice();
   if(ITB_USER && ITB_PRIVATE_DATA_READY && isAdmin)scheduleAdminAttendanceReviewNotice();
   else{
     if(ADMIN_ATT_REVIEW_NOTICE_TIMER){clearTimeout(ADMIN_ATT_REVIEW_NOTICE_TIMER);ADMIN_ATT_REVIEW_NOTICE_TIMER=null;}
