@@ -2814,7 +2814,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.6 · Clima visual refinado · Temperaturas agrupadas</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.7 · Ubicación exclusiva para prácticas presenciales</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -7545,7 +7545,19 @@ function activityDirectionsUrl(item){
   return q ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}` : activityGoogleMapsUrl(item);
 }
 function activityHasLocation(item){
-  return !!(getActivityCoordinates(item) || String(item?.maps_url||'').trim() || String(item?.direccion||'').trim() || String(item?.lugar||'').trim());
+  const type=String(item?.tipo||'').trim().toUpperCase();
+  const modality=String(item?.modalidad||'').trim().toUpperCase();
+
+  // La ubicación y la navegación corresponden exclusivamente
+  // a prácticas presenciales en polígono.
+  if(type!=='PRACTICA' || modality!=='PRESENCIAL') return false;
+
+  return !!(
+    getActivityCoordinates(item) ||
+    String(item?.maps_url||'').trim() ||
+    String(item?.direccion||'').trim() ||
+    String(item?.lugar||'').trim()
+  );
 }
 function activityLocationButton(item,label='Ver ubicación'){
   if(!activityHasLocation(item))return '';
