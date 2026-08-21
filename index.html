@@ -372,8 +372,14 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
 .activity-weather-condition{display:flex;align-items:center;gap:10px;margin-bottom:11px;color:#e7edf4}
 .activity-weather-condition-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:rgba(255,255,255,.055);font-size:27px;line-height:1}
 .activity-weather-condition-copy b{display:block;font-size:14px;margin-bottom:2px}.activity-weather-condition-copy span{font-size:10px;color:var(--muted)}
-.activity-weather-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.activity-weather-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px}
 .activity-weather-item{padding:9px;border-radius:11px;background:rgba(255,255,255,.04);display:grid;grid-template-columns:25px minmax(0,1fr);gap:6px;align-items:center}
+.activity-weather-temperature{grid-template-columns:23px minmax(0,1fr)}
+.activity-weather-temp-values{display:grid;grid-template-columns:1fr 1fr;gap:7px;align-items:center}
+.activity-weather-temp-value{min-width:0;text-align:center}
+.activity-weather-temp-value + .activity-weather-temp-value{border-left:1px solid rgba(255,255,255,.09);padding-left:7px}
+.activity-weather-temp-value b{font-size:15px;white-space:nowrap}
+.activity-weather-temp-value span{display:block}
 .activity-weather-metric-icon{font-size:18px;line-height:1;text-align:center}
 .activity-weather-item b{display:block;font-size:15px;margin-bottom:1px}
 .activity-weather-item span{font-size:10px;color:var(--muted);line-height:1.25}
@@ -381,8 +387,15 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
 .activity-weather-loading{font-size:11px;color:var(--muted)}
 .activity-location-actions{display:flex;gap:8px;flex-wrap:wrap}
 @media(max-width:680px){
- .activity-weather-grid{grid-template-columns:repeat(2,1fr)}
+ .activity-weather-grid{grid-template-columns:1.4fr 1fr 1fr}
  .activity-weather-condition-icon{width:38px;height:38px;font-size:24px}
+ .activity-weather-item{padding:8px;grid-template-columns:22px minmax(0,1fr);gap:5px}
+ .activity-weather-temp-values{gap:5px}
+ .activity-weather-temp-value + .activity-weather-temp-value{padding-left:5px}
+}
+@media(max-width:350px){
+ .activity-weather-grid{grid-template-columns:1fr 1fr}
+ .activity-weather-temperature{grid-column:1 / -1}
 }
 
 .location-modal{position:fixed;inset:0;background:rgba(4,7,10,.88);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;z-index:14200}
@@ -2801,7 +2814,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.5 · Clima visual · Mapa y cómo llegar</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.6 · Clima visual refinado · Temperaturas agrupadas</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -7709,9 +7722,14 @@ function drawActivityWeather(box,data,activityDate,diff){
       <div class="activity-weather-condition-copy"><b>${esc(meta.text)}</b><span>Condición prevista para el día de la práctica</span></div>
     </div>
     <div class="activity-weather-grid">
-      <div class="activity-weather-item"><div class="activity-weather-metric-icon">🌡️</div><div><b>${Number.isFinite(Number(tmax))?Math.round(Number(tmax))+' °C':'—'}</b><span>Máxima</span></div></div>
-      <div class="activity-weather-item"><div class="activity-weather-metric-icon">🌡️</div><div><b>${Number.isFinite(Number(tmin))?Math.round(Number(tmin))+' °C':'—'}</b><span>Mínima</span></div></div>
-      <div class="activity-weather-item"><div class="activity-weather-metric-icon">💧</div><div><b>${Number.isFinite(Number(rain))?Math.round(Number(rain))+' %':'—'}</b><span>Prob. precipitación</span></div></div>
+      <div class="activity-weather-item activity-weather-temperature">
+        <div class="activity-weather-metric-icon">🌡️</div>
+        <div class="activity-weather-temp-values">
+          <div class="activity-weather-temp-value"><b>${Number.isFinite(Number(tmax))?Math.round(Number(tmax))+' °C':'—'}</b><span>Máxima</span></div>
+          <div class="activity-weather-temp-value"><b>${Number.isFinite(Number(tmin))?Math.round(Number(tmin))+' °C':'—'}</b><span>Mínima</span></div>
+        </div>
+      </div>
+      <div class="activity-weather-item"><div class="activity-weather-metric-icon">💧</div><div><b>${Number.isFinite(Number(rain))?Math.round(Number(rain))+' %':'—'}</b><span>Precipitación</span></div></div>
       <div class="activity-weather-item"><div class="activity-weather-metric-icon">💨</div><div><b>${Number.isFinite(Number(wind))?Math.round(Number(wind))+' km/h':'—'}</b><span>Viento máx.</span></div></div>
     </div>
     <div class="activity-weather-note" style="margin-top:9px">Pronóstico orientativo sujeto a actualización.</div>
