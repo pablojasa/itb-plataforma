@@ -114,6 +114,16 @@ main{max-width:1180px;margin:0 auto;padding:28px 24px 92px}
 .student-reset-btn:hover{background:#42201c}
 .student-reset-btn:disabled{opacity:.45;cursor:not-allowed}
 .student-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.final-exam-state{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;border:1px solid var(--line);font-size:9px;font-weight:900;white-space:nowrap}
+.final-exam-state.pending{color:#c9d1d9;background:#20262d}
+.final-exam-state.enabled{color:#9ec7ff;border-color:#31517a;background:#152337}
+.final-exam-state.inprogress{color:#ffd889;border-color:#695522;background:#2b2415}
+.final-exam-state.approved{color:#8fe2ad;border-color:#285a3c;background:#14251b}
+.final-exam-state.failed{color:#ffacb4;border-color:#74343b;background:#2d171b}
+.final-exam-btn{display:block;margin-top:6px;border:1px solid #3b5f7b;background:#162738;color:#b7dcff;border-radius:9px;padding:6px 8px;font-size:9px;font-weight:850;cursor:pointer;white-space:nowrap}
+.final-exam-btn:hover{background:#1a3146}.final-exam-btn:disabled{opacity:.45;cursor:not-allowed}
+.final-exam-admin-note{margin:0 0 14px;border:1px solid #35414d;background:#111820;border-radius:12px;padding:10px 12px;color:var(--muted);font-size:10px;line-height:1.5}
+.final-exam-admin-note b{color:#fff}
 .student-drop-btn{
   border:1px solid #84313a;background:#3a171c;color:#ffc1c7;border-radius:9px;padding:7px 9px;
   font-size:10px;font-weight:850;cursor:pointer;white-space:nowrap;
@@ -121,7 +131,7 @@ main{max-width:1180px;margin:0 auto;padding:28px 24px 92px}
 .student-drop-btn:hover{background:#4b1b22}
 .student-drop-btn:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:760px){
-  #studentsAdminPage .admin-table{min-width:860px}
+  #studentsAdminPage .admin-table{min-width:1080px}
 }
 
 
@@ -2415,6 +2425,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
       <button class="btn ghost" onclick="loadAdminStudents(true)">Actualizar</button>
     </div>
   </div>
+  <div class="final-exam-admin-note"><b>Examen teórico final:</b> 70 preguntas · 45 minutos · aprobación con 70% (49/70). La instancia ordinaria y el recuperatorio requieren habilitación expresa del ADMIN; para habilitar el ordinario el alumno debe tener 100% de progreso.</div>
   <div id="studentsAdminSummary" class="students-admin-summary"></div>
   <div id="studentsShirtCurve" class="teacher-shirt-card">
     <div class="teacher-shirt-main">
@@ -2428,8 +2439,8 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
   <div class="admin-table-wrap">
     <table class="admin-table">
-      <thead><tr><th>Alumno</th><th>Usuario</th><th>Curso / cohorte</th><th>Email</th><th>Estado</th><th>Académico</th><th>Seguridad</th><th></th></tr></thead>
-      <tbody id="studentsAdminRows"><tr><td colspan="8" class="admin-empty">Ingresá como ADMIN para consultar los alumnos.</td></tr></tbody>
+      <thead><tr><th>Alumno</th><th>Usuario</th><th>Curso / cohorte</th><th>Email</th><th>Estado</th><th>Académico</th><th>Examen final</th><th>Seguridad</th><th></th></tr></thead>
+      <tbody id="studentsAdminRows"><tr><td colspan="9" class="admin-empty">Ingresá como ADMIN para consultar los alumnos.</td></tr></tbody>
     </table>
   </div>
 </section>
@@ -3565,7 +3576,7 @@ async function loadAdminStudents(force=false){
   if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN')return;
   const sess=getSession();if(!sess?.token)return;
   if(!force&&ADMIN_STUDENTS_ALL.students.length){applyStudentAdminFilters();return;}
-  const body=$('#studentsAdminRows');if(body)body.innerHTML='<tr><td colspan="8" class="admin-empty">Cargando alumnos…</td></tr>';
+  const body=$('#studentsAdminRows');if(body)body.innerHTML='<tr><td colspan="9" class="admin-empty">Cargando alumnos…</td></tr>';
   try{
     const r=await apiJsonp({action:'adminStudents',token:sess.token,curso_id:'',estado:''});
     ADMIN_STUDENTS_ALL={courses:r.courses||[],students:r.students||[]};
@@ -3575,7 +3586,7 @@ async function loadAdminStudents(force=false){
       sel.value=ADMIN_STUDENTS_ALL.courses.some(c=>String(c.curso_id)===String(current))?current:'';
     }
     applyStudentAdminFilters();
-  }catch(e){if(body)body.innerHTML=`<tr><td colspan="8" class="admin-empty">${esc(e.message||'No se pudo cargar la gestión de alumnos.')}</td></tr>`;}
+  }catch(e){if(body)body.innerHTML=`<tr><td colspan="9" class="admin-empty">${esc(e.message||'No se pudo cargar la gestión de alumnos.')}</td></tr>`;}
 }
 function applyStudentAdminFilters(){
   const course=String($('#studentsAdminCourse')?.value||'');
@@ -3588,7 +3599,7 @@ function applyStudentAdminFilters(){
     if(status&&status!=='INACTIVO'&&st!==status)return false;
     if(status==='ACTIVO'&&!active)return false;
     if(q){
-      const hay=[s.apellido,s.nombre,s.usuario,s.email,s.alumno_id,s.cohorte,s.curso_nombre].join(' ').toLowerCase();
+      const hay=[s.apellido,s.nombre,s.usuario,s.email,s.alumno_id,s.cohorte,s.curso_nombre,s.examen_final_estado,s.examen_final_instancia].join(' ').toLowerCase();
       if(!hay.includes(q))return false;
     }
     return true;
@@ -3664,10 +3675,58 @@ function renderStudentAdminSummary(){
   const bajas=rows.filter(s=>String(s.estado||'').toUpperCase()==='BAJA').length;
   t.innerHTML=`<span class="students-admin-chip"><b>${rows.length}</b> alumno${rows.length===1?'':'s'}</span><span class="students-admin-chip"><b>${active}</b> activos</span><span class="students-admin-chip"><b>${bajas}</b> de baja</span><span class="students-admin-chip"><b>${temps}</b> con PIN temporal</span>`;
 }
+
+function finalExamAdminMeta(s){
+  const st=String(s?.examen_final_estado||'').trim().toUpperCase();
+  const map={
+    HABILITADO_ORDINARIO:['Ordinario habilitado','enabled'],
+    ORDINARIO_EN_CURSO:['Ordinario en curso','inprogress'],
+    RECUPERATORIO_PENDIENTE:['Recuperatorio pendiente','failed'],
+    HABILITADO_RECUPERATORIO:['Recuperatorio habilitado','enabled'],
+    RECUPERATORIO_EN_CURSO:['Recuperatorio en curso','inprogress'],
+    FINALIZADO:['Finalizado',String(s?.evaluacion_final||'').toUpperCase()==='APROBADO'?'approved':'failed']
+  };
+  return map[st]||['Pendiente de habilitación','pending'];
+}
+function finalExamAdminCell(s,active){
+  const st=String(s?.examen_final_estado||'').trim().toUpperCase();
+  const [label,cls]=finalExamAdminMeta(s);
+  const pct=(s?.examen_final_porcentaje===''||s?.examen_final_porcentaje==null)?null:Number(s.examen_final_porcentaje);
+  const correct=(s?.examen_final_correctas===''||s?.examen_final_correctas==null)?null:Number(s.examen_final_correctas);
+  const resultMeta=(pct!==null&&Number.isFinite(pct))
+    ? `<div class="note">${pct.toFixed(2).replace('.',',')}%${correct!==null&&Number.isFinite(correct)?` · ${correct}/70`:''}${s.examen_final_instancia?` · ${esc(s.examen_final_instancia)}`:''}</div>`
+    : '';
+  let action='';
+  if(active && (!st||st==='PENDIENTE_HABILITACION')){
+    action=`<button class="final-exam-btn" onclick="enableFinalExam('${esc(s.alumno_id)}','ORDINARIO')">Habilitar examen</button>`;
+  }else if(active && st==='RECUPERATORIO_PENDIENTE'){
+    action=`<button class="final-exam-btn" onclick="enableFinalExam('${esc(s.alumno_id)}','RECUPERATORIO')">Habilitar recuperatorio</button>`;
+  }
+  return `<span class="final-exam-state ${cls}">${esc(label)}</span>${resultMeta}${action}`;
+}
+async function enableFinalExam(alumnoId,instancia){
+  const s=(ADMIN_STUDENTS_ALL.students||[]).find(x=>String(x.alumno_id)===String(alumnoId));if(!s)return;
+  const who=[s.apellido,s.nombre].filter(Boolean).join(', ')||s.usuario||alumnoId;
+  const ins=String(instancia||'ORDINARIO').toUpperCase();
+  const label=ins==='RECUPERATORIO'?'recuperatorio':'examen teórico final';
+  const extra=ins==='ORDINARIO'
+    ? '\n\nEl sistema verificará 100% de progreso y que el banco tenga suficientes preguntas activas.'
+    : '\n\nEl recuperatorio sólo se habilitará si el ordinario figura finalizado y desaprobado.';
+  if(!confirm(`¿Habilitar ${label} para ${who}?${extra}`))return;
+  try{
+    const sess=getSession();if(!sess?.token)throw new Error('Sesión vencida.');
+    const r=await apiJsonpLong({action:'adminFinalExamEnable',token:sess.token,alumno_id:alumnoId,instancia:ins},120000);
+    await loadAdminStudents(true);
+    if(r.already_enabled)showITBToast(`${who} ya tenía ${label} habilitado.`);
+    else showITBToast(`${label.charAt(0).toUpperCase()+label.slice(1)} habilitado para ${who}.`);
+  }catch(e){alert(e.message||`No se pudo habilitar ${label}.`);}
+}
+window.enableFinalExam=enableFinalExam;
+
 function renderStudentAdminRows(){
   const body=$('#studentsAdminRows');if(!body)return;
   const rows=ADMIN_STUDENTS_ROWS||[];
-  if(!rows.length){body.innerHTML='<tr><td colspan="8" class="admin-empty">No hay alumnos que coincidan con los filtros.</td></tr>';return;}
+  if(!rows.length){body.innerHTML='<tr><td colspan="9" class="admin-empty">No hay alumnos que coincidan con los filtros.</td></tr>';return;}
   body.innerHTML=rows.map(s=>{
     const [stateLabel,stateClass]=studentAdminStateMeta(s);
     const temp=studentAdminIsTemp(s);
@@ -3681,6 +3740,7 @@ function renderStudentAdminRows(){
       <td>${esc(s.email||'—')}</td>
       <td><span class="student-state ${stateClass}">${stateLabel}</span>${String(s.estado||'').toUpperCase()==='BAJA'?`<div class="note">${s.fecha_baja?adminFmtDate(s.fecha_baja,true)+' · ':''}${esc(s.motivo_baja||'')}</div>`:''}</td>
       <td><span class="cert-academic ${academicClass}">${esc(academic||'Sin cierre')}</span>${s.fecha_cierre_academico?`<div class="note">${adminFmtDate(s.fecha_cierre_academico,true)}</div>`:''}</td>
+      <td>${finalExamAdminCell(s,active)}</td>
       <td><span class="student-sec ${temp?'temp':'personal'}">${temp?'🔑 PIN temporal':'✓ PIN personal'}</span></td>
       <td><div class="student-actions"><button class="student-cert-btn" ${String(s.estado||'').toUpperCase()==='BAJA'?'disabled':''} onclick="openCertification('${esc(s.alumno_id)}')">Cierre / Documentos</button><button class="student-reset-btn" ${active?'':'disabled'} onclick="resetStudentAccess('${esc(s.alumno_id)}')">Restablecer PIN</button><button class="student-drop-btn" ${active?'':'disabled'} onclick="deactivateStudent('${esc(s.alumno_id)}')">Dar de baja</button></div></td>
     </tr>`;
