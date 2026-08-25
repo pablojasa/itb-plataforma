@@ -1,4 +1,4 @@
-const CACHE_NAME='itb-pwa-v0.46.1';
+const CACHE_NAME='itb-pwa-v0.46.6';
 const SHELL=['./','./index.html','./manifest.webmanifest','./firebase-config.js','./assets/ted-app-icon-180-v0281.png','./assets/ted-app-icon-192-v0281.png','./assets/ted-app-icon-512-v0281.png','./assets/cert-diploma-template-v0390.jpg','./assets/cert-analitico-template-v0390.jpg'];
 
 /* Firebase se inicializa sólo cuando firebase-config.js contiene datos reales.
