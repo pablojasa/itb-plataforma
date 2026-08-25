@@ -1882,7 +1882,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 
 
 
-/* ===== v0.44.9 · Examen teórico final nativo ===== */
+/* ===== v0.45.0 · Examen teórico final nativo ===== */
 .final-student-card{margin:0 0 18px;border:1px solid #35506a;background:linear-gradient(145deg,#121c26,#0e161e);border-radius:18px;padding:17px;display:none}
 .final-student-card.visible{display:block}.final-student-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}.final-student-head h2{margin:4px 0 5px}.final-student-head p{margin:0;color:var(--muted);font-size:10px;line-height:1.5}.final-student-state{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}.final-student-pill{padding:6px 9px;border-radius:999px;border:1px solid #40505e;background:#18212a;color:#cbd5df;font-size:9px;font-weight:900}.final-student-pill.ready{border-color:#315b7d;background:#13283a;color:#a9d7ff}.final-student-pill.failed{border-color:#6f3d43;background:#2b171b;color:#ffb2ba}.final-student-pill.ok{border-color:#2d6943;background:#14271c;color:#95e0ad}.final-student-meta{margin-top:9px;color:#98a5b0;font-size:9px;line-height:1.5}
 .final-exam-overlay{position:fixed;inset:0;z-index:18500;background:rgba(2,6,10,.94);backdrop-filter:blur(6px);display:none;align-items:stretch;justify-content:center;padding:12px}.final-exam-overlay.open{display:flex}.final-exam-dialog{width:min(1100px,100%);height:calc(100vh - 24px);background:#0e151c;border:1px solid #3a4651;border-radius:20px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 95px rgba(0,0,0,.65)}
@@ -1996,7 +1996,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <div class="actions"><button class="btn primary" onclick="setPage('course')">Ingresar al curso →</button>
   <a id="zoomBtn" class="btn ghost" href="#" target="_blank" rel="noopener">Clase por Zoom</a></div>
  </div></div>
- <div id="notificationOptIn" class="notification-optin"><div><strong>Activá las notificaciones</strong><span>Recibí avisos del equipo docente mientras usás la app instalada.</span></div><button class="btn ghost" onclick="enableSystemNotifications()">Activar notificaciones</button></div>
+ <div id="notificationOptIn" class="notification-optin"><div><strong>Activá las notificaciones</strong><span>Recibí alertas importantes y recordatorios de tus próximas clases en este dispositivo.</span></div><button class="btn ghost" onclick="enableSystemNotifications()">Activar notificaciones</button></div>
  <div id="homeBadgesMount" class="dashboard-badges-mount"></div>
  <div class="two-col">
   <div><div class="section-head"><div><h2>Unidades del curso</h2><p>Acceso directo a la estructura académica.</p></div><button class="btn ghost" onclick="setPage('course')">Ver todas</button></div><div id="featuredUnits" class="grid"></div></div>
@@ -2738,8 +2738,11 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.9 · Examen final nativo · banco unificado</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.45.0 · Examen final nativo · banco unificado</footer>
 </div><script src="app-config.js"></script>
+<script src="firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
 <script>
 let DB = {
   units:[], classes:[], videos:[], library:[], staff:[], downloads:[],
@@ -4939,34 +4942,90 @@ function setAlertAppBadge(count){
     else if(!n&&'clearAppBadge' in navigator)navigator.clearAppBadge().catch(()=>{});
   }catch(_){}
 }
+let ITB_PUSH_MESSAGING=null;
+let ITB_PUSH_FOREGROUND_BOUND=false;
+function pushFirebaseConfigured(){
+  const cfg=window.ITB_FIREBASE_CONFIG||{};
+  const vapid=String(window.ITB_FIREBASE_VAPID_KEY||'').trim();
+  return !!(window.firebase&&firebase.messaging&&cfg.apiKey&&cfg.projectId&&cfg.messagingSenderId&&cfg.appId&&vapid);
+}
 function syncNotificationOptIn(){
   const box=$('#notificationOptIn');if(!box)return;
   const supported='Notification' in window && 'serviceWorker' in navigator;
-  const show=!!ITB_USER&&isStudentUser()&&supported&&Notification.permission==='default';
+  const show=!!ITB_USER&&isStudentUser()&&supported&&pushFirebaseConfigured()&&Notification.permission==='default';
   box.classList.toggle('show',show);
 }
+function pushMessagingInstance(){
+  if(!pushFirebaseConfigured())throw new Error('Firebase todavía no está configurado para Academia TED.');
+  if(ITB_PUSH_MESSAGING)return ITB_PUSH_MESSAGING;
+  const cfg=window.ITB_FIREBASE_CONFIG;
+  if(!firebase.apps.length)firebase.initializeApp(cfg);
+  ITB_PUSH_MESSAGING=firebase.messaging();
+  return ITB_PUSH_MESSAGING;
+}
+async function showSystemPushNotification(data){
+  if(!data||!('Notification' in window)||Notification.permission!=='granted'||!('serviceWorker' in navigator))return;
+  const reg=await navigator.serviceWorker.ready;
+  await reg.showNotification(data.title||'Academia TED',{
+    body:String(data.body||'').replace(/\s+/g,' ').slice(0,220),
+    icon:'assets/ted-app-icon-192-v0281.png',
+    badge:'assets/ted-app-icon-192-v0281.png',
+    tag:data.tag||('itb-push-'+Date.now()),renotify:true,
+    data:{target:data.target||'',reference_id:data.reference_id||'',url:'./?push='+(data.target||'home')}
+  });
+}
+function bindPushForeground(){
+  if(ITB_PUSH_FOREGROUND_BOUND||!pushFirebaseConfigured())return;
+  try{
+    const messaging=pushMessagingInstance();
+    messaging.onMessage(payload=>{
+      const d=payload?.data||{};
+      showSystemPushNotification(d).catch(()=>{});
+      if(String(d.kind||'').toUpperCase()==='ALERTA'&&ITB_USER&&isStudentUser()){
+        setTimeout(()=>refreshStudentAlerts(true),250);
+      }
+    });
+    ITB_PUSH_FOREGROUND_BOUND=true;
+  }catch(e){console.warn('No se pudo preparar la recepción push en primer plano.',e);}
+}
+async function syncPushRegistration(silent=true){
+  if(!ITB_USER||!isStudentUser()||!getSession()?.token)return false;
+  if(!('Notification' in window)||!('serviceWorker' in navigator)||Notification.permission!=='granted')return false;
+  if(!pushFirebaseConfigured())return false;
+  try{
+    const reg=await navigator.serviceWorker.ready;
+    const messaging=pushMessagingInstance();
+    const fcmToken=await messaging.getToken({
+      vapidKey:String(window.ITB_FIREBASE_VAPID_KEY||''),
+      serviceWorkerRegistration:reg
+    });
+    if(!fcmToken)throw new Error('No se obtuvo el identificador del dispositivo.');
+    await apiJsonp({action:'pushRegister',token:getSession().token,fcm_token:fcmToken,user_agent:navigator.userAgent||''},45000);
+    localStorage.setItem('itb_push_registered','1');
+    bindPushForeground();
+    return true;
+  }catch(e){
+    console.warn('No se pudo registrar el dispositivo para push.',e);
+    if(!silent)showITBToast(e.message||'No se pudieron activar las notificaciones.');
+    return false;
+  }
+}
 async function enableSystemNotifications(){
-  if(!('Notification' in window)){showITBToast('Este dispositivo no admite notificaciones web.');return;}
+  if(!('Notification' in window)||!('serviceWorker' in navigator)){showITBToast('Este dispositivo no admite notificaciones web.');return;}
+  if(!pushFirebaseConfigured()){showITBToast('Las notificaciones push todavía no fueron configuradas.');return;}
   try{
     const permission=await Notification.requestPermission();
     syncNotificationOptIn();
-    if(permission==='granted')showITBToast('Notificaciones activadas.');
-    else if(permission==='denied')showITBToast('Las notificaciones quedaron bloqueadas en el navegador.');
+    if(permission==='granted'){
+      const ok=await syncPushRegistration(false);
+      if(ok)showITBToast('Notificaciones activadas.');
+    }else if(permission==='denied')showITBToast('Las notificaciones quedaron bloqueadas en el navegador.');
   }catch(e){showITBToast('No se pudieron activar las notificaciones.');}
 }
-async function showSystemAlertNotification(alert){
-  if(!alert||!('Notification' in window)||Notification.permission!=='granted'||!('serviceWorker' in navigator))return;
-  try{
-    const reg=await navigator.serviceWorker.ready;
-    await reg.showNotification(alert.titulo||'Academia TED',{
-      body:String(alert.mensaje||'').replace(/\s+/g,' ').slice(0,180),
-      icon:'assets/ted-app-icon-192-v0281.png',
-      badge:'assets/ted-app-icon-192-v0281.png',
-      tag:'itb-alert-'+String(alert.alerta_id||''),
-      renotify:true,
-      data:{alerta_id:alert.alerta_id||'',url:'./'}
-    });
-  }catch(e){console.warn('No se pudo mostrar la notificación del sistema.',e);}
+function showSystemAlertNotification(alert){
+  // Compatibilidad con el polling legado. El push real lo administra Firebase;
+  // esta función evita duplicar notificaciones cuando la app está en segundo plano.
+  return Promise.resolve(false);
 }
 function mergeAlertQueue(alerts){
   const byId=new Map();
@@ -5072,8 +5131,9 @@ async function createCohortAlert(ev){
   try{
     const r=await apiJsonp({action:'alertCreate',token:sess.token,cohorte,titulo,mensaje},45000);
     if($('#alertTitle'))$('#alertTitle').value='';if($('#alertMessage'))$('#alertMessage').value='';
-    if(status)status.textContent=`Alerta creada para ${r.cohorte}.`;
-    showITBToast('Alerta creada correctamente.');
+    const sent=Number(r?.push?.sent||0);
+    if(status)status.textContent=`Alerta creada para ${r.cohorte}.${sent?` · Push: ${sent} dispositivo${sent===1?'':'s'}.`:''}`;
+    showITBToast(sent?`Alerta creada · ${sent} push enviado${sent===1?'':'s'}.`:'Alerta creada correctamente.');
     await loadAlertStaff(r.cohorte||cohorte);
   }catch(e){if(status)status.textContent=e.message||'No se pudo crear la alerta.';}
   finally{if(btn){btn.disabled=false;btn.textContent='Crear alerta';}}
@@ -5245,7 +5305,7 @@ function applyRoleUI(){
     ADMIN_ATT_REVIEW_NOTICE_CHECKED=false;ADMIN_ATT_REVIEW_NOTICE_DATA=null;
     closeAdminAttendanceReviewNotice();
   }
-  if(ITB_PRIVATE_DATA_READY)syncNotificationOptIn();
+  if(ITB_PRIVATE_DATA_READY){syncNotificationOptIn();if(role==='ALUMNO'&&'Notification' in window&&Notification.permission==='granted')Promise.resolve().then(()=>syncPushRegistration(true)).catch(()=>{});consumePushTarget();}
 }
 
 function teacherStudentMetrics(student){
@@ -7712,16 +7772,32 @@ setTimeout(()=>finishLaunchSplash(true),8000);
 function initPWA(){
   const standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;
   document.body.classList.toggle('pwa-standalone',!!standalone);
-  if('serviceWorker' in navigator){
-    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('Service Worker no disponible.',e)),{once:true});
-  }
+  let ITB_PENDING_PUSH_TARGET='';
+function normalizePushTarget(v){const s=String(v||'').toLowerCase();return ['alerts','schedule'].includes(s)?s:'';}
+function queuePushTarget(target){ITB_PENDING_PUSH_TARGET=normalizePushTarget(target)||ITB_PENDING_PUSH_TARGET;consumePushTarget();}
+function consumePushTarget(){
+  const target=ITB_PENDING_PUSH_TARGET||normalizePushTarget(new URLSearchParams(location.search).get('push'));
+  if(!target||!ITB_USER||!ITB_PRIVATE_DATA_READY)return;
+  ITB_PENDING_PUSH_TARGET='';
+  try{const u=new URL(location.href);u.searchParams.delete('push');history.replaceState({},'',u.pathname+u.search+u.hash);}catch(_){}
+  if(target==='schedule')setPage('schedulePage');
+  else if(target==='alerts'){setPage('homePage');setTimeout(()=>refreshStudentAlerts(true),200);}
+}
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('message',ev=>{
+    if(ev?.data?.type==='ITB_NOTIFICATION_OPEN')queuePushTarget(ev.data.target);
+  });
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(()=>{
+    if('Notification' in window&&Notification.permission==='granted')setTimeout(()=>syncPushRegistration(true),600);
+  }).catch(e=>console.warn('Service Worker no disponible.',e)),{once:true});
+}
 }
 initPWA();
 boot();
 
 
 
-/* ===== v0.44.9 · Examen teórico final nativo ===== */
+/* ===== v0.45.0 · Examen teórico final nativo ===== */
 let FINAL_EXAM_STATUS=null;
 let FINAL_EXAM=null;
 let FINAL_EXAM_TIMER=null;
