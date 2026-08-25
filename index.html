@@ -2837,7 +2837,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.46.8 · Práctica semanal en video · storage externo · notificaciones push</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.46.10 · Práctica semanal en video · storage externo · notificaciones push</footer>
 </div><script src="app-config.js"></script>
 <script src="firebase-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
@@ -5404,7 +5404,15 @@ function applyRoleUI(){
     ADMIN_ATT_REVIEW_NOTICE_CHECKED=false;ADMIN_ATT_REVIEW_NOTICE_DATA=null;
     closeAdminAttendanceReviewNotice();
   }
-  if(ITB_PRIVATE_DATA_READY){syncNotificationOptIn();if(role==='ALUMNO'&&'Notification' in window&&Notification.permission==='granted')Promise.resolve().then(()=>syncPushRegistration(true)).catch(()=>{});consumePushTarget();}
+  // v0.46.10 · Las funciones auxiliares de push no deben poder abortar
+  // la carga principal de la plataforma.
+  if(ITB_PRIVATE_DATA_READY){
+    try{syncNotificationOptIn();}catch(e){console.warn('No se pudo sincronizar la preferencia de notificaciones.',e);}
+    if(role==='ALUMNO'&&'Notification' in window&&Notification.permission==='granted'){
+      Promise.resolve().then(()=>syncPushRegistration(true)).catch(()=>{});
+    }
+    try{consumePushTarget();}catch(e){console.warn('No se pudo procesar el destino de una notificación.',e);}
+  }
 }
 
 function teacherStudentMetrics(student){
@@ -7893,28 +7901,47 @@ function finishLaunchSplash(force){
 }
 setTimeout(()=>finishLaunchSplash(true),8000);
 
-function initPWA(){
-  const standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;
-  document.body.classList.toggle('pwa-standalone',!!standalone);
-  let ITB_PENDING_PUSH_TARGET='';
-function normalizePushTarget(v){const s=String(v||'').toLowerCase();return ['alerts','schedule'].includes(s)?s:'';}
-function queuePushTarget(target){ITB_PENDING_PUSH_TARGET=normalizePushTarget(target)||ITB_PENDING_PUSH_TARGET;consumePushTarget();}
+// v0.46.10 · Estado y helpers de navegación desde notificaciones en ámbito global.
+// applyRoleUI() se ejecuta fuera de initPWA(), por lo que estas funciones no pueden
+// quedar encerradas en el scope local de initPWA().
+let ITB_PENDING_PUSH_TARGET='';
+function normalizePushTarget(v){
+  const s=String(v||'').toLowerCase();
+  return ['alerts','schedule'].includes(s)?s:'';
+}
+function queuePushTarget(target){
+  ITB_PENDING_PUSH_TARGET=normalizePushTarget(target)||ITB_PENDING_PUSH_TARGET;
+  consumePushTarget();
+}
 function consumePushTarget(){
   const target=ITB_PENDING_PUSH_TARGET||normalizePushTarget(new URLSearchParams(location.search).get('push'));
   if(!target||!ITB_USER||!ITB_PRIVATE_DATA_READY)return;
   ITB_PENDING_PUSH_TARGET='';
-  try{const u=new URL(location.href);u.searchParams.delete('push');history.replaceState({},'',u.pathname+u.search+u.hash);}catch(_){}
+  try{
+    const u=new URL(location.href);
+    u.searchParams.delete('push');
+    history.replaceState({},'',u.pathname+u.search+u.hash);
+  }catch(_){}
   if(target==='schedule')setPage('schedulePage');
-  else if(target==='alerts'){setPage('homePage');setTimeout(()=>refreshStudentAlerts(true),200);}
+  else if(target==='alerts'){
+    setPage('homePage');
+    setTimeout(()=>refreshStudentAlerts(true),200);
+  }
 }
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.addEventListener('message',ev=>{
-    if(ev?.data?.type==='ITB_NOTIFICATION_OPEN')queuePushTarget(ev.data.target);
-  });
-  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(()=>{
-    if('Notification' in window&&Notification.permission==='granted')setTimeout(()=>syncPushRegistration(true),600);
-  }).catch(e=>console.warn('Service Worker no disponible.',e)),{once:true});
-}
+
+function initPWA(){
+  const standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;
+  document.body.classList.toggle('pwa-standalone',!!standalone);
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.addEventListener('message',ev=>{
+      if(ev?.data?.type==='ITB_NOTIFICATION_OPEN')queuePushTarget(ev.data.target);
+    });
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(()=>{
+      if('Notification' in window&&Notification.permission==='granted'){
+        setTimeout(()=>syncPushRegistration(true),600);
+      }
+    }).catch(e=>console.warn('Service Worker no disponible.',e)),{once:true});
+  }
 }
 initPWA();
 boot();
