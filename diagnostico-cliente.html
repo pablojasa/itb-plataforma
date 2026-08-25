@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diagnóstico cliente · Academia TED</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#11151b;color:#edf2f7}
+main{max-width:980px;margin:auto;padding:24px}
+h1{font-size:24px;margin:0 0 8px}
+p{color:#b8c2cf}
+button{background:#fff;color:#111;border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#080b0f;border:1px solid #29323d;border-radius:12px;padding:16px;min-height:180px}
+.ok{color:#8ee6a5}.bad{color:#ff9c9c}.muted{color:#9aa6b2}
+</style>
+</head>
+<body>
+<main>
+<h1>Diagnóstico cliente · Academia TED</h1>
+<p>Prueba el navegador/PWA, el Service Worker, la configuración real y las llamadas JSONP. No modifica datos.</p>
+<button id="run">Ejecutar diagnóstico</button>
+<pre id="out">Listo para ejecutar.</pre>
+</main>
+<script>
+const out=document.getElementById('out');
+const log=(...a)=>{out.textContent += '\n'+a.map(x=>typeof x==='string'?x:JSON.stringify(x,null,2)).join(' ');};
+const stamp=()=>new Date().toISOString();
+
+function extractApi(text){
+  const m=String(text||'').match(/window\.ITB_API_URL\s*=\s*["']([^"']+)["']/);
+  return m?m[1]:'';
+}
+async function textFetch(url, cacheMode){
+  const t=performance.now();
+  try{
+    const r=await fetch(url,{cache:cacheMode||'default'});
+    const txt=await r.text();
+    return {ok:r.ok,status:r.status,ms:Math.round(performance.now()-t),text:txt};
+  }catch(e){
+    return {ok:false,status:0,ms:Math.round(performance.now()-t),error:String(e&&e.message||e),text:''};
+  }
+}
+function jsonp(api,params,timeoutMs=60000,label='jsonp'){
+  return new Promise((resolve)=>{
+    const t=performance.now();
+    const cb='__itbDiagBrowser'+Date.now()+Math.floor(Math.random()*100000);
+    const sc=document.createElement('script');
+    let done=false;
+    const errors=[];
+    const onWindowError=(ev)=>{
+      const src=String(ev.filename||'');
+      if(src && (src.includes('script.google')||src.includes('googleusercontent'))){
+        errors.push({
+          message:String(ev.message||'Script error'),
+          filename:src,
+          lineno:ev.lineno||0,
+          colno:ev.colno||0
+        });
+      }
+    };
+    window.addEventListener('error',onWindowError);
+    const cleanup=()=>{
+      clearTimeout(timer);
+      window.removeEventListener('error',onWindowError);
+      try{delete window[cb]}catch(_){}
+      try{sc.remove()}catch(_){}
+    };
+    const finish=(obj)=>{
+      if(done)return; done=true;
+      const ms=Math.round(performance.now()-t);
+      cleanup();
+      resolve(Object.assign({label,ms,script_errors:errors},obj));
+    };
+    window[cb]=(data)=>finish({
+      ok:true,
+      callback:true,
+      response_ok:data&&data.ok!==false,
+      response_error:String(data&&data.error||''),
+      keys:Object.keys(data||{}),
+      perf_ms:Number(data&&data.perf_ms||0),
+      bootstrap_chars:data&&data.bootstrap?JSON.stringify(data.bootstrap).length:0,
+      progress_count:Array.isArray(data&&data.progress)?data.progress.length:null
+    });
+    sc.onerror=()=>finish({ok:false,callback:false,error:'script.onerror'});
+    const qs=new URLSearchParams({...params,prefix:cb,ts:Date.now()});
+    sc.src=api+(api.includes('?')?'&':'?')+qs.toString();
+    sc.async=true;
+    document.head.appendChild(sc);
+    const timer=setTimeout(()=>finish({ok:false,callback:false,error:'timeout'}),timeoutMs);
+  });
+}
+async function cacheSummary(){
+  try{
+    if(!('caches' in window))return {supported:false};
+    const names=await caches.keys();
+    const entries={};
+    for(const name of names){
+      const c=await caches.open(name);
+      const reqs=await c.keys();
+      entries[name]=reqs.map(r=>r.url).filter(u=>/app-config|index\.html|sw\.js/.test(u));
+    }
+    return {supported:true,names,entries};
+  }catch(e){return {supported:true,error:String(e&&e.message||e)}}
+}
+async function run(){
+  out.textContent='Inicio: '+stamp();
+  const result={started_at:stamp(),location:location.href};
+
+  result.navigator={
+    userAgent:navigator.userAgent,
+    online:navigator.onLine,
+    standalone:window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches,
+    serviceWorkerControlled:!!(navigator.serviceWorker&&navigator.serviceWorker.controller),
+    serviceWorkerController:navigator.serviceWorker&&navigator.serviceWorker.controller?navigator.serviceWorker.controller.scriptURL:''
+  };
+  log('NAVEGADOR',result.navigator);
+
+  result.caches=await cacheSummary();
+  log('CACHE / SERVICE WORKER',result.caches);
+
+  // Lee app-config por la ruta normal (puede venir de SW cache).
+  const normal=await textFetch('./app-config.js','default');
+  const normalApi=extractApi(normal.text);
+  result.app_config_normal={ok:normal.ok,status:normal.status,ms:normal.ms,api_url:normalApi,error:normal.error||''};
+  log('APP-CONFIG NORMAL',result.app_config_normal);
+
+  // Fuerza URL distinta para saltar una entrada cacheada por URL.
+  const bust=await textFetch('./app-config.js?diag='+Date.now(),'no-store');
+  const networkApi=extractApi(bust.text);
+  result.app_config_bypass={ok:bust.ok,status:bust.status,ms:bust.ms,api_url:networkApi,error:bust.error||''};
+  log('APP-CONFIG BYPASS',result.app_config_bypass);
+
+  result.config_match=!!normalApi && normalApi===networkApi;
+  log('CONFIG COINCIDE:',result.config_match);
+
+  const api=normalApi||networkApi;
+  if(!api){
+    result.fatal='No se pudo obtener ITB_API_URL';
+    log('FATAL',result.fatal);
+    return;
+  }
+
+  const session=(()=>{
+    try{return JSON.parse(localStorage.getItem('itb_session')||'null')}catch(_){return null}
+  })();
+  result.session={exists:!!session,has_token:!!session?.token,token_length:String(session?.token||'').length,has_user:!!session?.user,role:String(session?.user?.rol||'')};
+  log('SESIÓN LOCAL (sin mostrar token)',result.session);
+
+  result.publicLanding=await jsonp(api,{action:'publicLanding'},30000,'publicLanding');
+  log('PUBLIC LANDING',result.publicLanding);
+
+  if(session?.token){
+    result.sessionInit=await jsonp(api,{action:'sessionInit',token:session.token},65000,'sessionInit');
+    log('SESSION INIT',result.sessionInit);
+
+    result.sessionAcademic=await jsonp(api,{action:'sessionAcademic',token:session.token},65000,'sessionAcademic');
+    log('SESSION ACADEMIC',result.sessionAcademic);
+  }else{
+    log('No hay token guardado. Iniciá sesión en la app normal y volvé a ejecutar esta página.');
+  }
+
+  result.finished_at=stamp();
+  log('\n===== RESULTADO JSON =====\n'+JSON.stringify(result,null,2));
+  log('\n===== FIN =====');
+}
+document.getElementById('run').addEventListener('click',run);
+</script>
+</body>
+</html>
