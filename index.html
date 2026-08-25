@@ -122,8 +122,13 @@ main{max-width:1180px;margin:0 auto;padding:28px 24px 92px}
 .final-exam-state.failed{color:#ffacb4;border-color:#74343b;background:#2d171b}
 .final-exam-btn{display:block;margin-top:6px;border:1px solid #3b5f7b;background:#162738;color:#b7dcff;border-radius:9px;padding:6px 8px;font-size:9px;font-weight:850;cursor:pointer;white-space:nowrap}
 .final-exam-btn:hover{background:#1a3146}.final-exam-btn:disabled{opacity:.45;cursor:not-allowed}
-.final-exam-admin-note{margin:0 0 14px;border:1px solid #35414d;background:#111820;border-radius:12px;padding:10px 12px;color:var(--muted);font-size:10px;line-height:1.5}
-.final-exam-admin-note b{color:#fff}
+.final-exam-admin-note{margin:0 0 14px;border:1px solid #35414d;background:#111820;border-radius:12px;padding:12px 13px;color:var(--muted);font-size:10px;line-height:1.5;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.final-exam-admin-note b{color:#fff}.final-exam-admin-copy{min-width:0}.final-exam-admin-copy span{display:block;margin-top:2px}
+.final-exam-admin-actions{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:0 0 auto}.final-exam-admin-actions small{color:#8d98a4;font-size:9px;max-width:310px;text-align:right}
+.final-exam-batch-btn{border:1px solid #3b6b8d;background:#173048;color:#c9e7ff;border-radius:10px;padding:9px 12px;font-size:10px;font-weight:900;cursor:pointer;white-space:nowrap}.final-exam-batch-btn:hover{background:#1b3b58}.final-exam-batch-btn:disabled{opacity:.45;cursor:not-allowed}
+.final-exam-batch-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:14px}.final-exam-batch-kpi{border:1px solid var(--line);background:#111820;border-radius:12px;padding:11px}.final-exam-batch-kpi b{display:block;font-size:19px;color:#fff}.final-exam-batch-kpi span{font-size:9px;color:var(--muted)}
+.final-exam-batch-alert{border:1px solid #694c26;background:#271e10;border-radius:12px;padding:12px;margin-top:12px}.final-exam-batch-alert h3{margin:0 0 7px;font-size:13px;color:#f0ca82}.final-exam-batch-alert p{margin:0;color:#c9b48f;font-size:10px}.final-exam-batch-list{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:6px;max-height:280px;overflow:auto}.final-exam-batch-list li{display:flex;justify-content:space-between;gap:12px;padding:8px 9px;border:1px solid #3b424a;border-radius:9px;background:#171d24;font-size:10px}.final-exam-batch-list li b{color:#eef2f5}.final-exam-batch-list li span{color:#ffcb77;font-weight:850;white-space:nowrap}
+@media(max-width:760px){.final-exam-admin-note{align-items:stretch;flex-direction:column}.final-exam-admin-actions{align-items:stretch}.final-exam-admin-actions small{text-align:left;max-width:none}.final-exam-batch-btn{width:100%}.final-exam-batch-summary{grid-template-columns:1fr 1fr}}
 .student-drop-btn{
   border:1px solid #84313a;background:#3a171c;color:#ffc1c7;border-radius:9px;padding:7px 9px;
   font-size:10px;font-weight:850;cursor:pointer;white-space:nowrap;
@@ -1531,6 +1536,23 @@ body.admin-mode .admin-only{display:inline-flex!important}
 .admin-table th,.admin-table td{padding:12px 13px;border-bottom:1px solid var(--line);text-align:left;font-size:12px;vertical-align:middle}
 .admin-table th{color:#aeb8c3;font-size:10px;text-transform:uppercase;letter-spacing:.05em;background:#111820;position:sticky;top:0;z-index:1}
 .admin-table tr:hover td{background:#171f29}
+/* v0.44.8 · La tabla de alumnos usa el ancho real disponible en escritorio. */
+@media(min-width:761px){
+  #studentsAdminPage .admin-table-wrap{overflow-x:hidden}
+  #studentsAdminPage .admin-table{min-width:0;table-layout:fixed}
+  #studentsAdminPage .admin-table th,#studentsAdminPage .admin-table td{padding-left:9px;padding-right:9px;overflow-wrap:anywhere;word-break:break-word}
+  #studentsAdminPage .admin-table th:nth-child(1){width:13%}
+  #studentsAdminPage .admin-table th:nth-child(2){width:8%}
+  #studentsAdminPage .admin-table th:nth-child(3){width:10%}
+  #studentsAdminPage .admin-table th:nth-child(4){width:16%}
+  #studentsAdminPage .admin-table th:nth-child(5){width:8%}
+  #studentsAdminPage .admin-table th:nth-child(6){width:9%}
+  #studentsAdminPage .admin-table th:nth-child(7){width:14%}
+  #studentsAdminPage .admin-table th:nth-child(8){width:9%}
+  #studentsAdminPage .admin-table th:nth-child(9){width:13%}
+  #studentsAdminPage .student-actions{display:grid;grid-template-columns:1fr;gap:6px;justify-items:stretch}
+  #studentsAdminPage .student-actions button{width:100%;white-space:normal;line-height:1.15;padding-left:6px;padding-right:6px}
+}
 .admin-person{font-weight:850;color:#fff}.admin-sub{font-size:10px;color:var(--muted);margin-top:2px}
 .admin-status{display:inline-flex;padding:5px 8px;border-radius:999px;border:1px solid var(--line);font-size:9px;font-weight:850;white-space:nowrap}
 .admin-status.received{color:#8cbbea;border-color:#355b82;background:#102033}
@@ -2425,7 +2447,13 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
       <button class="btn ghost" onclick="loadAdminStudents(true)">Actualizar</button>
     </div>
   </div>
-  <div class="final-exam-admin-note"><b>Examen teórico final:</b> 70 preguntas · 45 minutos · aprobación con 70% (49/70). La instancia ordinaria y el recuperatorio requieren habilitación expresa del ADMIN; para habilitar el ordinario el alumno debe tener 100% de progreso.</div>
+  <div class="final-exam-admin-note">
+    <div class="final-exam-admin-copy"><b>Examen teórico final</b><span>70 preguntas · 45 minutos · aprobación con 70% (49/70). El ordinario se habilita en forma masiva sólo a alumnos activos con 100% de progreso; el recuperatorio continúa requiriendo habilitación individual del ADMIN.</span></div>
+    <div class="final-exam-admin-actions">
+      <button id="finalExamBatchEnableBtn" class="final-exam-batch-btn" onclick="enableFinalExamBatch()" disabled>Habilitar examen final a aptos</button>
+      <small id="finalExamBatchHint">Seleccioná un curso/cohorte para habilitar el examen.</small>
+    </div>
+  </div>
   <div id="studentsAdminSummary" class="students-admin-summary"></div>
   <div id="studentsShirtCurve" class="teacher-shirt-card">
     <div class="teacher-shirt-main">
@@ -2444,6 +2472,13 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     </table>
   </div>
 </section>
+
+<div id="finalExamBatchModal" class="cert-modal" onclick="if(event.target===this)closeFinalExamBatchResult()">
+  <div class="cert-dialog" role="dialog" aria-modal="true" aria-labelledby="finalExamBatchTitle">
+    <div class="cert-head"><div><div class="kicker">Examen teórico final</div><h2 id="finalExamBatchTitle">Resultado de la habilitación</h2><p id="finalExamBatchSubtitle">Curso seleccionado</p></div><button class="cert-close" onclick="closeFinalExamBatchResult()" aria-label="Cerrar">×</button></div>
+    <div class="cert-body" id="finalExamBatchBody"></div>
+  </div>
+</div>
 
 
 <div id="certBatchModal" class="cert-modal" onclick="if(event.target===this)closeCertificationBatch()">
@@ -2617,7 +2652,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <div class="integrator-modal-actions"><button class="btn ghost" onclick="closeIntegratorExposure()">Cancelar</button><button class="btn primary" onclick="saveIntegratorExposureEvaluation()">Guardar evaluación definitiva</button></div>
 </div></div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.42.2 · Convocatorias TED · Identidad visual</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8 · Habilitación masiva de examen final</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3604,7 +3639,7 @@ function applyStudentAdminFilters(){
     }
     return true;
   });
-  renderStudentAdminSummary();renderStudentAdminShirtCurve();renderStudentAdminRows();
+  renderStudentAdminSummary();renderStudentAdminShirtCurve();renderFinalExamBatchControl();renderStudentAdminRows();
 }
 const ADMIN_SHIRT_SIZE_ORDER=['XS','S','M','L','XL','XXL','XXXL','XXXXL'];
 function canonicalShirtSizeClient(value){
@@ -3696,32 +3731,69 @@ function finalExamAdminCell(s,active){
   const resultMeta=(pct!==null&&Number.isFinite(pct))
     ? `<div class="note">${pct.toFixed(2).replace('.',',')}%${correct!==null&&Number.isFinite(correct)?` · ${correct}/70`:''}${s.examen_final_instancia?` · ${esc(s.examen_final_instancia)}`:''}</div>`
     : '';
-  let action='';
-  if(active && (!st||st==='PENDIENTE_HABILITACION')){
-    action=`<button class="final-exam-btn" onclick="enableFinalExam('${esc(s.alumno_id)}','ORDINARIO')">Habilitar examen</button>`;
-  }else if(active && st==='RECUPERATORIO_PENDIENTE'){
-    action=`<button class="final-exam-btn" onclick="enableFinalExam('${esc(s.alumno_id)}','RECUPERATORIO')">Habilitar recuperatorio</button>`;
-  }
+  const action=(active&&st==='RECUPERATORIO_PENDIENTE')
+    ? `<button class="final-exam-btn" onclick="enableFinalExam('${esc(s.alumno_id)}','RECUPERATORIO')">Habilitar recuperatorio</button>`
+    : '';
   return `<span class="final-exam-state ${cls}">${esc(label)}</span>${resultMeta}${action}`;
 }
+
+function renderFinalExamBatchControl(){
+  const btn=$('#finalExamBatchEnableBtn'),hint=$('#finalExamBatchHint');if(!btn||!hint)return;
+  const cid=String($('#studentsAdminCourse')?.value||'').trim();
+  if(!cid){btn.disabled=true;hint.textContent='Seleccioná un curso/cohorte para habilitar el examen.';return;}
+  const course=(ADMIN_STUDENTS_ALL.courses||[]).find(c=>String(c.curso_id||'')===cid)||{};
+  const active=(ADMIN_STUDENTS_ALL.students||[]).filter(s=>String(s.curso_id||'')===cid&&studentAdminBool(s.activo,true)&&String(s.estado||'ACTIVO').toUpperCase()==='ACTIVO');
+  const pending=active.filter(s=>{const st=String(s.examen_final_estado||'').trim().toUpperCase();return !st||st==='PENDIENTE_HABILITACION';});
+  btn.disabled=pending.length===0;
+  const label=course.cohorte||course.nombre_corto||cid;
+  hint.textContent=pending.length?`${label}: ${pending.length} alumno${pending.length===1?'':'s'} pendiente${pending.length===1?'':'s'} de evaluación. Se verificará el 100% al habilitar.`:`${label}: no hay alumnos con examen ordinario pendiente.`;
+}
+
+function closeFinalExamBatchResult(){$('#finalExamBatchModal')?.classList.remove('open')}
+function showFinalExamBatchResult(r){
+  const modal=$('#finalExamBatchModal'),body=$('#finalExamBatchBody'),sub=$('#finalExamBatchSubtitle');if(!modal||!body)return;
+  const summary=r?.resumen||{},noAptos=Array.isArray(r?.no_aptos)?r.no_aptos:[];
+  const course=(ADMIN_STUDENTS_ALL.courses||[]).find(c=>String(c.curso_id||'')===String(r?.curso_id||''))||{};
+  if(sub)sub.textContent=course.cohorte||course.nombre_corto||r?.curso_id||'Curso seleccionado';
+  const list=noAptos.length?`<div class="final-exam-batch-alert"><h3>Alumnos que todavía no cumplen la condición</h3><p>No fueron habilitados porque su progreso del curso es inferior al 100%.</p><ul class="final-exam-batch-list">${noAptos.map(x=>`<li><b>${esc([x.apellido,x.nombre].filter(Boolean).join(', ')||x.alumno_id||'Alumno')}</b><span>${Number(x.progreso||0)}%</span></li>`).join('')}</ul></div>`:`<div class="final-exam-batch-alert" style="border-color:#285a3c;background:#14251b"><h3 style="color:#8fe2ad">Todos los alumnos pendientes cumplen la condición</h3><p style="color:#a7cfb6">No quedaron alumnos pendientes por falta de progreso.</p></div>`;
+  body.innerHTML=`<div class="final-exam-batch-summary"><div class="final-exam-batch-kpi"><b>${Number(summary.habilitados||0)}</b><span>exámenes habilitados</span></div><div class="final-exam-batch-kpi"><b>${Number(summary.no_aptos||0)}</b><span>sin 100% de progreso</span></div><div class="final-exam-batch-kpi"><b>${Number(summary.omitidos||0)}</b><span>ya habilitados / otra instancia</span></div></div>${list}`;
+  modal.classList.add('open');
+}
+
+async function enableFinalExamBatch(){
+  const cid=String($('#studentsAdminCourse')?.value||'').trim();
+  if(!cid){alert('Seleccioná primero un curso/cohorte.');return;}
+  const course=(ADMIN_STUDENTS_ALL.courses||[]).find(c=>String(c.curso_id||'')===cid)||{};
+  const label=course.cohorte||course.nombre_corto||cid;
+  if(!confirm(`¿Habilitar el examen teórico final para todos los alumnos aptos de ${label}?\n\nEl sistema habilitará únicamente a quienes estén ACTIVOS y tengan 100% de progreso. Los demás serán informados sin habilitarse.`))return;
+  const btn=$('#finalExamBatchEnableBtn');
+  try{
+    if(btn){btn.disabled=true;btn.textContent='Verificando y habilitando…';}
+    const sess=getSession();if(!sess?.token)throw new Error('Sesión vencida.');
+    const r=await apiJsonpLong({action:'adminFinalExamEnableBatch',token:sess.token,curso_id:cid},120000);
+    await loadAdminStudents(true);
+    showFinalExamBatchResult(r);
+  }catch(e){alert(e.message||'No se pudo realizar la habilitación masiva del examen final.');}
+  finally{if(btn){btn.textContent='Habilitar examen final a aptos';renderFinalExamBatchControl();}}
+}
+
 async function enableFinalExam(alumnoId,instancia){
   const s=(ADMIN_STUDENTS_ALL.students||[]).find(x=>String(x.alumno_id)===String(alumnoId));if(!s)return;
   const who=[s.apellido,s.nombre].filter(Boolean).join(', ')||s.usuario||alumnoId;
-  const ins=String(instancia||'ORDINARIO').toUpperCase();
-  const label=ins==='RECUPERATORIO'?'recuperatorio':'examen teórico final';
-  const extra=ins==='ORDINARIO'
-    ? '\n\nEl sistema verificará 100% de progreso y que el banco tenga suficientes preguntas activas.'
-    : '\n\nEl recuperatorio sólo se habilitará si el ordinario figura finalizado y desaprobado.';
-  if(!confirm(`¿Habilitar ${label} para ${who}?${extra}`))return;
+  const ins=String(instancia||'RECUPERATORIO').toUpperCase();
+  if(ins!=='RECUPERATORIO')return;
+  if(!confirm(`¿Habilitar recuperatorio para ${who}?\n\nSólo se habilitará si el examen ordinario figura finalizado y desaprobado.`))return;
   try{
     const sess=getSession();if(!sess?.token)throw new Error('Sesión vencida.');
-    const r=await apiJsonpLong({action:'adminFinalExamEnable',token:sess.token,alumno_id:alumnoId,instancia:ins},120000);
+    const r=await apiJsonpLong({action:'adminFinalExamEnable',token:sess.token,alumno_id:alumnoId,instancia:'RECUPERATORIO'},120000);
     await loadAdminStudents(true);
-    if(r.already_enabled)showITBToast(`${who} ya tenía ${label} habilitado.`);
-    else showITBToast(`${label.charAt(0).toUpperCase()+label.slice(1)} habilitado para ${who}.`);
-  }catch(e){alert(e.message||`No se pudo habilitar ${label}.`);}
+    if(r.already_enabled)showITBToast(`${who} ya tenía el recuperatorio habilitado.`);
+    else showITBToast(`Recuperatorio habilitado para ${who}.`);
+  }catch(e){alert(e.message||'No se pudo habilitar el recuperatorio.');}
 }
 window.enableFinalExam=enableFinalExam;
+window.enableFinalExamBatch=enableFinalExamBatch;
+window.closeFinalExamBatchResult=closeFinalExamBatchResult;
 
 function renderStudentAdminRows(){
   const body=$('#studentsAdminRows');if(!body)return;
