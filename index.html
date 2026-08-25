@@ -365,53 +365,19 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
  .activity-extra-row strong{display:block;margin-bottom:2px}
 }
 
-.activity-weather{margin-top:14px;padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.015))}
-.activity-weather-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}
+.activity-weather{margin-top:14px;padding:12px 13px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.025)}
+.activity-weather-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:9px}
 .activity-weather-title{font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#dce2e9}
 .activity-weather-source{font-size:10px;color:var(--muted)}
-.activity-weather-condition{display:flex;align-items:center;gap:10px;margin-bottom:11px;color:#e7edf4}
-.activity-weather-condition-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:rgba(255,255,255,.055);font-size:27px;line-height:1}
-.activity-weather-condition-copy b{display:block;font-size:14px;margin-bottom:2px}.activity-weather-condition-copy span{font-size:10px;color:var(--muted)}
-.activity-weather-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px}
-.activity-weather-item{padding:9px;border-radius:11px;background:rgba(255,255,255,.04);display:grid;grid-template-columns:25px minmax(0,1fr);gap:6px;align-items:center}
-.activity-weather-temperature{grid-template-columns:23px minmax(0,1fr)}
-.activity-weather-temp-values{display:grid;grid-template-columns:1fr 1fr;gap:7px;align-items:center}
-.activity-weather-temp-value{min-width:0;text-align:center}
-.activity-weather-temp-value + .activity-weather-temp-value{border-left:1px solid rgba(255,255,255,.09);padding-left:7px}
-.activity-weather-temp-value b{font-size:15px;white-space:nowrap}
-.activity-weather-temp-value span{display:block}
-.activity-weather-metric-icon{font-size:18px;line-height:1;text-align:center}
-.activity-weather-item b{display:block;font-size:15px;margin-bottom:1px}
+.activity-weather-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.activity-weather-item{padding:8px;border-radius:10px;background:rgba(255,255,255,.035)}
+.activity-weather-item b{display:block;font-size:15px;margin-bottom:2px}
 .activity-weather-item span{font-size:10px;color:var(--muted);line-height:1.25}
+.activity-weather-condition{font-size:12px;color:#dce2e9;margin-bottom:9px}
 .activity-weather-note{font-size:11px;color:var(--muted);line-height:1.4}
 .activity-weather-loading{font-size:11px;color:var(--muted)}
-.activity-location-actions{display:flex;gap:8px;flex-wrap:wrap}
 @media(max-width:680px){
- .activity-weather-grid{grid-template-columns:1.4fr 1fr 1fr}
- .activity-weather-condition-icon{width:38px;height:38px;font-size:24px}
- .activity-weather-item{padding:8px;grid-template-columns:22px minmax(0,1fr);gap:5px}
- .activity-weather-temp-values{gap:5px}
- .activity-weather-temp-value + .activity-weather-temp-value{padding-left:5px}
-}
-@media(max-width:350px){
- .activity-weather-grid{grid-template-columns:1fr 1fr}
- .activity-weather-temperature{grid-column:1 / -1}
-}
-
-.location-modal{position:fixed;inset:0;background:rgba(4,7,10,.88);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;z-index:14200}
-.location-modal.open{display:flex}
-.location-modal-card{width:min(1040px,97vw);height:min(86vh,790px);background:#0f151c;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.58);display:flex;flex-direction:column}
-.location-modal-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:14px 15px;border-bottom:1px solid var(--line)}
-.location-modal-title{font-size:15px;font-weight:900;margin-bottom:4px}.location-modal-subtitle{font-size:10px;color:var(--muted);line-height:1.45}
-.location-modal-close{border:1px solid var(--line);background:#171e27;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px;flex:0 0 auto}
-.location-modal-map{flex:1;min-height:260px;background:#e8edf2}.location-modal-map iframe{width:100%;height:100%;border:0;background:#e8edf2}
-.location-modal-info{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 15px;border-top:1px solid var(--line)}
-.location-modal-meta{display:grid;gap:4px;font-size:10px;color:var(--muted)}.location-modal-meta b{font-size:11px;color:#e6edf4}
-.location-modal-buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.location-modal-coords{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
-@media(max-width:680px){
- .location-modal{padding:8px}.location-modal-card{height:92vh}
- .location-modal-info{grid-template-columns:1fr}.location-modal-buttons{justify-content:stretch}.location-modal-buttons>*{flex:1;text-align:center}
+ .activity-weather-grid{grid-template-columns:repeat(2,1fr)}
 }
 
 
@@ -530,22 +496,6 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
 .unitws-video-info small{display:block;color:var(--muted);font-size:9px;margin:4px 0}
 .unitws-video-link{font-size:10px;color:#69acf0;text-decoration:none;cursor:pointer}
 .unitws-video-link:hover{text-decoration:underline}
-.unitws-video-group{display:grid;gap:8px}.unitws-video-group+.unitws-video-group{margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
-.unitws-video-group-head{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:9px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:#d8e0e8}
-.unitws-video-group-head span:last-child{font-weight:700;color:var(--muted);letter-spacing:0;text-transform:none}
-.unitws-video-badge{display:inline-flex;align-items:center;border-radius:999px;padding:3px 6px;margin:2px 0 4px;font-size:8px;font-weight:950;letter-spacing:.04em}
-.unitws-video-badge.required{color:#91c8ff;border:1px solid #315d8d;background:#102238}
-.unitws-video-badge.optional{color:#c8b2ef;border:1px solid #574574;background:#20192b}
-.unitws-video-note{font-size:8px;color:var(--muted);line-height:1.35;margin-top:3px}
-.unitws-activity-item{display:grid;grid-template-columns:48px minmax(0,1fr);gap:9px;align-items:center}
-.unitws-activity-thumb{width:48px;height:48px;border-radius:9px;border:1px solid var(--line);object-fit:cover;background:#15202a}
-.unitws-activity-icon{width:48px;height:48px;border-radius:9px;border:1px solid #295f54;background:linear-gradient(145deg,#102c27,#143e35);display:grid;place-items:center;font-size:21px}
-.unitws-activity-meta{min-width:0}.unitws-activity-meta b{display:block}.unitws-activity-open{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#69acf0;cursor:pointer;margin-top:3px}.unitws-activity-open:hover{text-decoration:underline}
-.activity-modal{position:fixed;inset:0;background:rgba(4,7,10,.88);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;z-index:14500}
-.activity-modal.open{display:flex}.activity-modal-card{width:min(1180px,97vw);height:min(90vh,920px);background:#0f151c;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.58);display:flex;flex-direction:column}
-.activity-modal-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}.activity-modal-title{font-size:14px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.activity-modal-actions{display:flex;align-items:center;gap:9px}.activity-modal-external{font-size:10px;color:#69acf0;text-decoration:none}.activity-modal-close{border:1px solid var(--line);background:#171e27;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px}
-.activity-modal-frame{flex:1;min-height:0;background:#fff;position:relative}.activity-modal-frame iframe{width:100%;height:100%;border:0;background:#fff}.activity-modal-loading{position:absolute;inset:0;display:none;place-items:center;background:#101821;color:#d5dde5;text-align:center;padding:24px;z-index:2}.activity-modal-loading.show{display:grid}.activity-modal-loading b{display:block;font-size:15px;margin-bottom:7px}.activity-modal-loading span{font-size:10px;color:var(--muted);line-height:1.5}.activity-modal-foot{padding:8px 12px;border-top:1px solid var(--line);font-size:9px;color:var(--muted)}
 .video-modal{position:fixed;inset:0;background:rgba(4,7,10,.84);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:22px;z-index:9999}
 .video-modal.open{display:flex}
 .video-modal-card{width:min(980px,96vw);background:#0f151c;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5)}
@@ -559,7 +509,6 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
  .unitws-video-item{grid-template-columns:78px minmax(0,1fr)}
  .unitws-video-thumb{width:78px;height:49px}
  .video-modal{padding:10px}
- .activity-modal{padding:8px}.activity-modal-card{height:94vh}
 }
 
 
@@ -574,36 +523,8 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
 .doc-modal-frame{flex:1;min-height:0;background:#111}
 .doc-modal-frame iframe{width:100%;height:100%;border:0;background:white}
 .doc-modal-foot{padding:8px 12px;color:var(--muted);font-size:10px;border-top:1px solid var(--line)}
-.summary-modal{position:fixed;inset:0;background:rgba(4,7,10,.88);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;z-index:14100}
-.summary-modal.open{display:flex}
-.summary-modal-card{width:min(1180px,97vw);height:min(90vh,920px);background:#0f151c;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.55);display:flex;flex-direction:column}
-.summary-modal-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
-.summary-modal-title{font-size:14px;font-weight:850;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.summary-modal-actions{display:flex;gap:8px;align-items:center}
-.summary-modal-open{font-size:11px;color:#6eb0f4;text-decoration:none}
-.summary-modal-close{border:1px solid var(--line);background:#171e27;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px}
-.summary-modal-frame{flex:1;min-height:0;background:#fff;position:relative}
-.summary-modal-frame iframe{width:100%;height:100%;border:0;background:#fff}
-.summary-modal-foot{padding:8px 12px;color:var(--muted);font-size:10px;border-top:1px solid var(--line)}
-.summary-modal-card.zoom-mode{width:min(720px,96vw);height:auto;min-height:390px}
-.summary-modal-card.zoom-mode .summary-modal-frame{background:linear-gradient(145deg,#0d1620,#111c28);display:flex;align-items:center;justify-content:center;min-height:290px}
-.summary-zoom-panel{display:none;width:100%;height:100%;align-items:center;justify-content:center;padding:34px 24px;text-align:center;background:radial-gradient(circle at 50% 0%,rgba(45,140,255,.16),transparent 48%),linear-gradient(145deg,#0d1620,#111c28)}
-.summary-zoom-panel.show{display:flex}
-.summary-zoom-content{max-width:520px;margin:auto}
-.summary-zoom-logo{width:72px;height:72px;margin:0 auto 18px;border-radius:20px;background:#2d8cff;display:grid;place-items:center;box-shadow:0 12px 34px rgba(45,140,255,.28)}
-.summary-zoom-logo svg{width:39px;height:39px;display:block;fill:#fff}
-.summary-zoom-content h3{margin:0 0 10px;font-size:20px;color:#fff}.summary-zoom-content p{margin:0 auto 18px;color:#b9c5d1;font-size:11px;line-height:1.65}
-.summary-zoom-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 15px;border-radius:11px;background:#2d8cff;color:#fff;text-decoration:none;font-size:11px;font-weight:900;box-shadow:0 7px 20px rgba(45,140,255,.22)}
-.summary-zoom-note{display:block;margin-top:13px;font-size:9px;color:#7f91a3}
 .unitws-doc-item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:9px;align-items:center}
-.unitws-doc-icon{width:44px;height:54px;border-radius:10px;border:1px solid #344252;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#f7f9fc 0%,#eef3f8 100%);position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
-.unitws-doc-icon::before{content:'';position:absolute;top:0;right:0;width:11px;height:11px;background:linear-gradient(135deg,#dfe6ee 0%,#ffffff 100%);clip-path:polygon(0 0,100% 0,100% 100%);border-left:1px solid rgba(45,61,79,.16);border-bottom:1px solid rgba(45,61,79,.16)}
-.unitws-doc-glyph{font-size:18px;line-height:1;filter:drop-shadow(0 1px 0 rgba(255,255,255,.45))}
-.unitws-doc-ext{margin-top:5px;padding:2px 6px;border-radius:999px;font-size:8px;font-weight:950;letter-spacing:.04em;line-height:1}
-.unitws-doc-icon.pdf .unitws-doc-glyph{color:#ef4444}.unitws-doc-icon.pdf .unitws-doc-ext{background:#ef4444;color:#fff}
-.unitws-doc-icon.doc .unitws-doc-glyph{color:#3b82f6}.unitws-doc-icon.doc .unitws-doc-ext{background:#2563eb;color:#fff}
-.unitws-doc-icon.ppt .unitws-doc-glyph{color:#f97316}.unitws-doc-icon.ppt .unitws-doc-ext{background:#ea580c;color:#fff}
-.unitws-doc-icon.xls .unitws-doc-glyph{color:#22c55e}.unitws-doc-icon.xls .unitws-doc-ext{background:#16a34a;color:#fff}
+.unitws-doc-icon{width:44px;height:54px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;background:#161d25;font-size:10px;font-weight:900;color:#cdd4dc}
 .library-view-btn{margin-top:8px}
 
 
@@ -1893,40 +1814,6 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 @media(max-width:900px){.integrator-tools-grid,.integrator-groups-grid{grid-template-columns:1fr}.integrator-pool-card{grid-template-columns:1fr}.integrator-summary{grid-template-columns:repeat(2,1fr)}.integrator-student-grid{grid-template-columns:1fr}.integrator-grades{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:650px){.integrator-admin-head,.integrator-student-head{flex-direction:column}.integrator-form-grid,.integrator-date-grid{grid-template-columns:1fr}.integrator-rubric-row{grid-template-columns:1fr repeat(4,1fr)}.integrator-summary{grid-template-columns:1fr 1fr}.integrator-final-preview{grid-template-columns:1fr}.integrator-resource-links{display:grid}.integrator-resource-links a{justify-content:center}}
 
-
-/* ===== v0.43.0 · Encuesta de satisfacción ===== */
-.survey-course-shell{margin:0 0 22px;border:1px solid #34414d;background:linear-gradient(145deg,#121a22,#0d141a);border-radius:18px;padding:18px}
-.survey-course-head{display:flex;justify-content:space-between;gap:16px;align-items:center}.survey-course-head h2{margin:4px 0 4px}.survey-course-head p{margin:0;color:var(--muted);font-size:10px}
-.survey-course-card{margin-top:12px;border-top:1px solid #2d3944;padding-top:12px;color:#c9d2da;font-size:11px;line-height:1.55}.survey-course-card b{color:#fff}
-.survey-overlay{position:fixed;inset:0;z-index:19000;background:rgba(2,6,10,.9);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:16px}.survey-overlay.open{display:flex}
-.survey-invite-dialog{width:min(500px,95vw);background:#0f161d;border:1px solid #384550;border-radius:22px;padding:24px;text-align:center;box-shadow:0 28px 85px rgba(0,0,0,.58)}
-.survey-invite-icon,.survey-thanks-icon{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;margin:0 auto 13px;border:1px solid #2f6d46;background:#12261a;color:#85dea4;font-size:28px;font-weight:950}.survey-invite-dialog h2{margin:7px 0 8px}.survey-invite-dialog p{color:#aeb8c2;font-size:11px;line-height:1.6;margin:0 auto;max-width:430px}.survey-invite-actions{display:flex;justify-content:center;gap:9px;margin-top:18px;flex-wrap:wrap}
-.survey-dialog{width:min(920px,97vw);max-height:94vh;overflow:auto;background:#0e151c;border:1px solid #394651;border-radius:22px;box-shadow:0 30px 90px rgba(0,0,0,.62)}
-.survey-modal-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:18px 20px;background:rgba(14,21,28,.97);border-bottom:1px solid #2f3a45;backdrop-filter:blur(7px)}.survey-modal-head h2{margin:4px 0}.survey-modal-head p{margin:0;color:var(--muted);font-size:10px}.survey-x{border:1px solid #35424e;background:#151e27;color:#fff;border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:19px}
-#surveyFormView,#surveyPreviewView{padding:18px 20px 22px}.survey-voluntary-note{border:1px solid #3a4652;background:#111922;border-radius:12px;padding:12px;color:#bdc7d0;font-size:10px;line-height:1.55}.survey-voluntary-note b{color:#fff}
-.survey-progress-line{display:flex;justify-content:space-between;gap:10px;margin:13px 2px 16px;color:#8f9ba6;font-size:9px;flex-wrap:wrap}
-.survey-section-block{margin:0 0 18px}.survey-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #2b3741;padding-bottom:8px;margin-bottom:10px}.survey-section-title span{font-size:12px;font-weight:950;color:#f0c97d;text-transform:uppercase;letter-spacing:.05em}.survey-section-title small{color:#7f8b96;font-size:9px}
-.survey-question-card{border:1px solid #303c47;background:#101820;border-radius:15px;padding:15px 15px 13px;margin-bottom:9px;scroll-margin-top:90px}.survey-question-card.unanswered{border-color:#3a4652}.survey-question-card.answered{border-color:#385348}
-.survey-q-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.survey-q-number{font-size:9px;color:#83909b;font-weight:900;margin-bottom:5px}.survey-q-text{font-size:12px;font-weight:850;line-height:1.45;color:#eef2f5}.survey-q-value{min-width:70px;text-align:right;font-size:18px;font-weight:950;color:#f0c97d}.survey-q-value span{display:block;color:#8f9aa4;font-size:8px;font-weight:700;margin-top:3px}
-.survey-range-wrap{margin-top:13px}.survey-range{width:100%;height:25px;background:transparent;appearance:none;-webkit-appearance:none;cursor:pointer}.survey-range:focus{outline:none}.survey-range::-webkit-slider-runnable-track{height:6px;background:linear-gradient(90deg,#5f2529,#806e3e,#2d6844);border-radius:999px;border:1px solid #46515a}.survey-range::-moz-range-track{height:6px;background:#59636d;border-radius:999px;border:0}.survey-range::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#f0c97d;border:3px solid #111820;margin-top:-9px;box-shadow:0 0 0 1px #c69e4b}.survey-range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#f0c97d;border:3px solid #111820}.survey-range.unanswered::-webkit-slider-thumb{opacity:0}.survey-range.unanswered::-moz-range-thumb{opacity:0}
-.survey-range-labels{display:flex;justify-content:space-between;gap:12px;color:#8e99a4;font-size:8px;line-height:1.35}.survey-range-labels span:last-child{text-align:right}.survey-selected-label{text-align:center;color:#cbd4dc;font-size:9px;min-height:14px;margin-top:4px;font-weight:800}
-.survey-open-section{margin-top:22px}.survey-open-q{display:grid;gap:7px;margin-bottom:12px}.survey-open-q label{font-size:11px;font-weight:850;line-height:1.45}.survey-open-q textarea{width:100%;resize:vertical;min-height:88px;background:#0a1117;border:1px solid #34414c;border-radius:11px;color:#fff;padding:11px;font:inherit;line-height:1.5}
-.survey-error{min-height:19px;margin-top:9px;color:#f3a1a8;font-size:10px}.survey-modal-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:13px}
-.survey-preview-intro h3{margin:0 0 4px}.survey-preview-intro p{margin:0 0 14px;color:#9da8b3;font-size:10px}.survey-preview-list{display:grid;gap:8px}.survey-preview-item{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;border:1px solid #303b46;background:#101820;border-radius:12px;padding:11px 12px}.survey-preview-item .text{font-size:10px;line-height:1.45;color:#c9d1d9}.survey-preview-item .answer{text-align:right}.survey-preview-item .answer b{display:block;color:#f0c97d;font-size:14px}.survey-preview-item .answer span{font-size:8px;color:#89959f}.survey-preview-item button{border:0;background:none;color:#85a9c9;font-size:8px;padding:3px 0;cursor:pointer}
-.survey-preview-comments{margin-top:17px}.survey-preview-comment{border:1px solid #303b46;background:#0f171f;border-radius:12px;padding:11px;margin-bottom:8px}.survey-preview-comment b{display:block;font-size:10px;margin-bottom:6px}.survey-preview-comment p{margin:0;color:#aeb8c1;font-size:10px;line-height:1.5;white-space:pre-wrap}
-.survey-thanks{text-align:center;padding:48px 22px}.survey-thanks h2{margin:5px 0}.survey-thanks p{color:#9ba7b1;font-size:11px;margin:0 0 17px}
-.survey-staff-shell{padding:4px 0 30px}.survey-staff-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:15px}.survey-staff-head h2{margin:4px 0}.survey-staff-head p{margin:0;color:var(--muted);font-size:10px}.survey-staff-controls{display:flex;gap:8px;flex-wrap:wrap}.survey-staff-controls select{background:#101820;border:1px solid #35414d;color:#fff;border-radius:10px;padding:10px}
-.survey-staff-participation{border:1px solid #36434f;background:#101820;border-radius:16px;padding:14px 16px;margin-bottom:13px}.survey-part-top{display:flex;justify-content:space-between;gap:15px;align-items:flex-end}.survey-part-top h3{margin:0 0 4px}.survey-part-top p{margin:0;color:#8f9aa5;font-size:9px}.survey-part-pct{font-size:28px;font-weight:950;color:#f0c97d}.survey-part-track{height:8px;background:#1c2731;border-radius:999px;overflow:hidden;margin-top:10px}.survey-part-track span{display:block;height:100%;background:#477d59;border-radius:999px}.survey-part-meta{display:flex;gap:11px;flex-wrap:wrap;margin-top:8px;color:#9da8b2;font-size:9px}
-.survey-kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:14px}.survey-kpi{border:1px solid #34414c;background:#101820;border-radius:14px;padding:12px}.survey-kpi b{display:block;font-size:22px;color:#f0c97d}.survey-kpi span{display:block;font-size:8px;color:#909ba6;margin-top:5px;line-height:1.35}
-.survey-staff-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:13px}.survey-staff-card{border:1px solid #34414c;background:#0e151c;border-radius:17px;padding:14px}.survey-question-stats{display:grid;gap:7px}.survey-stat-row{border:1px solid #2f3a45;background:#101820;border-radius:11px;padding:10px}.survey-stat-top{display:flex;justify-content:space-between;gap:12px}.survey-stat-top b{font-size:9px;line-height:1.4}.survey-stat-top span{color:#f0c97d;font-size:12px;font-weight:950;white-space:nowrap}.survey-stat-meta{font-size:8px;color:#85919c;margin-top:4px}.survey-dist{display:flex;gap:4px;margin-top:7px;height:5px}.survey-dist span{background:#52606b;border-radius:999px;min-width:2px}
-.survey-open-block{margin-bottom:14px}.survey-open-block h4{font-size:10px;margin:0 0 7px;color:#d8dee4}.survey-comment{border-left:2px solid #586674;padding:7px 9px;margin-bottom:7px;color:#aeb8c2;font-size:9px;line-height:1.5;background:#111922;border-radius:0 8px 8px 0;white-space:pre-wrap}
-@media(max-width:1050px){.survey-kpi-grid{grid-template-columns:repeat(3,1fr)}.survey-staff-grid{grid-template-columns:1fr}}
-@media(max-width:700px){.survey-course-head,.survey-staff-head{flex-direction:column;align-items:stretch}.survey-course-head button,.survey-staff-controls>*{width:100%}.survey-dialog{width:100%;max-height:96vh;border-radius:17px}.survey-modal-head{padding:15px}.survey-q-head{display:block}.survey-q-value{text-align:left;margin-top:7px}.survey-q-value span{display:inline;margin-left:6px}.survey-preview-item{grid-template-columns:1fr}.survey-preview-item .answer{text-align:left}.survey-kpi-grid{grid-template-columns:repeat(2,1fr)}.survey-invite-actions>*{width:100%}}
-
-
-.survey-manual-enable{border:1px dashed #5f5637;background:#1b1911;border-radius:14px;padding:12px 14px;margin-bottom:13px;display:flex;justify-content:space-between;gap:14px;align-items:center}.survey-manual-enable>div:first-child{display:grid;gap:4px}.survey-manual-enable b{font-size:10px;color:#f0c97d}.survey-manual-enable span{font-size:9px;color:#a9a28d;line-height:1.45}.survey-manual-controls{display:flex;gap:8px;min-width:min(460px,50%)}.survey-manual-controls select{flex:1;background:#101820;border:1px solid #42483d;color:#fff;border-radius:10px;padding:9px}
-@media(max-width:800px){.survey-manual-enable{flex-direction:column;align-items:stretch}.survey-manual-controls{min-width:0}.survey-manual-controls>*{width:100%}}
-
 </style></head>
 <body class="guest-mode app-loading">
 <div id="pwaLaunchSplash" class="pwa-launch-splash" aria-label="Iniciando Academia TED">
@@ -2109,14 +1996,6 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
       <div id="studentIntegratorMount" class="integrator-student-card"><div class="teacher-empty">Abrí esta sección para cargar la información de tu grupo.</div></div>
     </section>
 
-    <section id="studentSurveySection" class="student-only survey-course-shell" style="display:none">
-      <div class="survey-course-head">
-        <div><div class="kicker">Encuesta final</div><h2>Encuesta de satisfacción</h2><p>Tu opinión nos ayuda a mejorar las próximas ediciones del curso.</p></div>
-        <button id="studentSurveyAction" class="btn ghost" onclick="openSurveyFromCourse()">Completar encuesta</button>
-      </div>
-      <div id="studentSurveyMount" class="survey-course-card"></div>
-    </section>
-
     <div class="course-toolbar">
       <div>
         <h2>Unidades del curso</h2>
@@ -2179,7 +2058,6 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
     <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
     <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
-    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
     <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   </nav>
   <div class="alert-admin-shell">
@@ -2223,7 +2101,6 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
     <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
     <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
-    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
     <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   </nav>
   <div class="teacher-head">
@@ -2317,7 +2194,6 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
     <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
     <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
-    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
     <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   </nav>
   <div class="attendance-shell">
@@ -2353,7 +2229,6 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
     <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
     <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
-    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
     <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   </nav>
   <div class="integrator-admin-shell">
@@ -2393,43 +2268,6 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <div class="section-head"><div><h2>Grupos activos</h2><p>La composición puede modificarse mientras sea necesario.</p></div></div>
     <div id="integratorGroups" class="integrator-groups-grid"><div class="teacher-empty">Seleccioná una cohorte.</div></div>
     <div id="integratorDissolvedWrap"></div>
-  </div>
-</section>
-
-
-<section id="surveyStaffPage" class="page">
-  <nav class="teacher-hub-tabs" aria-label="Herramientas del Panel Docente">
-    <button class="teacher-hub-tab admin-only" data-hub-page="studentsAdminPage" onclick="openStudentAdmin()">Alumnos</button>
-    <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
-    <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
-    <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
-    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
-    <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
-  </nav>
-  <div class="survey-staff-shell">
-    <div class="survey-staff-head">
-      <div><div class="kicker">Panel docente</div><h2>Encuesta de satisfacción</h2><p>Resultados agregados y anónimos por edición del curso.</p></div>
-      <div class="survey-staff-controls">
-        <select id="surveyStaffCourse" onchange="loadSurveyStaff(this.value,true)"></select>
-        <button class="btn ghost" onclick="loadSurveyStaff($('#surveyStaffCourse').value,true)">Actualizar</button>
-      </div>
-    </div>
-    <div id="surveyStaffParticipation" class="survey-staff-participation"></div>
-    <div id="surveyManualEnable" class="survey-manual-enable admin-only">
-      <div><b>Habilitación manual</b><span>Uso transitorio mientras el examen teórico final continúe fuera de la plataforma. Cuando el examen sea interno, la encuesta se habilitará automáticamente al entregarlo.</span></div>
-      <div class="survey-manual-controls"><select id="surveyManualStudent"></select><button class="btn ghost" onclick="enableSurveyStudentManually()">Habilitar encuesta</button></div>
-    </div>
-    <div id="surveyStaffKpis" class="survey-kpi-grid"></div>
-    <div class="survey-staff-grid">
-      <section class="survey-staff-card">
-        <div class="section-head"><div><h2>Detalle por pregunta</h2><p>Promedio y cantidad de respuestas recibidas.</p></div></div>
-        <div id="surveyQuestionStats" class="survey-question-stats"><div class="teacher-empty">Seleccioná un curso.</div></div>
-      </section>
-      <section class="survey-staff-card">
-        <div class="section-head"><div><h2>Comentarios abiertos</h2><p>Se muestran sin identificar al cursante.</p></div></div>
-        <div id="surveyOpenComments" class="survey-open-comments"><div class="teacher-empty">Sin respuestas abiertas.</div></div>
-      </section>
-    </div>
   </div>
 </section>
 
@@ -2555,7 +2393,6 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
     <button class="teacher-hub-tab" data-hub-page="teacherPage" onclick="openTeacherPanel()">Seguimiento académico</button>
     <button class="teacher-hub-tab" data-hub-page="attendancePage" onclick="openAttendance()">Presentismo</button>
     <button class="teacher-hub-tab" data-hub-page="integratorStaffPage" onclick="openIntegratorStaff()">Trabajo Integrador</button>
-    <button class="teacher-hub-tab" data-hub-page="surveyStaffPage" onclick="openSurveyStaff()">Encuesta</button>
     <button class="teacher-hub-tab" data-hub-page="alertsPage" onclick="openAlertAdmin()">Alertas</button>
   </nav>
   <div class="admin-head">
@@ -2769,52 +2606,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <div class="integrator-modal-actions"><button class="btn ghost" onclick="closeIntegratorExposure()">Cancelar</button><button class="btn primary" onclick="saveIntegratorExposureEvaluation()">Guardar evaluación definitiva</button></div>
 </div></div>
 
-
-<div id="surveyInviteModal" class="survey-overlay" onclick="if(event.target===this)closeSurveyInvite()">
-  <div class="survey-invite-dialog">
-    <div class="survey-invite-icon">✓</div>
-    <div class="kicker" id="surveyInviteKicker">Encuesta de satisfacción</div>
-    <h2 id="surveyInviteTitle">Tenés una encuesta de satisfacción pendiente</h2>
-    <p id="surveyInviteText">Tu opinión nos ayuda a mejorar las próximas ediciones del curso. La encuesta es breve, voluntaria y no tiene ninguna incidencia sobre tus calificaciones.</p>
-    <div class="survey-invite-actions">
-      <button class="btn ghost" id="surveyInviteLaterBtn" onclick="deferSurveyInvite()">Cerrar</button>
-      <button class="btn primary" onclick="startSurveyFromInvite()">Completar encuesta</button>
-    </div>
-  </div>
-</div>
-
-<div id="surveyModal" class="survey-overlay" onclick="if(event.target===this)closeSurveyModal()">
-  <div class="survey-dialog">
-    <div class="survey-modal-head">
-      <div><div class="kicker">Academia TED</div><h2>Encuesta de satisfacción</h2><p id="surveyCourseLabel">Curso de Instructores de Tiro</p></div>
-      <button class="survey-x" onclick="closeSurveyModal()">✕</button>
-    </div>
-    <div id="surveyFormView">
-      <div class="survey-voluntary-note"><b>Encuesta voluntaria.</b> Las valoraciones cerradas son necesarias sólo si decidís enviarla. Las tres preguntas abiertas son opcionales. Las respuestas se procesan de forma anónima.</div>
-      <div class="survey-progress-line"><span id="surveyAnsweredCount">0 de 21 valoraciones respondidas</span><span>Deslizá el control sobre la escala</span></div>
-      <div id="surveyQuestions"></div>
-      <div class="survey-open-section">
-        <div class="survey-section-title"><span>Comentarios finales</span><small>Opcionales</small></div>
-        <div id="surveyOpenQuestions"></div>
-      </div>
-      <div id="surveyFormError" class="survey-error"></div>
-      <div class="survey-modal-actions"><button class="btn ghost" onclick="closeSurveyModal()">Cerrar</button><button class="btn primary" onclick="reviewSurveyAnswers()">Revisar respuestas</button></div>
-    </div>
-    <div id="surveyPreviewView" style="display:none">
-      <div class="survey-preview-intro"><h3>Revisión de tus respuestas</h3><p>Verificá especialmente las valoraciones numéricas. La encuesta todavía no fue enviada.</p></div>
-      <div id="surveyPreviewList" class="survey-preview-list"></div>
-      <div id="surveyPreviewComments" class="survey-preview-comments"></div>
-      <div id="surveySubmitError" class="survey-error"></div>
-      <div class="survey-modal-actions"><button class="btn ghost" onclick="backToSurveyEdit()">← Volver y corregir</button><button id="surveySubmitBtn" class="btn primary" onclick="confirmSurveySubmit()">Confirmar y enviar encuesta</button></div>
-    </div>
-    <div id="surveyThankYouView" class="survey-thanks" style="display:none">
-      <div class="survey-thanks-icon">✓</div><h2>Gracias por tu participación</h2><p>Tus respuestas fueron registradas correctamente.</p>
-      <button class="btn primary" onclick="finishSurveyFlow()">Continuar</button>
-    </div>
-  </div>
-</div>
-
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.7 · Ubicación exclusiva para prácticas presenciales</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.42.2 · Convocatorias TED · Identidad visual</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2842,13 +2634,12 @@ function setPage(id){
   if(!page) return;
   $$('.page').forEach(p=>p.classList.remove('active'));
   page.classList.add('active');
-  const teacherHubPages=['teacherPage','attendancePage','integratorStaffPage','surveyStaffPage','alertsPage','studentsAdminPage'];
+  const teacherHubPages=['teacherPage','attendancePage','integratorStaffPage','alertsPage','studentsAdminPage'];
   const mainNavId=teacherHubPages.includes(id)?'teacherPage':id;
   $$('.navbtn,.mobile-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===mainNavId));
   $$('.teacher-hub-tab').forEach(b=>b.classList.toggle('active',b.dataset.hubPage===id));
   if(id==='course' && String(ITB_USER?.rol||'').toUpperCase()==='ALUMNO'){
     Promise.resolve().then(()=>loadIntegratorMyData(false)).catch(()=>{});
-    Promise.resolve().then(()=>loadSurveyMyStatus(false)).catch(()=>{});
   }
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -2892,17 +2683,13 @@ function unitCounts(uid){
   if(access?.counts){
     return {
       docs:Number(access.counts.docs||0),
-      videos:Number(access.counts.videos_total ?? access.counts.videos ?? 0),
-      videos_required:Number(access.counts.videos||0),
-      videos_optional:Number(access.counts.videos_complementarios||0),
+      videos:Number(access.counts.videos||0),
       games:Number(access.counts.games||0),
       tests:Number(access.counts.tests||0)
     };
   }
   return {
     docs:(c.cartillas||[]).length, videos:(c.videos||[]).length,
-    videos_required:(c.videos||[]).filter(videoIsRequired).length,
-    videos_optional:(c.videos||[]).filter(v=>!videoIsRequired(v)).length,
     games:(c.juegos||[]).length, tests:(c.autoevaluaciones||[]).length
   };
 }
@@ -2965,8 +2752,8 @@ function renderCourseDashboard(){
       let action='';
       if(modality==='VIRTUAL'){
         action=`<a class="btn primary" href="${esc((DB.config&&DB.config.zoom_url)||'#')}" target="_blank" rel="noopener">Ingresar a Zoom</a>`;
-      }else if(activityHasLocation(next)){
-        action=`<div class="activity-location-actions">${activityLocationButton(next,'Ver ubicación')}<a class="btn ghost" href="${esc(activityDirectionsUrl(next))}" target="_blank" rel="noopener">Cómo llegar ↗</a></div>`;
+      }else if(next.maps_url){
+        action=`<a class="btn ghost" href="${esc(next.maps_url)}" target="_blank" rel="noopener">Ver ubicación</a>`;
       }
       nextMount.innerHTML=`<div class="activity-panel ${String(next.tipo||'').toUpperCase()==='PRACTICA'?'activity-practice':''}">
         <div class="activity-type">${esc(next.tipo||'ACTIVIDAD')}</div>
@@ -2982,9 +2769,7 @@ function renderCourseDashboard(){
         <div class="actions" style="margin-top:12px;align-items:center">
           ${action}<span class="activity-status">${esc(status)}</span>
         </div>
-        <div id="courseActivityWeather"></div>
       </div>`;
-      renderActivityWeather(next,'#courseActivityWeather');
     }
   }
 
@@ -3109,72 +2894,6 @@ function docTypeLabel(url){
   if(s.includes('drive.google.com')) return 'PDF';
   return 'DOC';
 }
-function docTypeClass(url){
-  const t=docTypeLabel(url);
-  return t==='PDF'?'pdf':t==='PPT'?'ppt':t==='XLS'?'xls':'doc';
-}
-function docTypeIconHtml(url){
-  const t=docTypeLabel(url);
-  const cls=docTypeClass(url);
-  const glyph=t==='PDF'?'📄':t==='PPT'?'📊':t==='XLS'?'📈':'📝';
-  return `<div class="unitws-doc-icon ${cls}" aria-hidden="true"><span class="unitws-doc-glyph">${glyph}</span><span class="unitws-doc-ext">${t}</span></div>`;
-}
-function classSummaryPreviewUrl(url){
-  const drivePreview=googleDrivePreviewUrl(url);
-  if(drivePreview)return drivePreview;
-  return String(url||'').trim();
-}
-function isZoomDocsSummaryUrl(url){
-  try{
-    const u=new URL(String(url||'').trim());
-    return u.hostname.toLowerCase()==='docs.zoom.us';
-  }catch(_){return false;}
-}
-function resetClassSummaryModalMode(){
-  const card=$('#summaryModalCard'),frame=$('#summaryModalFrame'),zoom=$('#summaryModalZoom'),ext=$('#summaryModalExternal'),foot=$('#summaryModalFoot');
-  card?.classList.remove('zoom-mode');
-  if(frame){frame.style.display='block';frame.src='';}
-  zoom?.classList.remove('show');
-  if(ext)ext.textContent='Abrir aparte ↗';
-  if(foot)foot.textContent='El resumen se muestra dentro de Academia TED. Si el proveedor impide la visualización integrada, podés usar “Abrir aparte”.';
-}
-function openClassSummaryModal(url,title){
-  const raw=String(url||'').trim();
-  if(!raw)return;
-  const modal=$('#summaryModal'),card=$('#summaryModalCard'),frame=$('#summaryModalFrame'),ttl=$('#summaryModalTitle'),ext=$('#summaryModalExternal'),zoom=$('#summaryModalZoom'),zoomOpen=$('#summaryModalZoomOpen'),foot=$('#summaryModalFoot');
-  if(!modal||!frame)return;
-  resetClassSummaryModalMode();
-  ttl.textContent=title||'Resumen de la clase';
-  ext.href=raw;
-
-  // Zoom Docs rechaza explícitamente ser cargado dentro de iframes externos.
-  // En ese caso mostramos una pantalla integrada y dejamos que el alumno abra
-  // el resumen en Zoom, evitando exponer ERR_BLOCKED_BY_RESPONSE.
-  if(isZoomDocsSummaryUrl(raw)){
-    card?.classList.add('zoom-mode');
-    frame.style.display='none';
-    frame.src='';
-    zoom?.classList.add('show');
-    if(zoomOpen)zoomOpen.href=raw;
-    ext.textContent='Abrir en Zoom ↗';
-    if(foot)foot.textContent='Este resumen está alojado en Zoom. Por una restricción del proveedor, debe abrirse directamente en Zoom.';
-  }else{
-    frame.src=classSummaryPreviewUrl(raw);
-  }
-
-  modal.classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeClassSummaryModal(){
-  const modal=$('#summaryModal');
-  resetClassSummaryModalMode();
-  modal?.classList.remove('open');
-  document.body.style.overflow='';
-}
-function summaryModalBackdrop(e){
-  if(e && e.target && e.target.id==='summaryModal')closeClassSummaryModal();
-}
-
 function openDocModal(url,title){
   const preview=googleDrivePreviewUrl(url);
   if(!preview){
@@ -3201,19 +2920,11 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     closeDocModal();
     closeVideoModal();
-    closeClassSummaryModal();
-    closeActivityLocationModal();
   }
 });
 window.openDocModal=openDocModal;
 window.closeDocModal=closeDocModal;
 window.docModalBackdrop=docModalBackdrop;
-window.openActivityLocationModal=openActivityLocationModal;
-window.closeActivityLocationModal=closeActivityLocationModal;
-window.locationModalBackdrop=locationModalBackdrop;
-window.openClassSummaryModal=openClassSummaryModal;
-window.closeClassSummaryModal=closeClassSummaryModal;
-window.summaryModalBackdrop=summaryModalBackdrop;
 
 function extractYouTubeId(url){
   if(!url) return '';
@@ -3609,9 +3320,6 @@ function logoutStudent(){
   MY_ATTENDANCE_DATA={presentes:0,ausentes:0,total:0,porcentaje:null,revisiones_pendientes:0,items:[]};
   MY_ATTENDANCE_LOADED=false;MY_ATTENDANCE_LOADING=false;MY_ATTENDANCE_PROMISE=null;MY_ATTENDANCE_LOADED_AT=0;MY_ATTENDANCE_REVIEW_SESSION='';
   ADMIN_ATT_REVIEW_NOTICE_CHECKED=false;ADMIN_ATT_REVIEW_NOTICE_DATA=null;
-  SURVEY_DATA=null;SURVEY_ANSWERS={};SURVEY_COMMENTS={};SURVEY_NOTICE_CHECKED=false;SURVEY_NOTICE_LOADING=false;SURVEY_STAFF_DATA=null;SURVEY_POST_EXAM_CONTEXT=null;
-  if(SURVEY_NOTICE_TIMER){clearTimeout(SURVEY_NOTICE_TIMER);SURVEY_NOTICE_TIMER=null;}
-  $('#surveyInviteModal')?.classList.remove('open');$('#surveyModal')?.classList.remove('open');
   if(ADMIN_ATT_REVIEW_NOTICE_TIMER){clearTimeout(ADMIN_ATT_REVIEW_NOTICE_TIMER);ADMIN_ATT_REVIEW_NOTICE_TIMER=null;}
   $('#myAttendanceModal')?.classList.remove('open');$('#attendanceReviewModal')?.classList.remove('open');$('#adminAttendanceReviewModal')?.classList.remove('open');
   localStorage.removeItem('itb_session');
@@ -3720,68 +3428,15 @@ async function openTrackedDoc(url,title,unitId,resourceId){
   openDocModal(url,title);
   if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
 }
-function activityModalMessage(title,text){
-  const box=$('#activityModalLoading');
-  if(!box)return;
-  box.innerHTML=`<div><b>${esc(title||'Preparando actividad…')}</b><span>${esc(text||'')}</span></div>`;
-  box.classList.add('show');
-}
-function activityModalHideMessage(){
-  $('#activityModalLoading')?.classList.remove('show');
-}
-function openActivityModal(url,title,externalUrl){
-  const modal=$('#activityModal'),frame=$('#activityModalFrame'),ttl=$('#activityModalTitle'),ext=$('#activityModalExternal');
-  if(!modal||!frame)return;
-  ttl.textContent=title||'Actividad interactiva';
-  ext.href=externalUrl||url||'#';
-  frame.onload=()=>activityModalHideMessage();
-  frame.src=url||'about:blank';
-  modal.classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeActivityModal(){
-  const modal=$('#activityModal'),frame=$('#activityModalFrame');
-  if(frame){frame.onload=null;frame.src='about:blank';}
-  activityModalHideMessage();
-  modal?.classList.remove('open');
-  document.body.style.overflow='';
-}
-function activityModalBackdrop(e){if(e?.target?.id==='activityModal')closeActivityModal();}
-
-async function resolveActivityEmbedUrl(url){
-  const raw=String(url||'').trim();
-  if(!/^https:\/\/(?:[a-z0-9-]+\.)?wordwall\.net\//i.test(raw))return raw;
-  if(/\/embed\//i.test(raw))return raw;
-  const sess=getSession();
-  if(!sess?.token)throw new Error('Iniciá sesión para abrir la actividad.');
-  const r=await apiJsonpLong({action:'activityEmbedResolve',token:sess.token,url:raw},35000);
-  if(!r?.url)throw new Error('No se pudo obtener la versión integrada de Wordwall.');
-  return r.url;
-}
-
-async function openTrackedActivity(url,unitId,resourceId,title){
+async function openTrackedActivity(url,unitId,resourceId){
   if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return;}
   const already=!!progressRecord(unitId,'ACTIVIDAD',resourceId);
   if(!already && getSession()?.token){
     const ok=await markProgressSilent(unitId,'ACTIVIDAD',resourceId);
     if(ok) showITBToast('Actividad registrada como completada.');
   }
-
-  // Abrimos el modal primero para que la interfaz responda instantáneamente.
-  openActivityModal('about:blank',title||'Actividad interactiva',url);
-  activityModalMessage('Preparando actividad…','Wordwall se cargará mediante su modo oficial de inserción para evitar el bucle de consentimiento de cookies.');
-
-  try{
-    const embedUrl=await resolveActivityEmbedUrl(url);
-    const frame=$('#activityModalFrame');
-    if(frame)frame.src=embedUrl;
-  }catch(e){
-    const frame=$('#activityModalFrame');
-    if(frame)frame.src='about:blank';
-    activityModalMessage('No pudimos integrar esta actividad',`${e.message||'El proveedor externo rechazó la carga.'} Podés usar “Abrir aparte” arriba a la derecha.`);
-  }
-
-  if(window.__currentUnitId===unitId)setTimeout(()=>openUnit(unitId),250);
+  window.open(url,'_blank','noopener');
+  if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
 }
 
 /* YouTube: se completa al alcanzar el 90% reproducido. */
@@ -3802,14 +3457,7 @@ function loadYouTubeAPI(){
     },150);
   });
 }
-function videoRequirement(v){
-  const raw=String(v?.tipo_video ?? v?.clasificacion_video ?? v?.clasificacion ?? v?.obligatorio ?? '').trim().toUpperCase();
-  if(['COMPLEMENTARIO','COMPLEMENTARIA','OPTATIVO','OPTATIVA','OPCIONAL','NO','FALSE','0'].includes(raw))return 'COMPLEMENTARIO';
-  return 'OBLIGATORIO';
-}
-function videoIsRequired(v){return videoRequirement(v)==='OBLIGATORIO';}
-
-async function openTrackedVideo(url,title,unitId,resourceId,requirement){
+async function openTrackedVideo(url,title,unitId,resourceId){
   if(unitIsLocked(unitId)){lockedUnitNotice(unitId);return;}
   const id=extractYouTubeId(url);
 
@@ -3821,7 +3469,7 @@ async function openTrackedVideo(url,title,unitId,resourceId,requirement){
       const already=!!progressRecord(unitId,'VIDEO',resourceId);
       if(!already && getSession()?.token){
         const ok=await markProgressSilent(unitId,'VIDEO',resourceId);
-        if(ok) showITBToast(String(requirement||'OBLIGATORIO')==='COMPLEMENTARIO'?'Video complementario registrado como visto.':'Video registrado como completado.');
+        if(ok) showITBToast('Video registrado como completado.');
       }
       openVideoModal(url,title);
       if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
@@ -3835,7 +3483,7 @@ async function openTrackedVideo(url,title,unitId,resourceId,requirement){
   $('#videoModalTitle').textContent=title||'Video';
   $('#videoModal').classList.add('open');
   document.body.style.overflow='hidden';
-  ITB_YT_TRACK={unitId,resourceId,requirement:String(requirement||'OBLIGATORIO'),done:!!progressRecord(unitId,'VIDEO',resourceId)};
+  ITB_YT_TRACK={unitId,resourceId,done:!!progressRecord(unitId,'VIDEO',resourceId)};
 
   await loadYouTubeAPI();
 
@@ -3877,13 +3525,13 @@ async function completeTrackedVideo(){
   if(getSession()?.token){
     const ok=await markProgressSilent(unitId,'VIDEO',resourceId);
     if(ok){
-      showITBToast(ITB_YT_TRACK?.requirement==='COMPLEMENTARIO'?'Video complementario registrado como visto.':'Video registrado como completado.');
+      showITBToast('Video registrado como completado.');
       if(window.__currentUnitId===unitId) setTimeout(()=>openUnit(unitId),250);
     }
   }
 }
 
-window.openLogin=openLogin; window.closeLogin=closeLogin; window.loginStudent=loginStudent; window.logoutStudent=logoutStudent; window.markProgress=markProgress; window.openTrackedDoc=openTrackedDoc; window.openTrackedActivity=openTrackedActivity; window.openActivityModal=openActivityModal; window.closeActivityModal=closeActivityModal; window.activityModalBackdrop=activityModalBackdrop; window.openTrackedVideo=openTrackedVideo;
+window.openLogin=openLogin; window.closeLogin=closeLogin; window.loginStudent=loginStudent; window.logoutStudent=logoutStudent; window.markProgress=markProgress; window.openTrackedDoc=openTrackedDoc; window.openTrackedActivity=openTrackedActivity; window.openTrackedVideo=openTrackedVideo;
 
 
 
@@ -5349,297 +4997,6 @@ function uploadIntegratorPlanForm(groupId,fileName,data){return new Promise((res
 window.openIntegratorStaff=openIntegratorStaff;window.loadIntegratorStaff=loadIntegratorStaff;window.generateIntegratorGroups=generateIntegratorGroups;window.applyIntegratorBulkDates=applyIntegratorBulkDates;window.openIntegratorGroupEdit=openIntegratorGroupEdit;window.closeIntegratorGroupModal=closeIntegratorGroupModal;window.saveIntegratorGroup=saveIntegratorGroup;window.dissolveIntegratorGroup=dissolveIntegratorGroup;window.openIntegratorSubmission=openIntegratorSubmission;window.openIntegratorReturn=openIntegratorReturn;window.closeIntegratorReturnModal=closeIntegratorReturnModal;window.confirmIntegratorReturn=confirmIntegratorReturn;window.setIntegratorRubricScore=setIntegratorRubricScore;window.openIntegratorPlanRubric=openIntegratorPlanRubric;window.closeIntegratorPlanRubric=closeIntegratorPlanRubric;window.saveIntegratorPlanEvaluation=saveIntegratorPlanEvaluation;window.openIntegratorExposure=openIntegratorExposure;window.closeIntegratorExposure=closeIntegratorExposure;window.saveIntegratorExposureEvaluation=saveIntegratorExposureEvaluation;window.loadIntegratorMyData=loadIntegratorMyData;window.submitIntegratorPlan=submitIntegratorPlan;
 
 
-
-/* ===== v0.43.0 · Encuesta de satisfacción ===== */
-let SURVEY_DATA=null;
-let SURVEY_ANSWERS={};
-let SURVEY_COMMENTS={};
-let SURVEY_NOTICE_CHECKED=false;
-let SURVEY_NOTICE_LOADING=false;
-let SURVEY_NOTICE_TIMER=null;
-let SURVEY_STAFF_DATA=null;
-let SURVEY_POST_EXAM_CONTEXT=null;
-
-function surveyDismissKey(){
-  const s=getSession(),sid=String(ITB_USER?.alumno_id||'');
-  return `itb_survey_dismissed_${sid}_${String(s?.token||'').slice(0,12)}`;
-}
-function surveyQuestionById(id){return (SURVEY_DATA?.questions||[]).find(q=>q.id===id)||null;}
-function surveyValueLabel(q,val){
-  const n=Number(val);
-  if(!q)return String(val);
-  if(Array.isArray(q.labels)){
-    const idx=n-Number(q.min||0);
-    return q.labels[idx]||String(n);
-  }
-  if(q.id==='q21'){
-    if(n<=6)return 'Baja probabilidad de recomendación';
-    if(n<=8)return 'Probabilidad media de recomendación';
-    return 'Alta probabilidad de recomendación';
-  }
-  return String(n);
-}
-function renderSurveyCourseCard(){
-  const sec=$('#studentSurveySection'),mount=$('#studentSurveyMount'),btn=$('#studentSurveyAction');
-  if(!sec||!mount||String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO')return;
-  const st=String(SURVEY_DATA?.status||'NO_HABILITADA').toUpperCase();
-  if(st==='NO_HABILITADA'){sec.style.display='none';return;}
-  sec.style.display='';
-  if(st==='COMPLETADA'){
-    mount.innerHTML=`<b>Encuesta completada ✓</b><br>Gracias por haber compartido tu experiencia. Las respuestas ya fueron registradas y no pueden modificarse.`;
-    if(btn){btn.style.display='none';}
-  }else{
-    mount.innerHTML=`<b>Encuesta pendiente</b><br>Podés completarla cuando quieras. Es voluntaria y tus respuestas no tienen incidencia sobre las calificaciones.`;
-    if(btn){btn.style.display='';btn.textContent='Completar encuesta';}
-  }
-}
-async function loadSurveyMyStatus(force=false){
-  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO'||!ITB_PRIVATE_DATA_READY)return SURVEY_DATA;
-  if(SURVEY_DATA&&!force){renderSurveyCourseCard();return SURVEY_DATA;}
-  const s=getSession();if(!s?.token)return null;
-  try{
-    SURVEY_DATA=await retryTransient(()=>apiJsonp({action:'surveyMyStatus',token:s.token}),1,500);
-    renderSurveyCourseCard();
-    return SURVEY_DATA;
-  }catch(e){
-    console.warn('Encuesta no disponible.',e);
-    return null;
-  }
-}
-function maybeShowSurveyNotice(){
-  if(String(SURVEY_DATA?.status||'').toUpperCase()!=='PENDIENTE')return;
-  try{if(sessionStorage.getItem(surveyDismissKey())==='1')return;}catch(_){}
-  if($('#alertModal')?.classList.contains('open')){
-    SURVEY_NOTICE_TIMER=setTimeout(maybeShowSurveyNotice,1800);
-    return;
-  }
-  openSurveyInvite(false);
-}
-function scheduleSurveyPendingNotice(){
-  if(SURVEY_NOTICE_CHECKED||SURVEY_NOTICE_LOADING||String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO'||!ITB_PRIVATE_DATA_READY)return;
-  SURVEY_NOTICE_LOADING=true;
-  setTimeout(async()=>{
-    try{
-      await loadSurveyMyStatus(true);
-      SURVEY_NOTICE_CHECKED=true;
-      maybeShowSurveyNotice();
-    }finally{SURVEY_NOTICE_LOADING=false;}
-  },1500);
-}
-function openSurveyInvite(postExam=false){
-  const modal=$('#surveyInviteModal');if(!modal)return;
-  const isPost=!!postExam;
-  $('#surveyInviteKicker').textContent=isPost?'Examen teórico final entregado':'Encuesta de satisfacción';
-  $('#surveyInviteTitle').textContent=isPost?'Antes de mostrarte la nota…':'Tenés una encuesta de satisfacción pendiente';
-  $('#surveyInviteText').textContent=isPost
-    ? 'Tu examen fue registrado correctamente. Antes de mostrarte el resultado, te invitamos a completar una breve encuesta sobre tu experiencia en el curso. Es voluntaria y no tiene ninguna incidencia sobre tu calificación.'
-    : 'Tu opinión nos ayuda a mejorar las próximas ediciones del curso. La encuesta es breve, voluntaria y no tiene ninguna incidencia sobre tus calificaciones.';
-  $('#surveyInviteLaterBtn').textContent=isPost?'Hacerla en otro momento':'Cerrar';
-  modal.classList.add('open');document.body.style.overflow='hidden';
-}
-function closeSurveyInvite(skipReveal=false){
-  $('#surveyInviteModal')?.classList.remove('open');document.body.style.overflow='';
-  if(!skipReveal)revealPostExamGrade();
-}
-function deferSurveyInvite(){
-  try{sessionStorage.setItem(surveyDismissKey(),'1');}catch(_){}
-  closeSurveyInvite(true);
-  revealPostExamGrade();
-}
-function startSurveyFromInvite(){closeSurveyInvite(true);openSurveyModal();}
-async function openSurveyFromCourse(){
-  const d=await loadSurveyMyStatus(false);
-  if(String(d?.status||'').toUpperCase()==='PENDIENTE')openSurveyModal();
-}
-function surveyInputMarkup(q,index){
-  const answered=Object.prototype.hasOwnProperty.call(SURVEY_ANSWERS,q.id),val=answered?SURVEY_ANSWERS[q.id]:q.min;
-  const label=answered?surveyValueLabel(q,val):'Sin responder';
-  return `<article id="surveyCard_${q.id}" class="survey-question-card ${answered?'answered':'unanswered'}">
-    <div class="survey-q-head"><div><div class="survey-q-number">Pregunta ${index+1} de ${SURVEY_DATA.questions.length}</div><div class="survey-q-text">${esc(q.text)}</div></div>
-    <div class="survey-q-value" id="surveyValue_${q.id}">${answered?`${val} / ${q.max}`:'—'}<span>${esc(label)}</span></div></div>
-    <div class="survey-range-wrap">
-      <input class="survey-range ${answered?'':'unanswered'}" id="surveyRange_${q.id}" type="range" min="${q.min}" max="${q.max}" step="1" value="${val}" oninput="surveySetAnswer('${q.id}',this.value)">
-      <div class="survey-range-labels"><span>${q.min} · ${esc(q.low)}</span><span>${q.max} · ${esc(q.high)}</span></div>
-      <div class="survey-selected-label" id="surveySelected_${q.id}">${answered?esc(label):'Tocá o deslizá sobre la escala para responder'}</div>
-    </div>
-  </article>`;
-}
-function renderSurveyForm(){
-  const qs=SURVEY_DATA?.questions||[],groups=[];
-  qs.forEach((q,i)=>{
-    let g=groups.find(x=>x.section===q.section);
-    if(!g){g={section:q.section,items:[]};groups.push(g);}
-    g.items.push({q,i});
-  });
-  $('#surveyQuestions').innerHTML=groups.map(g=>`<section class="survey-section-block"><div class="survey-section-title"><span>${esc(g.section)}</span><small>${g.items.length} preguntas</small></div>${g.items.map(x=>surveyInputMarkup(x.q,x.i)).join('')}</section>`).join('');
-  $('#surveyOpenQuestions').innerHTML=(SURVEY_DATA?.open_questions||[]).map((q,i)=>`<div class="survey-open-q"><label for="surveyOpen_${q.id}">${i+1}. ${esc(q.text)}</label><textarea id="surveyOpen_${q.id}" maxlength="1800" placeholder="Respuesta opcional…" oninput="SURVEY_COMMENTS['${q.id}']=this.value">${esc(SURVEY_COMMENTS[q.id]||'')}</textarea></div>`).join('');
-  updateSurveyAnsweredCount();
-}
-function openSurveyModal(){
-  if(!SURVEY_DATA||String(SURVEY_DATA.status||'').toUpperCase()!=='PENDIENTE')return;
-  $('#surveyCourseLabel').textContent=SURVEY_DATA?.course?.nombre||'Curso de Instructores de Tiro';
-  $('#surveyFormView').style.display='';
-  $('#surveyPreviewView').style.display='none';
-  $('#surveyThankYouView').style.display='none';
-  $('#surveyFormError').textContent='';
-  renderSurveyForm();
-  $('#surveyModal').classList.add('open');document.body.style.overflow='hidden';
-}
-function closeSurveyModal(){
-  $('#surveyModal')?.classList.remove('open');document.body.style.overflow='';
-  revealPostExamGrade();
-}
-function surveySetAnswer(id,value){
-  const q=surveyQuestionById(id),n=Number(value);if(!q)return;
-  SURVEY_ANSWERS[id]=n;
-  const card=$('#surveyCard_'+id),range=$('#surveyRange_'+id),valueEl=$('#surveyValue_'+id),sel=$('#surveySelected_'+id),label=surveyValueLabel(q,n);
-  card?.classList.remove('unanswered');card?.classList.add('answered');range?.classList.remove('unanswered');
-  if(valueEl)valueEl.innerHTML=`${n} / ${q.max}<span>${esc(label)}</span>`;
-  if(sel)sel.textContent=label;
-  updateSurveyAnsweredCount();
-}
-function updateSurveyAnsweredCount(){
-  const total=SURVEY_DATA?.questions?.length||0,count=(SURVEY_DATA?.questions||[]).filter(q=>Object.prototype.hasOwnProperty.call(SURVEY_ANSWERS,q.id)).length;
-  if($('#surveyAnsweredCount'))$('#surveyAnsweredCount').textContent=`${count} de ${total} valoraciones respondidas`;
-}
-function reviewSurveyAnswers(){
-  const qs=SURVEY_DATA?.questions||[],missing=qs.filter(q=>!Object.prototype.hasOwnProperty.call(SURVEY_ANSWERS,q.id));
-  if(missing.length){
-    $('#surveyFormError').textContent=`Todavía quedan ${missing.length} ${missing.length===1?'valoración sin responder':'valoraciones sin responder'}.`;
-    $('#surveyCard_'+missing[0].id)?.scrollIntoView({behavior:'smooth',block:'center'});
-    return;
-  }
-  $('#surveyFormError').textContent='';
-  $('#surveyPreviewList').innerHTML=qs.map((q,i)=>{
-    const v=SURVEY_ANSWERS[q.id],label=surveyValueLabel(q,v);
-    return `<div class="survey-preview-item"><div class="text"><b>${i+1}.</b> ${esc(q.text)}</div><div class="answer"><b>${v} / ${q.max}</b><span>${esc(label)}</span><button onclick="editSurveyQuestion('${q.id}')">Editar</button></div></div>`;
-  }).join('');
-  $('#surveyPreviewComments').innerHTML=(SURVEY_DATA?.open_questions||[]).map(q=>`<div class="survey-preview-comment"><b>${esc(q.text)}</b><p>${esc((SURVEY_COMMENTS[q.id]||'').trim()||'Sin respuesta')}</p></div>`).join('');
-  $('#surveyFormView').style.display='none';$('#surveyPreviewView').style.display='';$('#surveyThankYouView').style.display='none';
-  $('#surveyDialogTop')?.scrollIntoView({block:'start'});
-  $('#surveyModal').scrollTop=0;
-}
-function editSurveyQuestion(id){
-  $('#surveyPreviewView').style.display='none';$('#surveyFormView').style.display='';
-  setTimeout(()=>$('#surveyCard_'+id)?.scrollIntoView({behavior:'smooth',block:'center'}),30);
-}
-function backToSurveyEdit(){$('#surveyPreviewView').style.display='none';$('#surveyFormView').style.display='';$('#surveyModal').scrollTop=0;}
-async function confirmSurveySubmit(){
-  if(!confirm('¿Confirmás el envío de la encuesta?\n\nUna vez enviada, las respuestas no podrán modificarse.'))return;
-  const btn=$('#surveySubmitBtn'),err=$('#surveySubmitError'),s=getSession();if(!s?.token)return;
-  btn.disabled=true;err.textContent='Enviando encuesta…';
-  try{
-    await apiJsonpLong({action:'surveySubmit',token:s.token,answers_json:JSON.stringify(SURVEY_ANSWERS),comments_json:JSON.stringify(SURVEY_COMMENTS)},60000);
-    SURVEY_DATA={...(SURVEY_DATA||{}),status:'COMPLETADA'};
-    try{sessionStorage.removeItem(surveyDismissKey());}catch(_){}
-    renderSurveyCourseCard();
-    $('#surveyPreviewView').style.display='none';$('#surveyFormView').style.display='none';$('#surveyThankYouView').style.display='';
-    err.textContent='';
-  }catch(e){err.textContent=e.message||'No se pudo enviar la encuesta.';}
-  finally{btn.disabled=false;}
-}
-function finishSurveyFlow(){
-  $('#surveyModal')?.classList.remove('open');document.body.style.overflow='';
-  revealPostExamGrade();
-}
-
-/**
- * Hook frontend para el futuro examen teórico final.
- * El submit del examen deberá llamar:
- *   ITBSurveyBeforeFinalGrade(resultado, fnQueMuestraLaNota)
- * después de que el backend active surveyActivateAfterFinalExam_().
- * Si la encuesta falla, la nota se muestra igualmente.
- */
-async function ITBSurveyBeforeFinalGrade(result,renderGrade){
-  SURVEY_POST_EXAM_CONTEXT={result,render:typeof renderGrade==='function'?renderGrade:null,shown:false};
-  try{
-    const d=await loadSurveyMyStatus(true);
-    if(String(d?.status||'').toUpperCase()==='PENDIENTE'){openSurveyInvite(true);return;}
-  }catch(_){}
-  revealPostExamGrade();
-}
-function revealPostExamGrade(){
-  const ctx=SURVEY_POST_EXAM_CONTEXT;if(!ctx||ctx.shown)return;
-  ctx.shown=true;SURVEY_POST_EXAM_CONTEXT=null;
-  try{ctx.render?.(ctx.result);}catch(e){console.error(e);}
-}
-
-function surveyFmt(v,max=5){return v===null||v===undefined||v===''?'—':`${Number(v).toFixed(2).replace(/\.00$/,'')} / ${max}`;}
-async function openSurveyStaff(){
-  const role=String(ITB_USER?.rol||'').toUpperCase();if(!['ADMIN','DOCENTE'].includes(role))return;
-  setPage('surveyStaffPage');await loadSurveyStaff($('#surveyStaffCourse')?.value||'',false);
-}
-async function loadSurveyStaff(courseId='',force=false){
-  const role=String(ITB_USER?.rol||'').toUpperCase();if(!['ADMIN','DOCENTE'].includes(role))return;
-  if(SURVEY_STAFF_DATA&&!force&&!courseId){renderSurveyStaff();return;}
-  const mount=$('#surveyQuestionStats');if(mount)mount.innerHTML='<div class="teacher-empty">Cargando resultados…</div>';
-  try{
-    const s=getSession();SURVEY_STAFF_DATA=await apiJsonpLong({action:'surveyStaffResults',token:s.token,curso_id:courseId||''},60000);renderSurveyStaff();
-  }catch(e){if(mount)mount.innerHTML=`<div class="teacher-empty">${esc(e.message||'No se pudieron cargar los resultados.')}</div>`;}
-}
-function surveyDistributionMarkup(q){
-  const total=Number(q.count||0);if(!total)return '';
-  const pieces=[];for(let n=Number(q.min);n<=Number(q.max);n++){const c=Number(q.distribution?.[String(n)]||0),pct=total?Math.max(2,(c/total)*100):2;pieces.push(`<span title="${n}: ${c}" style="width:${pct}%"></span>`);}
-  return `<div class="survey-dist">${pieces.join('')}</div>`;
-}
-function renderSurveyStaff(){
-  const d=SURVEY_STAFF_DATA;if(!d)return;
-  const sel=$('#surveyStaffCourse');
-  if(sel){
-    const current=d.curso_id||'';
-    sel.innerHTML=(d.courses||[]).map(c=>`<option value="${esc(c.curso_id)}" ${String(c.curso_id)===String(current)?'selected':''}>${esc(c.nombre_corto||c.curso_id)}</option>`).join('');
-  }
-  const manual=$('#surveyManualStudent');
-  if(manual){
-    manual.innerHTML=(d.students||[]).map(s=>`<option value="${esc(s.alumno_id)}">${esc(s.apellido)}, ${esc(s.nombre)} · ${esc(s.survey_status||'NO_HABILITADA')}</option>`).join('')||'<option value="">Sin alumnos vigentes</option>';
-  }
-  const p=d.participation||{},pct=p.percent==null?0:Number(p.percent);
-  $('#surveyStaffParticipation').innerHTML=`<div class="survey-part-top"><div><h3>${esc(d.course?.nombre_completo||d.course?.nombre_corto||'Encuesta del curso')}</h3><p>Participación sobre alumnos que ya finalizaron el examen teórico y tienen la encuesta habilitada.</p></div><div class="survey-part-pct">${p.percent==null?'—':p.percent+'%'}</div></div><div class="survey-part-track"><span style="width:${Math.min(100,Math.max(0,pct))}%"></span></div><div class="survey-part-meta"><span>Habilitados: <b>${p.eligible||0}</b></span><span>Respondieron: <b>${p.completed||0}</b></span><span>Pendientes: <b>${p.pending||0}</b></span></div>`;
-  const k=d.kpis||{};
-  const kpis=[
-    [surveyFmt(k.satisfaccion_general,5),'Satisfacción general'],
-    [surveyFmt(k.contenidos,5),'Contenidos'],
-    [surveyFmt(k.instructores,5),'Instructores'],
-    [surveyFmt(k.practicas,5),'Prácticas'],
-    [surveyFmt(k.plataforma,5),'Plataforma'],
-    [surveyFmt(k.evaluaciones,5),'Evaluaciones'],
-    [surveyFmt(k.recomendacion,10),'Recomendación'],
-    [k.nps==null?'—':String(k.nps),'NPS'],
-    [k.duracion_adecuada_pct==null?'—':k.duracion_adecuada_pct+'%','Duración: “Adecuada”']
-  ];
-  $('#surveyStaffKpis').innerHTML=kpis.map(x=>`<div class="survey-kpi"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></div>`).join('');
-  $('#surveyQuestionStats').innerHTML=(d.questions||[]).map((q,i)=>`<div class="survey-stat-row"><div class="survey-stat-top"><b>${i+1}. ${esc(q.text)}</b><span>${q.average==null?'—':Number(q.average).toFixed(2)} / ${q.max}</span></div><div class="survey-stat-meta">${q.count||0} respuestas · ${esc(q.low)} → ${esc(q.high)}</div>${surveyDistributionMarkup(q)}</div>`).join('')||'<div class="teacher-empty">Todavía no hay respuestas.</div>';
-  $('#surveyOpenComments').innerHTML=(d.comments||[]).map(block=>`<div class="survey-open-block"><h4>${esc(block.text)}</h4>${(block.items||[]).length?(block.items||[]).map(t=>`<div class="survey-comment">${esc(t)}</div>`).join(''):'<div class="teacher-empty">Sin comentarios.</div>'}</div>`).join('');
-}
-async function enableSurveyStudentManually(){
-  if(String(ITB_USER?.rol||'').toUpperCase()!=='ADMIN')return;
-  const sid=$('#surveyManualStudent')?.value;if(!sid){alert('Seleccioná un alumno.');return;}
-  const label=$('#surveyManualStudent')?.selectedOptions?.[0]?.textContent||'el alumno';
-  if(!confirm(`¿Habilitar la encuesta de satisfacción para ${label}?\n\nUsá esta opción sólo como reemplazo transitorio del disparador del examen final.`))return;
-  try{
-    await apiJsonpLong({action:'surveyAdminEnableStudent',token:getSession().token,alumno_id:sid},60000);
-    await loadSurveyStaff($('#surveyStaffCourse').value,true);
-    showITBToast('Encuesta habilitada.');
-  }catch(e){alert(e.message||'No se pudo habilitar la encuesta.');}
-}
-
-window.openSurveyFromCourse=openSurveyFromCourse;
-window.closeSurveyInvite=closeSurveyInvite;
-window.deferSurveyInvite=deferSurveyInvite;
-window.startSurveyFromInvite=startSurveyFromInvite;
-window.closeSurveyModal=closeSurveyModal;
-window.surveySetAnswer=surveySetAnswer;
-window.reviewSurveyAnswers=reviewSurveyAnswers;
-window.editSurveyQuestion=editSurveyQuestion;
-window.backToSurveyEdit=backToSurveyEdit;
-window.confirmSurveySubmit=confirmSurveySubmit;
-window.finishSurveyFlow=finishSurveyFlow;
-window.ITBSurveyBeforeFinalGrade=ITBSurveyBeforeFinalGrade;
-window.openSurveyStaff=openSurveyStaff;
-window.loadSurveyStaff=loadSurveyStaff;
-window.enableSurveyStudentManually=enableSurveyStudentManually;
-
-
 let TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
 let TEACHER_FILTER='all';
 let TEACHER_SORT='name';
@@ -5659,7 +5016,6 @@ function applyRoleUI(){
   else{stopChatUnreadPolling();applyChatUnreadState({has_unread:false,unread_cohorts:[]});}
   if(ITB_USER && ITB_PRIVATE_DATA_READY && role==='ALUMNO')startAlertPolling();
   else{stopAlertPolling();setAlertAppBadge(0);}
-  if(ITB_USER && ITB_PRIVATE_DATA_READY && role==='ALUMNO')scheduleSurveyPendingNotice();
   if(ITB_USER && ITB_PRIVATE_DATA_READY && isAdmin)scheduleAdminAttendanceReviewNotice();
   else{
     if(ADMIN_ATT_REVIEW_NOTICE_TIMER){clearTimeout(ADMIN_ATT_REVIEW_NOTICE_TIMER);ADMIN_ATT_REVIEW_NOTICE_TIMER=null;}
@@ -5985,9 +5341,15 @@ window.submitAttendanceReview=submitAttendanceReview;window.loadMyAttendance=loa
 
 async function openTeacherPanel(){
   if(!['DOCENTE','ADMIN'].includes(String(ITB_USER?.rol||'').toUpperCase())) return;
+
   setPage('teacherPage');
-  if(!TEACHER_DATA.students.length) await loadTeacherPanel('');
-  else renderTeacherRows();
+
+  if(!TEACHER_DATA.students.length){
+    await loadTeacherPanel('');
+  }else{
+    renderTeacherRows();
+    await loadTeacherQuizStats($('#teacherQuizUnit')?.value||'');
+  }
 }
 
 async function loadTeacherPanel(cohorte){
@@ -6463,7 +5825,8 @@ window.setTeacherSort=setTeacherSort;
 
 
 async function loadTeacherQuizStats(unitId){
-  if(String(ITB_USER?.rol||'').toUpperCase()!=='DOCENTE')return;
+  const role=String(ITB_USER?.rol||'').toUpperCase();
+  if(!['DOCENTE','ADMIN'].includes(role))return;
   const session=getSession(); if(!session?.token)return;
   const cohort=$('#teacherCohort')?.value||TEACHER_DATA.cohorte||'';
 
@@ -6517,7 +5880,7 @@ function unitTrackables(uid){
   const c=DB.contentByUnit?.[uid] || {cartillas:[],videos:[],juegos:[]};
   return [
     ...(c.cartillas||[]).map(x=>({type:'MATERIAL',id:x.id||x.name||x.nombre})),
-    ...(c.videos||[]).filter(videoIsRequired).map(x=>({type:'VIDEO',id:x.id||x.name||x.nombre})),
+    ...(c.videos||[]).map(x=>({type:'VIDEO',id:x.id||x.name||x.nombre})),
     ...(c.juegos||[]).map(x=>({type:'ACTIVIDAD',id:x.id||x.name||x.nombre}))
   ].filter(x=>x.id);
 }
@@ -7010,8 +6373,6 @@ function openUnit(uid){
   // Incluye materiales + videos + actividades + autoevaluación nativa aprobada.
   const unitPi=unitProgressInfo(uid);
   const progress=unitPi.percent;
-  const requiredVideos=(c.videos||[]).filter(videoIsRequired);
-  const optionalVideos=(c.videos||[]).filter(v=>!videoIsRequired(v));
 
   const items=(arr,type)=>arr.length?arr.slice(0,5).map(x=>{
     const url=x.link||x.videos||x.url||x.enlace||'';
@@ -7019,25 +6380,20 @@ function openUnit(uid){
 
     if(type==='Contenido audiovisual'){
       const thumb=youtubeThumb(url);
-      const requirement=videoRequirement(x);
-      const required=requirement==='OBLIGATORIO';
-      const rid=x.id||x.name||x.nombre||title;
-      const done=!!progressRecord(uid,'VIDEO',rid);
       return `<div class="unitws-item unitws-video-item">
         ${thumb?`<img class="unitws-video-thumb" src="${esc(thumb)}" alt="" loading="lazy">`:`<div class="unitws-video-thumb"></div>`}
         <div class="unitws-video-info">
           <b>${esc(title)}</b>
-          <span class="unitws-video-badge ${required?'required':'optional'}">${required?'OBLIGATORIO':'COMPLEMENTARIO'}</span>
-          <div class="unitws-video-note">${required?'Aporta al progreso de la unidad.':'Material adicional · no modifica el porcentaje.'}</div>
-          ${url?`<span class="unitws-video-link" onclick="openTrackedVideo('${esc(url)}','${esc(title)}','${esc(uid)}','${esc(rid)}','${requirement}')">▶ Ver video</span>`:''}
-          ${done?`<div class="progress-action done">✓ ${required?'Completado':'Visto'}</div>`:''}
+          <small>${type}</small>
+          ${url?`<span class="unitws-video-link" onclick="openTrackedVideo('${esc(url)}','${esc(title)}','${esc(uid)}','${esc(x.id||x.name||x.nombre||title)}')">▶ Ver video</span>`:''}
+          ${(()=>{const rid=x.id||x.name||x.nombre||title;const done=!!progressRecord(uid,'VIDEO',rid);return done?`<div class="progress-action done">✓ Completado</div>`:''})()}
         </div>
       </div>`;
     }
 
     if(type==='Material de estudio'){
       return `<div class="unitws-item unitws-doc-item">
-        ${docTypeIconHtml(url)}
+        <div class="unitws-doc-icon">${esc(docTypeLabel(url))}</div>
         <div>
           <b>${esc(title)}</b>
           <small>${type}</small>
@@ -7051,14 +6407,7 @@ function openUnit(uid){
     const rid=x.id||x.name||x.nombre||title;
     const done=trackType?!!progressRecord(uid,trackType,rid):false;
     if(trackType==='ACTIVIDAD'){
-      const img=x.imagen||x.image||'';
-      return `<div class="unitws-item unitws-activity-item">
-        ${img?`<img class="unitws-activity-thumb" src="${esc(img)}" alt="" loading="lazy">`:`<div class="unitws-activity-icon">✦</div>`}
-        <div class="unitws-activity-meta"><b>${esc(title)}</b><small>${type}</small>
-          ${url?`<span class="unitws-activity-open" onclick="openTrackedActivity('${esc(url)}','${esc(uid)}','${esc(rid)}','${esc(title)}')">Realizar actividad</span>`:''}
-          ${done?`<div class="progress-action done">✓ Completado</div>`:''}
-        </div>
-      </div>`;
+      return `<div class="unitws-item"><b>${esc(title)}</b><small>${type}</small>${url?`<a href="#" onclick="openTrackedActivity('${esc(url)}','${esc(uid)}','${esc(rid)}');return false;">Realizar actividad ↗</a>`:''}${done?`<div class="progress-action done">✓ Completado</div>`:''}</div>`;
     }
     return `<div class="unitws-item"><b>${esc(title)}</b><small>${type}</small>${url?`<a href="${esc(url)}" target="_blank" rel="noopener">Abrir ↗</a>`:''}</div>`;
   }).join(''):'<div class="unitws-empty">Todavía no hay contenidos vinculados.</div>';
@@ -7067,32 +6416,26 @@ function openUnit(uid){
   const classBox=classes.length?classes.slice(-5).map(x=>{
     const d=parseLocalDateTime(x), isPast=d&&d<now, status=effectiveScheduleStatus(x), mod=String(x.modalidad||'').toUpperCase(), typ=String(x.tipo||'').toUpperCase();
     let link='';
-    if(mod==='VIRTUAL'&&isPast&&x.resumen_url) link=`<a href="#" onclick="openClassSummaryModal('${esc(x.resumen_url)}','${esc(x.titulo||'Resumen de la clase')}');return false;">Ver resumen</a>`;
+    if(mod==='VIRTUAL'&&isPast&&x.resumen_url) link=`<a href="${esc(x.resumen_url)}" target="_blank" rel="noopener">Ver resumen ↗</a>`;
     else if(mod==='VIRTUAL'&&!isPast) link=`<a href="${esc((DB.config&&DB.config.zoom_url)||'#')}" target="_blank" rel="noopener">Ingresar a Zoom ↗</a>`;
-    else if(activityHasLocation(x)) link=`<a href="#" onclick="openActivityLocationModal('${encodeURIComponent(activityLocationKey(x))}');return false;">Ver ubicación</a>`;
+    else if(x.maps_url) link=`<a href="${esc(x.maps_url)}" target="_blank" rel="noopener">Ver ubicación ↗</a>`;
     return `<div class="unitws-item unitws-class ${typ==='PRACTICA'?'practice':''} ${isPast?'past':''}"><b>${esc(x.titulo||'Actividad')}</b><small>${esc(x.fecha||'')} · ${esc(x.hora||'')}<br>${esc(x.lugar||x.modalidad||'')} · ${esc(status)}</small>${link}</div>`;
   }).join(''):'<div class="unitws-empty">No hay clases vinculadas.</div>';
 
   $('#unitWorkspace').innerHTML=`<div class="unitws">
    <div class="unitws-head">
     <div><div class="unitws-back" onclick="setPage('course')">← Volver a Unidades</div><h1>Unidad ${esc(u.numero||'')}</h1><div class="unitws-title">${esc(u.titulo||'')}</div><div class="unitws-desc">${esc(u.descripcion||'Contenidos y recursos correspondientes a esta unidad.')}</div>
-     <div class="unitws-chips"><span class="unitws-chip">${c.cartillas.length} materiales</span><span class="unitws-chip">${requiredVideos.length} videos obligatorios</span>${optionalVideos.length?`<span class="unitws-chip">${optionalVideos.length} complementarios</span>`:''}<span class="unitws-chip">${c.juegos.length} actividades</span><span class="unitws-chip">${classes.length} clases vinculadas</span></div>
+     <div class="unitws-chips"><span class="unitws-chip">${c.cartillas.length} materiales</span><span class="unitws-chip">${c.videos.length} videos</span><span class="unitws-chip">${c.juegos.length} actividades</span><span class="unitws-chip">${classes.length} clases vinculadas</span></div>
     </div>
-    <aside class="unitws-progress"><h3>Mi progreso en la unidad</h3>${ITB_USER?'':'<div class="note" style="margin-bottom:8px">Ingresá para registrar tu progreso.</div>'}<div class="unitws-ring" style="background:conic-gradient(#438ddd 0 ${progress}%,#253342 ${progress}% 100%)"><b>${progress}%</b></div><div class="unitws-checks"><div><span>Material teórico</span><span>${c.cartillas.filter(x=>progressRecord(uid,'MATERIAL',x.id||x.name||x.nombre)).length}/${c.cartillas.length}</span></div><div><span>Videos obligatorios</span><span>${requiredVideos.filter(x=>progressRecord(uid,'VIDEO',x.id||x.name||x.nombre)).length}/${requiredVideos.length}</span></div>${optionalVideos.length?`<div><span>Complementarios vistos</span><span>${optionalVideos.filter(x=>progressRecord(uid,'VIDEO',x.id||x.name||x.nombre)).length}/${optionalVideos.length}</span></div>`:''}<div><span>Actividades</span><span>${c.juegos.filter(x=>progressRecord(uid,'ACTIVIDAD',x.id||x.name||x.nombre)).length}/${c.juegos.length}</span></div><div><span>Autoevaluación</span><span class="${quizStatus(uid).approved?'uw-ok':'uw-no'}">${quizStatus(uid).available?(quizStatus(uid).approved?`✓ ${quizStatus(uid).best_score}/10`:`${quizStatus(uid).best_score===null?'Pendiente':quizStatus(uid).best_score+'/10'}`):'—'}</span></div></div></aside>
+    <aside class="unitws-progress"><h3>Mi progreso en la unidad</h3>${ITB_USER?'':'<div class="note" style="margin-bottom:8px">Ingresá para registrar tu progreso.</div>'}<div class="unitws-ring" style="background:conic-gradient(#438ddd 0 ${progress}%,#253342 ${progress}% 100%)"><b>${progress}%</b></div><div class="unitws-checks"><div><span>Material teórico</span><span>${c.cartillas.filter(x=>progressRecord(uid,'MATERIAL',x.id||x.name||x.nombre)).length}/${c.cartillas.length}</span></div><div><span>Videos</span><span>${c.videos.filter(x=>progressRecord(uid,'VIDEO',x.id||x.name||x.nombre)).length}/${c.videos.length}</span></div><div><span>Actividades</span><span>${c.juegos.filter(x=>progressRecord(uid,'ACTIVIDAD',x.id||x.name||x.nombre)).length}/${c.juegos.length}</span></div><div><span>Autoevaluación</span><span class="${quizStatus(uid).approved?'uw-ok':'uw-no'}">${quizStatus(uid).available?(quizStatus(uid).approved?`✓ ${quizStatus(uid).best_score}/10`:`${quizStatus(uid).best_score===null?'Pendiente':quizStatus(uid).best_score+'/10'}`):'—'}</span></div></div></aside>
    </div>
    <div class="unitws-strip"><div><b>Clases vinculadas a esta unidad</b><div class="note">${classes.length} en el cronograma</div></div><div class="unitws-stripmeta"><span>${past.length} pasada${past.length===1?'':'s'}</span><span>${next?'Próxima: '+next.fecha+' · '+next.hora:'Sin próxima clase'}</span><span>${future.length} futura${future.length===1?'':'s'}</span></div><button class="btn ghost" onclick="setPage('schedulePage')">Ver cronograma</button></div>
-   <div class="unitws-cols"><div class="unitws-col"><h3>1. Material teórico</h3>${items(c.cartillas,'Material de estudio')}</div><div class="unitws-col"><h3>2. Videos de la unidad</h3>
-      ${requiredVideos.length?`<div class="unitws-video-group"><div class="unitws-video-group-head"><span>Obligatorios</span><span>Aportan al progreso</span></div>${items(requiredVideos,'Contenido audiovisual')}</div>`:'<div class="unitws-empty">No hay videos obligatorios.</div>'}
-      ${optionalVideos.length?`<div class="unitws-video-group"><div class="unitws-video-group-head"><span>Complementarios</span><span>No afectan el progreso</span></div>${items(optionalVideos,'Contenido audiovisual')}</div>`:''}
-    </div><div class="unitws-col"><h3>3. Actividades</h3>${items(c.juegos,'Actividad interactiva')}</div><div class="unitws-col"><h3>4. Autoevaluación</h3>${evalBox}</div><div class="unitws-col"><h3>5. Clases del cronograma</h3>${classBox}</div></div>
+   <div class="unitws-cols"><div class="unitws-col"><h3>1. Material teórico</h3>${items(c.cartillas,'Material de estudio')}</div><div class="unitws-col"><h3>2. Videos de la unidad</h3>${items(c.videos,'Contenido audiovisual')}</div><div class="unitws-col"><h3>3. Actividades</h3>${items(c.juegos,'Actividad interactiva')}</div><div class="unitws-col"><h3>4. Autoevaluación</h3>${evalBox}</div><div class="unitws-col"><h3>5. Clases del cronograma</h3>${classBox}</div></div>
    <div class="unitws-objective"><h3>Objetivo de la unidad</h3><p>${esc(u.objetivo||u.descripcion||'Integrar los contenidos, recursos y actividades previstos para esta unidad.')}</p></div>
   </div>`;
   setPage('unitDetail');
 }
 window.openUnit=openUnit;
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape' && $('#activityModal')?.classList.contains('open')) closeActivityModal();
-});
 
 function renderLibrary(filter=''){
   const q=filter.trim().toLowerCase();
@@ -7341,13 +6684,10 @@ function renderSchedule(){
     }
 
     if(modality==='VIRTUAL' && isPastStatus && item.resumen_url){
-      buttons.push(`<button class="btn summary-btn" onclick="openClassSummaryModal('${esc(item.resumen_url)}','${esc(item.titulo||'Resumen de la clase')}')">Ver resumen de la clase</button>`);
+      buttons.push(`<a class="btn summary-btn" href="${esc(item.resumen_url)}" target="_blank" rel="noopener">Ver resumen de la clase ↗</a>`);
     }
 
-    if(activityHasLocation(item)){
-      buttons.push(activityLocationButton(item,'Ver ubicación'));
-      buttons.push(`<a class="btn ghost" href="${esc(activityDirectionsUrl(item))}" target="_blank" rel="noopener">Cómo llegar ↗</a>`);
-    }
+    if(item.maps_url) buttons.push(`<a class="btn ghost" href="${esc(item.maps_url)}" target="_blank" rel="noopener">Ver ubicación ↗</a>`);
     linkedUnitsForActivity(item).forEach(x=>{
       const label=x.unit ? `Unidad ${x.unit.numero}` : x.id;
       buttons.push(`<button class="btn ghost" onclick="openUnit('${esc(x.id)}')">Ver ${esc(label)}</button>`);
@@ -7489,9 +6829,8 @@ function renderNextActivity(){
     const zoom=(DB.config&&DB.config.zoom_url)||$('#zoomBtn')?.href||'#';
     actions.innerHTML+=`<a class="btn primary" href="${esc(zoom)}" target="_blank" rel="noopener">Ingresar a Zoom</a>`;
   }
-  if(activityHasLocation(item)){
-    actions.innerHTML+=activityLocationButton(item,'Ver ubicación');
-    actions.innerHTML+=`<a class="btn ghost" href="${esc(activityDirectionsUrl(item))}" target="_blank" rel="noopener">Cómo llegar ↗</a>`;
+  if(item.maps_url){
+    actions.innerHTML+=`<a class="btn ghost" href="${esc(item.maps_url)}" target="_blank" rel="noopener">Ver ubicación ↗</a>`;
   }
   if(item.estado){
     actions.innerHTML+=`<span class="activity-status">${esc(item.estado)}</span>`;
@@ -7516,111 +6855,22 @@ function getActivityCoordinates(item){
   return null;
 }
 
-function activityLocationKey(item){
-  return String(
-    item?.id || item?.cronograma_id ||
-    [item?.fecha,item?.hora,item?.titulo].filter(Boolean).join('|')
-  );
-}
-function findActivityByLocationKey(key){
-  const raw=decodeURIComponent(String(key||''));
-  return (DB.schedule||[]).find(x=>activityLocationKey(x)===raw) || null;
-}
-function activityLocationQuery(item){
-  const coords=getActivityCoordinates(item);
-  if(coords)return `${coords.lat},${coords.lon}`;
-  return [item?.direccion,item?.lugar].filter(Boolean).join(', ');
-}
-function activityMapEmbedUrl(item){
-  const q=activityLocationQuery(item);
-  return q ? `https://www.google.com/maps?q=${encodeURIComponent(q)}&z=16&output=embed` : '';
-}
-function activityGoogleMapsUrl(item){
-  if(String(item?.maps_url||'').trim())return String(item.maps_url).trim();
-  const q=activityLocationQuery(item);
-  return q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` : '#';
-}
-function activityDirectionsUrl(item){
-  const q=activityLocationQuery(item);
-  return q ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}` : activityGoogleMapsUrl(item);
-}
-function activityHasLocation(item){
-  const type=String(item?.tipo||'').trim().toUpperCase();
-  const modality=String(item?.modalidad||'').trim().toUpperCase();
-
-  // La ubicación y la navegación corresponden exclusivamente
-  // a prácticas presenciales en polígono.
-  if(type!=='PRACTICA' || modality!=='PRESENCIAL') return false;
-
-  return !!(
-    getActivityCoordinates(item) ||
-    String(item?.maps_url||'').trim() ||
-    String(item?.direccion||'').trim() ||
-    String(item?.lugar||'').trim()
-  );
-}
-function activityLocationButton(item,label='Ver ubicación'){
-  if(!activityHasLocation(item))return '';
-  const key=encodeURIComponent(activityLocationKey(item));
-  return `<button class="btn ghost" onclick="openActivityLocationModal('${key}')">${esc(label)}</button>`;
-}
-function openActivityLocationModal(key){
-  const item=findActivityByLocationKey(key);
-  if(!item)return;
-  const modal=$('#locationModal'),frame=$('#locationModalFrame'),title=$('#locationModalTitle'),
-        sub=$('#locationModalSubtitle'),meta=$('#locationModalMeta'),
-        maps=$('#locationModalMaps'),directions=$('#locationModalDirections');
-  if(!modal||!frame)return;
-
-  const coords=getActivityCoordinates(item);
-  const place=String(item.lugar||'').trim();
-  const address=String(item.direccion||'').trim();
-  title.textContent=place || item.titulo || 'Ubicación de la actividad';
-  sub.textContent=address || (coords ? 'Ubicación geográfica del polígono' : 'Ubicación de la actividad');
-
-  const metaRows=[];
-  if(address)metaRows.push(`<div><b>Dirección</b><br>${esc(address)}</div>`);
-  if(coords)metaRows.push(`<div><b>Coordenadas</b><br><span class="location-modal-coords">${coords.lat.toFixed(6)}, ${coords.lon.toFixed(6)}</span></div>`);
-  meta.innerHTML=metaRows.join('') || '<div>Ubicación disponible en Google Maps.</div>';
-
-  const embed=activityMapEmbedUrl(item);
-  frame.src=embed || 'about:blank';
-  maps.href=activityGoogleMapsUrl(item);
-  directions.href=activityDirectionsUrl(item);
-
-  modal.classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeActivityLocationModal(){
-  const modal=$('#locationModal'),frame=$('#locationModalFrame');
-  if(frame)frame.src='about:blank';
-  modal?.classList.remove('open');
-  document.body.style.overflow='';
-}
-function locationModalBackdrop(e){
-  if(e?.target?.id==='locationModal')closeActivityLocationModal();
-}
-
-function weatherCodeMeta(code){
-  const c=Number(code);
-  if(c===0)return {icon:'☀️',text:'Despejado'};
-  if(c===1)return {icon:'🌤️',text:'Mayormente despejado'};
-  if(c===2)return {icon:'⛅',text:'Parcialmente nublado'};
-  if(c===3)return {icon:'☁️',text:'Cubierto'};
-  if(c===45 || c===48)return {icon:'🌫️',text:'Niebla'};
-  if([51,53,55].includes(c))return {icon:'🌦️',text:'Llovizna'};
-  if([56,57].includes(c))return {icon:'🌧️',text:'Llovizna helada'};
-  if([61,63,65].includes(c))return {icon:'🌧️',text:'Lluvia'};
-  if([66,67].includes(c))return {icon:'🌧️',text:'Lluvia helada'};
-  if([71,73,75,77].includes(c))return {icon:'❄️',text:'Nieve'};
-  if([80,81,82].includes(c))return {icon:'🌦️',text:'Chaparrones'};
-  if([85,86].includes(c))return {icon:'🌨️',text:'Chaparrones de nieve'};
-  if([95,96,99].includes(c))return {icon:'⛈️',text:'Tormentas'};
-  return {icon:'🌡️',text:'Condiciones variables'};
-}
-
 function weatherCodeText(code){
-  return weatherCodeMeta(code).text;
+  const c=Number(code);
+  if(c===0) return 'Despejado';
+  if(c===1) return 'Mayormente despejado';
+  if(c===2) return 'Parcialmente nublado';
+  if(c===3) return 'Cubierto';
+  if(c===45 || c===48) return 'Niebla';
+  if([51,53,55].includes(c)) return 'Llovizna';
+  if([56,57].includes(c)) return 'Llovizna helada';
+  if([61,63,65].includes(c)) return 'Lluvia';
+  if([66,67].includes(c)) return 'Lluvia helada';
+  if([71,73,75,77].includes(c)) return 'Nieve';
+  if([80,81,82].includes(c)) return 'Chaparrones';
+  if([85,86].includes(c)) return 'Chaparrones de nieve';
+  if([95,96,99].includes(c)) return 'Tormentas';
+  return 'Condiciones variables';
 }
 
 function dayDiffFromToday(dateStr){
@@ -7630,8 +6880,8 @@ function dayDiffFromToday(dateStr){
   return Math.round((target-todayLocal)/86400000);
 }
 
-async function renderActivityWeather(item,target='#activityWeather'){
-  const box=typeof target==='string'?$(target):target;
+async function renderActivityWeather(item){
+  const box=$('#activityWeather');
   if(!box) return;
   box.innerHTML='';
 
@@ -7723,26 +6973,17 @@ function drawActivityWeather(box,data,activityDate,diff){
   const rain=daily.precipitation_probability_max?.[idx];
   const wind=daily.wind_speed_10m_max?.[idx];
 
-  const meta=weatherCodeMeta(code);
   box.innerHTML=`<div class="activity-weather">
     <div class="activity-weather-head">
       <div class="activity-weather-title">Pronóstico para la práctica</div>
       <div class="activity-weather-source">Open-Meteo</div>
     </div>
-    <div class="activity-weather-condition">
-      <div class="activity-weather-condition-icon" aria-hidden="true">${meta.icon}</div>
-      <div class="activity-weather-condition-copy"><b>${esc(meta.text)}</b><span>Condición prevista para el día de la práctica</span></div>
-    </div>
+    <div class="activity-weather-condition">${esc(weatherCodeText(code))}</div>
     <div class="activity-weather-grid">
-      <div class="activity-weather-item activity-weather-temperature">
-        <div class="activity-weather-metric-icon">🌡️</div>
-        <div class="activity-weather-temp-values">
-          <div class="activity-weather-temp-value"><b>${Number.isFinite(Number(tmax))?Math.round(Number(tmax))+' °C':'—'}</b><span>Máxima</span></div>
-          <div class="activity-weather-temp-value"><b>${Number.isFinite(Number(tmin))?Math.round(Number(tmin))+' °C':'—'}</b><span>Mínima</span></div>
-        </div>
-      </div>
-      <div class="activity-weather-item"><div class="activity-weather-metric-icon">💧</div><div><b>${Number.isFinite(Number(rain))?Math.round(Number(rain))+' %':'—'}</b><span>Precipitación</span></div></div>
-      <div class="activity-weather-item"><div class="activity-weather-metric-icon">💨</div><div><b>${Number.isFinite(Number(wind))?Math.round(Number(wind))+' km/h':'—'}</b><span>Viento máx.</span></div></div>
+      <div class="activity-weather-item"><b>${Number.isFinite(Number(tmax))?Math.round(Number(tmax))+' °C':'—'}</b><span>Máxima</span></div>
+      <div class="activity-weather-item"><b>${Number.isFinite(Number(tmin))?Math.round(Number(tmin))+' °C':'—'}</b><span>Mínima</span></div>
+      <div class="activity-weather-item"><b>${Number.isFinite(Number(rain))?Math.round(Number(rain))+' %':'—'}</b><span>Prob. precipitación</span></div>
+      <div class="activity-weather-item"><b>${Number.isFinite(Number(wind))?Math.round(Number(wind))+' km/h':'—'}</b><span>Viento máx.</span></div>
     </div>
     <div class="activity-weather-note" style="margin-top:9px">Pronóstico orientativo sujeto a actualización.</div>
   </div>`;
@@ -8272,24 +7513,6 @@ boot();
   </div>
 </div>
 
-<div id="activityModal" class="activity-modal" onclick="activityModalBackdrop(event)">
-  <div class="activity-modal-card" role="dialog" aria-modal="true" aria-labelledby="activityModalTitle">
-    <div class="activity-modal-head">
-      <div id="activityModalTitle" class="activity-modal-title">Actividad interactiva</div>
-      <div class="activity-modal-actions">
-        <a id="activityModalExternal" class="activity-modal-external" href="#" target="_blank" rel="noopener">Abrir aparte ↗</a>
-        <button class="activity-modal-close" onclick="closeActivityModal()" aria-label="Cerrar">×</button>
-      </div>
-    </div>
-    <div class="activity-modal-frame">
-      <div id="activityModalLoading" class="activity-modal-loading"><div><b>Preparando actividad…</b><span>Estamos cargando la versión integrada del recurso.</span></div></div>
-      <iframe id="activityModalFrame" src="" title="Actividad interactiva"
-        allow="fullscreen; autoplay; clipboard-read; clipboard-write"></iframe>
-    </div>
-    <div class="activity-modal-foot">Actividad integrada en Academia TED mediante el modo de inserción del proveedor. “Abrir aparte” queda disponible como alternativa.</div>
-  </div>
-</div>
-
 <div id="videoModal" class="video-modal" onclick="videoModalBackdrop(event)">
   <div class="video-modal-card" role="dialog" aria-modal="true" aria-labelledby="videoModalTitle">
     <div class="video-modal-head">
@@ -8305,57 +7528,6 @@ boot();
   </div>
 </div>
 
-
-<div id="locationModal" class="location-modal" onclick="locationModalBackdrop(event)">
-  <div class="location-modal-card" role="dialog" aria-modal="true" aria-labelledby="locationModalTitle">
-    <div class="location-modal-head">
-      <div>
-        <div id="locationModalTitle" class="location-modal-title">Ubicación de la actividad</div>
-        <div id="locationModalSubtitle" class="location-modal-subtitle"></div>
-      </div>
-      <button class="location-modal-close" onclick="closeActivityLocationModal()" aria-label="Cerrar">×</button>
-    </div>
-    <div class="location-modal-map">
-      <iframe id="locationModalFrame" src="" title="Mapa de ubicación" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
-    <div class="location-modal-info">
-      <div id="locationModalMeta" class="location-modal-meta"></div>
-      <div class="location-modal-buttons">
-        <a id="locationModalMaps" class="btn ghost" href="#" target="_blank" rel="noopener">Abrir en Google Maps ↗</a>
-        <a id="locationModalDirections" class="btn primary" href="#" target="_blank" rel="noopener">Cómo llegar ↗</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="summaryModal" class="summary-modal" onclick="summaryModalBackdrop(event)">
-  <div id="summaryModalCard" class="summary-modal-card" role="dialog" aria-modal="true" aria-labelledby="summaryModalTitle">
-    <div class="summary-modal-head">
-      <div id="summaryModalTitle" class="summary-modal-title">Resumen de la clase</div>
-      <div class="summary-modal-actions">
-        <a id="summaryModalExternal" class="summary-modal-open" href="#" target="_blank" rel="noopener">Abrir aparte ↗</a>
-        <button class="summary-modal-close" onclick="closeClassSummaryModal()" aria-label="Cerrar">×</button>
-      </div>
-    </div>
-    <div class="summary-modal-frame">
-      <div id="summaryModalZoom" class="summary-zoom-panel">
-        <div class="summary-zoom-content">
-          <div class="summary-zoom-logo" aria-hidden="true">
-            <svg viewBox="0 0 64 64" role="img"><path d="M11 18h29c4.4 0 8 3.6 8 8v12c0 4.4-3.6 8-8 8H11c-4.4 0-8-3.6-8-8V26c0-4.4 3.6-8 8-8Zm40.2 8.5 8.3-5.1c1.6-1 3.5.2 3.5 2v17.2c0 1.8-2 3-3.5 2l-8.3-5.1V26.5Z"/></svg>
-          </div>
-          <h3>Resumen disponible en Zoom</h3>
-          <p>Zoom no permite mostrar sus documentos dentro de otras páginas. Podés abrir el resumen directamente en Zoom y volver a Academia TED cuando termines de consultarlo.</p>
-          <a id="summaryModalZoomOpen" class="summary-zoom-cta" href="#" target="_blank" rel="noopener">Abrir resumen en Zoom ↗</a>
-          <span class="summary-zoom-note">La apertura se realizará en una nueva pestaña.</span>
-        </div>
-      </div>
-      <iframe id="summaryModalFrame" src="" title="Resumen de la clase"
-        allow="clipboard-read; clipboard-write"></iframe>
-    </div>
-    <div id="summaryModalFoot" class="summary-modal-foot">El resumen se muestra dentro de Academia TED. Si el proveedor impide la visualización integrada, podés usar “Abrir aparte”.</div>
-  </div>
-</div>
 
 <div id="docModal" class="doc-modal" onclick="docModalBackdrop(event)">
   <div class="doc-modal-card" role="dialog" aria-modal="true" aria-labelledby="docModalTitle">
