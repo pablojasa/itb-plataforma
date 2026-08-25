@@ -1846,6 +1846,51 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 @media(max-width:900px){.integrator-tools-grid,.integrator-groups-grid{grid-template-columns:1fr}.integrator-pool-card{grid-template-columns:1fr}.integrator-summary{grid-template-columns:repeat(2,1fr)}.integrator-student-grid{grid-template-columns:1fr}.integrator-grades{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:650px){.integrator-admin-head,.integrator-student-head{flex-direction:column}.integrator-form-grid,.integrator-date-grid{grid-template-columns:1fr}.integrator-rubric-row{grid-template-columns:1fr repeat(4,1fr)}.integrator-summary{grid-template-columns:1fr 1fr}.integrator-final-preview{grid-template-columns:1fr}.integrator-resource-links{display:grid}.integrator-resource-links a{justify-content:center}}
 
+
+/* ===== v0.43.0 · Encuesta de satisfacción ===== */
+.survey-course-shell{margin:0 0 22px;border:1px solid #34414d;background:linear-gradient(145deg,#121a22,#0d141a);border-radius:18px;padding:18px}
+.survey-course-head{display:flex;justify-content:space-between;gap:16px;align-items:center}.survey-course-head h2{margin:4px 0 4px}.survey-course-head p{margin:0;color:var(--muted);font-size:10px}
+.survey-course-card{margin-top:12px;border-top:1px solid #2d3944;padding-top:12px;color:#c9d2da;font-size:11px;line-height:1.55}.survey-course-card b{color:#fff}
+.survey-overlay{position:fixed;inset:0;z-index:19000;background:rgba(2,6,10,.9);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:16px}.survey-overlay.open{display:flex}
+.survey-invite-dialog{width:min(500px,95vw);background:#0f161d;border:1px solid #384550;border-radius:22px;padding:24px;text-align:center;box-shadow:0 28px 85px rgba(0,0,0,.58)}
+.survey-invite-icon,.survey-thanks-icon{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;margin:0 auto 13px;border:1px solid #2f6d46;background:#12261a;color:#85dea4;font-size:28px;font-weight:950}.survey-invite-dialog h2{margin:7px 0 8px}.survey-invite-dialog p{color:#aeb8c2;font-size:11px;line-height:1.6;margin:0 auto;max-width:430px}.survey-invite-actions{display:flex;justify-content:center;gap:9px;margin-top:18px;flex-wrap:wrap}
+.survey-dialog{width:min(920px,97vw);max-height:94vh;overflow:auto;background:#0e151c;border:1px solid #394651;border-radius:22px;box-shadow:0 30px 90px rgba(0,0,0,.62)}
+.survey-modal-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:18px 20px;background:rgba(14,21,28,.97);border-bottom:1px solid #2f3a45;backdrop-filter:blur(7px)}.survey-modal-head h2{margin:4px 0}.survey-modal-head p{margin:0;color:var(--muted);font-size:10px}.survey-x{border:1px solid #35424e;background:#151e27;color:#fff;border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:19px}
+#surveyFormView,#surveyPreviewView{padding:18px 20px 22px}.survey-voluntary-note{border:1px solid #3a4652;background:#111922;border-radius:12px;padding:12px;color:#bdc7d0;font-size:10px;line-height:1.55}.survey-voluntary-note b{color:#fff}
+.survey-progress-line{display:flex;justify-content:space-between;gap:10px;margin:13px 2px 16px;color:#8f9ba6;font-size:9px;flex-wrap:wrap}
+.survey-section-block{margin:0 0 18px}.survey-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #2b3741;padding-bottom:8px;margin-bottom:10px}.survey-section-title span{font-size:12px;font-weight:950;color:#f0c97d;text-transform:uppercase;letter-spacing:.05em}.survey-section-title small{color:#7f8b96;font-size:9px}
+.survey-question-card{border:1px solid #303c47;background:#101820;border-radius:15px;padding:15px 15px 13px;margin-bottom:9px;scroll-margin-top:90px}.survey-question-card.unanswered{border-color:#3a4652}.survey-question-card.answered{border-color:#385348}
+.survey-q-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.survey-q-number{font-size:9px;color:#83909b;font-weight:900;margin-bottom:5px}.survey-q-text{font-size:12px;font-weight:850;line-height:1.45;color:#eef2f5}.survey-q-value{min-width:70px;text-align:right;font-size:18px;font-weight:950;color:#f0c97d}.survey-q-value span{display:block;color:#8f9aa4;font-size:8px;font-weight:700;margin-top:3px}
+.survey-range-wrap{margin-top:13px}.survey-range{width:100%;height:25px;background:transparent;appearance:none;-webkit-appearance:none;cursor:pointer}.survey-range:focus{outline:none}.survey-range::-webkit-slider-runnable-track{height:6px;background:linear-gradient(90deg,#5f2529,#806e3e,#2d6844);border-radius:999px;border:1px solid #46515a}.survey-range::-moz-range-track{height:6px;background:#59636d;border-radius:999px;border:0}.survey-range::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#f0c97d;border:3px solid #111820;margin-top:-9px;box-shadow:0 0 0 1px #c69e4b}.survey-range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#f0c97d;border:3px solid #111820}.survey-range.unanswered::-webkit-slider-thumb{opacity:0}.survey-range.unanswered::-moz-range-thumb{opacity:0}
+.survey-range-labels{display:flex;justify-content:space-between;gap:12px;color:#8e99a4;font-size:8px;line-height:1.35}.survey-range-labels span:last-child{text-align:right}.survey-selected-label{text-align:center;color:#cbd4dc;font-size:9px;min-height:14px;margin-top:4px;font-weight:800}
+.survey-open-section{margin-top:22px}.survey-open-q{display:grid;gap:7px;margin-bottom:12px}.survey-open-q label{font-size:11px;font-weight:850;line-height:1.45}.survey-open-q textarea{width:100%;resize:vertical;min-height:88px;background:#0a1117;border:1px solid #34414c;border-radius:11px;color:#fff;padding:11px;font:inherit;line-height:1.5}
+.survey-error{min-height:19px;margin-top:9px;color:#f3a1a8;font-size:10px}.survey-modal-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:13px}
+.survey-preview-intro h3{margin:0 0 4px}.survey-preview-intro p{margin:0 0 14px;color:#9da8b3;font-size:10px}.survey-preview-list{display:grid;gap:8px}.survey-preview-item{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;border:1px solid #303b46;background:#101820;border-radius:12px;padding:11px 12px}.survey-preview-item .text{font-size:10px;line-height:1.45;color:#c9d1d9}.survey-preview-item .answer{text-align:right}.survey-preview-item .answer b{display:block;color:#f0c97d;font-size:14px}.survey-preview-item .answer span{font-size:8px;color:#89959f}.survey-preview-item button{border:0;background:none;color:#85a9c9;font-size:8px;padding:3px 0;cursor:pointer}
+.survey-preview-comments{margin-top:17px}.survey-preview-comment{border:1px solid #303b46;background:#0f171f;border-radius:12px;padding:11px;margin-bottom:8px}.survey-preview-comment b{display:block;font-size:10px;margin-bottom:6px}.survey-preview-comment p{margin:0;color:#aeb8c1;font-size:10px;line-height:1.5;white-space:pre-wrap}
+.survey-thanks{text-align:center;padding:48px 22px}.survey-thanks h2{margin:5px 0}.survey-thanks p{color:#9ba7b1;font-size:11px;margin:0 0 17px}
+.survey-staff-shell{padding:4px 0 30px}.survey-staff-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:15px}.survey-staff-head h2{margin:4px 0}.survey-staff-head p{margin:0;color:var(--muted);font-size:10px}.survey-staff-controls{display:flex;gap:8px;flex-wrap:wrap}.survey-staff-controls select{background:#101820;border:1px solid #35414d;color:#fff;border-radius:10px;padding:10px}
+.survey-staff-participation{border:1px solid #36434f;background:#101820;border-radius:16px;padding:14px 16px;margin-bottom:13px}.survey-part-top{display:flex;justify-content:space-between;gap:15px;align-items:flex-end}.survey-part-top h3{margin:0 0 4px}.survey-part-top p{margin:0;color:#8f9aa5;font-size:9px}.survey-part-pct{font-size:28px;font-weight:950;color:#f0c97d}.survey-part-track{height:8px;background:#1c2731;border-radius:999px;overflow:hidden;margin-top:10px}.survey-part-track span{display:block;height:100%;background:#477d59;border-radius:999px}.survey-part-meta{display:flex;gap:11px;flex-wrap:wrap;margin-top:8px;color:#9da8b2;font-size:9px}
+.survey-kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:14px}.survey-kpi{border:1px solid #34414c;background:#101820;border-radius:14px;padding:12px}.survey-kpi b{display:block;font-size:22px;color:#f0c97d}.survey-kpi span{display:block;font-size:8px;color:#909ba6;margin-top:5px;line-height:1.35}
+.survey-staff-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:13px}.survey-staff-card{border:1px solid #34414c;background:#0e151c;border-radius:17px;padding:14px}.survey-question-stats{display:grid;gap:7px}.survey-stat-row{border:1px solid #2f3a45;background:#101820;border-radius:11px;padding:10px}.survey-stat-top{display:flex;justify-content:space-between;gap:12px}.survey-stat-top b{font-size:9px;line-height:1.4}.survey-stat-top span{color:#f0c97d;font-size:12px;font-weight:950;white-space:nowrap}.survey-stat-meta{font-size:8px;color:#85919c;margin-top:4px}.survey-dist{display:flex;gap:4px;margin-top:7px;height:5px}.survey-dist span{background:#52606b;border-radius:999px;min-width:2px}
+.survey-open-block{margin-bottom:14px}.survey-open-block h4{font-size:10px;margin:0 0 7px;color:#d8dee4}.survey-comment{border-left:2px solid #586674;padding:7px 9px;margin-bottom:7px;color:#aeb8c2;font-size:9px;line-height:1.5;background:#111922;border-radius:0 8px 8px 0;white-space:pre-wrap}
+@media(max-width:1050px){.survey-kpi-grid{grid-template-columns:repeat(3,1fr)}.survey-staff-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.survey-course-head,.survey-staff-head{flex-direction:column;align-items:stretch}.survey-course-head button,.survey-staff-controls>*{width:100%}.survey-dialog{width:100%;max-height:96vh;border-radius:17px}.survey-modal-head{padding:15px}.survey-q-head{display:block}.survey-q-value{text-align:left;margin-top:7px}.survey-q-value span{display:inline;margin-left:6px}.survey-preview-item{grid-template-columns:1fr}.survey-preview-item .answer{text-align:left}.survey-kpi-grid{grid-template-columns:repeat(2,1fr)}.survey-invite-actions>*{width:100%}}
+
+
+.survey-manual-enable{border:1px dashed #5f5637;background:#1b1911;border-radius:14px;padding:12px 14px;margin-bottom:13px;display:flex;justify-content:space-between;gap:14px;align-items:center}.survey-manual-enable>div:first-child{display:grid;gap:4px}.survey-manual-enable b{font-size:10px;color:#f0c97d}.survey-manual-enable span{font-size:9px;color:#a9a28d;line-height:1.45}.survey-manual-controls{display:flex;gap:8px;min-width:min(460px,50%)}.survey-manual-controls select{flex:1;background:#101820;border:1px solid #42483d;color:#fff;border-radius:10px;padding:9px}
+@media(max-width:800px){.survey-manual-enable{flex-direction:column;align-items:stretch}.survey-manual-controls{min-width:0}.survey-manual-controls>*{width:100%}}
+
+
+
+/* ===== v0.44.9 · Examen teórico final nativo ===== */
+.final-student-card{margin:0 0 18px;border:1px solid #35506a;background:linear-gradient(145deg,#121c26,#0e161e);border-radius:18px;padding:17px;display:none}
+.final-student-card.visible{display:block}.final-student-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}.final-student-head h2{margin:4px 0 5px}.final-student-head p{margin:0;color:var(--muted);font-size:10px;line-height:1.5}.final-student-state{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}.final-student-pill{padding:6px 9px;border-radius:999px;border:1px solid #40505e;background:#18212a;color:#cbd5df;font-size:9px;font-weight:900}.final-student-pill.ready{border-color:#315b7d;background:#13283a;color:#a9d7ff}.final-student-pill.failed{border-color:#6f3d43;background:#2b171b;color:#ffb2ba}.final-student-pill.ok{border-color:#2d6943;background:#14271c;color:#95e0ad}.final-student-meta{margin-top:9px;color:#98a5b0;font-size:9px;line-height:1.5}
+.final-exam-overlay{position:fixed;inset:0;z-index:18500;background:rgba(2,6,10,.94);backdrop-filter:blur(6px);display:none;align-items:stretch;justify-content:center;padding:12px}.final-exam-overlay.open{display:flex}.final-exam-dialog{width:min(1100px,100%);height:calc(100vh - 24px);background:#0e151c;border:1px solid #3a4651;border-radius:20px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 95px rgba(0,0,0,.65)}
+.final-exam-head{flex:0 0 auto;padding:15px 18px;border-bottom:1px solid #303c46;background:#101820;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}.final-exam-head h2{margin:3px 0 3px;font-size:20px}.final-exam-head p{margin:0;color:#8f9aa5;font-size:9px}.final-exam-head-side{display:flex;align-items:center;gap:10px}.final-exam-timer{font-variant-numeric:tabular-nums;font-size:25px;font-weight:950;letter-spacing:.02em;color:#f0c97d;border:1px solid #5b5030;background:#211d12;border-radius:12px;padding:7px 11px;min-width:92px;text-align:center}.final-exam-timer.warning{color:#ffbf7a;border-color:#72491f;background:#2a1c0e}.final-exam-timer.danger{color:#ff909a;border-color:#7a333b;background:#2b1418}.final-exam-close{width:38px;height:38px;border:1px solid #394651;border-radius:10px;background:#151e27;color:#fff;cursor:pointer;font-size:18px}
+.final-exam-statusbar{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 18px;border-bottom:1px solid #29343e;background:#0c1319;color:#8f9aa5;font-size:9px}.final-exam-statusbar b{color:#dce5ec}.final-exam-sync.offline{color:#ffbf7a}.final-exam-sync.ok{color:#8fd7a7}.final-exam-body{flex:1 1 auto;overflow:auto;padding:17px 18px 110px;scroll-behavior:smooth}.final-exam-unit{margin:0 0 24px}.final-exam-unit-title{position:sticky;top:-17px;z-index:2;background:rgba(14,21,28,.97);backdrop-filter:blur(5px);padding:12px 4px 9px;border-bottom:1px solid #33414c;color:#f0c97d;font-size:14px;font-weight:950}.final-exam-unit-title small{display:block;color:#7f8b96;font-size:8px;font-weight:700;margin-top:3px}.final-exam-question{border:1px solid #303c47;background:#101820;border-radius:15px;padding:14px;margin:10px 0;scroll-margin-top:105px}.final-exam-question.missing{border-color:#74424a}.final-exam-qnum{font-size:8px;color:#7f8b96;font-weight:900;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}.final-exam-qtext{font-size:12px;font-weight:850;line-height:1.5;color:#eef2f5}.final-exam-options{display:grid;gap:7px;margin-top:12px}.final-exam-option{display:grid;grid-template-columns:30px 1fr;gap:9px;align-items:center;width:100%;text-align:left;border:1px solid #35414c;background:#0c141b;border-radius:11px;padding:9px 10px;color:#dbe3e9;cursor:pointer;font:inherit}.final-exam-option:hover{background:#121d26}.final-exam-option.selected{border-color:#4f7797;background:#142535}.final-exam-letter{width:28px;height:28px;border:1px solid #42515e;border-radius:8px;display:grid;place-items:center;font-weight:950;color:#aab7c2}.final-exam-option.selected .final-exam-letter{border-color:#6c9cc0;color:#d3edff;background:#17314a}.final-exam-option-text{font-size:10px;line-height:1.45}
+.final-exam-foot{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;width:min(1068px,calc(100% - 48px));z-index:3;border:1px solid #394651;background:rgba(13,20,27,.96);backdrop-filter:blur(8px);border-radius:15px;padding:11px 13px;display:flex;justify-content:space-between;align-items:center;gap:12px;box-shadow:0 15px 45px rgba(0,0,0,.42)}.final-exam-foot-info{font-size:9px;color:#8f9aa5}.final-exam-foot-info b{display:block;color:#eef2f5;font-size:11px;margin-bottom:2px}.final-exam-review-warning{border:1px solid #70502c;background:#281e10;border-radius:13px;padding:12px;color:#e9c888;font-size:10px;line-height:1.5;margin-bottom:13px}.final-exam-review-warning.ok{border-color:#315d42;background:#14231a;color:#9fd5b0}.final-exam-review-list{display:grid;gap:8px}.final-exam-review-unit{border:1px solid #303c47;background:#0f171f;border-radius:14px;overflow:hidden}.final-exam-review-unit h3{margin:0;padding:10px 12px;background:#121c25;border-bottom:1px solid #303c47;color:#f0c97d;font-size:11px}.final-exam-review-row{display:grid;grid-template-columns:44px 1fr;gap:9px;padding:9px 12px;border-bottom:1px solid #27323b}.final-exam-review-row:last-child{border-bottom:0}.final-exam-review-row.missing{background:#251619}.final-exam-review-n{color:#8996a0;font-size:9px;font-weight:900}.final-exam-review-answer{font-size:10px;color:#d8e0e6;line-height:1.4}.final-exam-review-answer b{color:#fff}.final-exam-result{text-align:center;max-width:570px;margin:60px auto 0}.final-exam-result-score{font-size:68px;font-weight:950;line-height:1;color:#f0c97d}.final-exam-result h2{margin:12px 0 7px}.final-exam-result p{color:#9ca8b2;font-size:11px;line-height:1.55}.final-exam-result-detail{margin-top:14px;color:#7f8a94;font-size:9px}.final-exam-result.approved .final-exam-result-score{color:#8fe0aa}.final-exam-result.failed .final-exam-result-score{color:#ff9ba5}.final-exam-loading{padding:60px 20px;text-align:center;color:#9ba7b1}
+@media(max-width:700px){.final-exam-overlay{padding:0}.final-exam-dialog{height:100vh;border-radius:0;border-left:0;border-right:0}.final-exam-head{padding:12px;grid-template-columns:1fr auto}.final-exam-head h2{font-size:16px}.final-exam-timer{font-size:20px;min-width:78px;padding:6px 8px}.final-exam-body{padding:12px 10px 100px}.final-exam-statusbar{padding:8px 11px;flex-wrap:wrap}.final-exam-foot{bottom:7px;width:calc(100% - 14px);border-radius:12px;padding:9px}.final-exam-foot-info{display:none}.final-student-head{display:block}.final-student-head .btn{margin-top:12px;width:100%}.final-exam-review-row{grid-template-columns:34px 1fr}}
+
 </style></head>
 <body class="guest-mode app-loading">
 <div id="pwaLaunchSplash" class="pwa-launch-splash" aria-label="Iniciando Academia TED">
@@ -1993,6 +2038,10 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 
     <div id="courseProgressMount" class="course-progress-wrap"></div>
 
+    <section id="studentFinalExamSection" class="student-only final-student-card">
+      <div id="studentFinalExamMount"></div>
+    </section>
+
     <div class="course-side">
       <div class="course-side-card course-next-clone">
         <h3>Próxima actividad</h3>
@@ -2026,6 +2075,14 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
         <button class="btn ghost" onclick="loadIntegratorMyData(true)">Actualizar</button>
       </div>
       <div id="studentIntegratorMount" class="integrator-student-card"><div class="teacher-empty">Abrí esta sección para cargar la información de tu grupo.</div></div>
+    </section>
+
+    <section id="studentSurveySection" class="student-only survey-course-shell" style="display:none">
+      <div class="survey-course-head">
+        <div><div class="kicker">Encuesta final</div><h2>Encuesta de satisfacción</h2><p>Tu opinión nos ayuda a mejorar las próximas ediciones del curso.</p></div>
+        <button id="studentSurveyAction" class="btn ghost" onclick="openSurveyFromCourse()">Completar encuesta</button>
+      </div>
+      <div id="studentSurveyMount" class="survey-course-card"></div>
     </section>
 
     <div class="course-toolbar">
@@ -2652,7 +2709,36 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <div class="integrator-modal-actions"><button class="btn ghost" onclick="closeIntegratorExposure()">Cancelar</button><button class="btn primary" onclick="saveIntegratorExposureEvaluation()">Guardar evaluación definitiva</button></div>
 </div></div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8 · Habilitación masiva de examen final</footer>
+
+<div id="finalExamModal" class="final-exam-overlay">
+  <div class="final-exam-dialog" role="dialog" aria-modal="true" aria-labelledby="finalExamTitle">
+    <div class="final-exam-head">
+      <div><div class="kicker" id="finalExamKicker">Evaluación final</div><h2 id="finalExamTitle">Examen teórico final</h2><p id="finalExamSubtitle">70 preguntas · 45 minutos · aprobación 70%</p></div>
+      <div class="final-exam-head-side"><div id="finalExamTimer" class="final-exam-timer">45:00</div><button class="final-exam-close" onclick="closeFinalExamView()" aria-label="Cerrar">×</button></div>
+    </div>
+    <div class="final-exam-statusbar"><span id="finalExamAnswered">0 de 70 respondidas</span><span id="finalExamSync" class="final-exam-sync">Preparando…</span></div>
+    <div id="finalExamBody" class="final-exam-body"></div>
+    <div id="finalExamFoot" class="final-exam-foot" style="display:none"><div class="final-exam-foot-info"><b>Podés revisar antes de enviar</b>Las respuestas pueden modificarse mientras quede tiempo.</div><button class="btn primary" onclick="openFinalExamReview()">Revisar y finalizar</button></div>
+  </div>
+</div>
+
+<div id="surveyInviteModal" class="survey-overlay" onclick="if(event.target===this)closeSurveyInvite()">
+  <div class="survey-invite-dialog">
+    <div class="survey-invite-icon">✓</div><div class="kicker" id="surveyInviteKicker">Encuesta de satisfacción</div><h2 id="surveyInviteTitle">Tenés una encuesta de satisfacción pendiente</h2>
+    <p id="surveyInviteText">Tu opinión nos ayuda a mejorar las próximas ediciones del curso. La encuesta es breve, voluntaria y no tiene ninguna incidencia sobre tus calificaciones.</p>
+    <div class="survey-invite-actions"><button class="btn ghost" id="surveyInviteLaterBtn" onclick="deferSurveyInvite()">Cerrar</button><button class="btn primary" onclick="startSurveyFromInvite()">Completar encuesta</button></div>
+  </div>
+</div>
+<div id="surveyModal" class="survey-overlay" onclick="if(event.target===this)closeSurveyModal()">
+  <div class="survey-dialog" id="surveyDialogTop">
+    <div class="survey-modal-head"><div><div class="kicker">Academia TED</div><h2>Encuesta de satisfacción</h2><p id="surveyCourseLabel">Curso de Instructores de Tiro</p></div><button class="survey-x" onclick="closeSurveyModal()">✕</button></div>
+    <div id="surveyFormView"><div class="survey-voluntary-note"><b>Encuesta voluntaria.</b> Las valoraciones cerradas son necesarias sólo si decidís enviarla. Las tres preguntas abiertas son opcionales. Las respuestas se procesan de forma anónima.</div><div class="survey-progress-line"><span id="surveyAnsweredCount">0 de 21 valoraciones respondidas</span><span>Deslizá el control sobre la escala</span></div><div id="surveyQuestions"></div><div class="survey-open-section"><div class="survey-section-title"><span>Comentarios finales</span><small>Opcionales</small></div><div id="surveyOpenQuestions"></div></div><div id="surveyFormError" class="survey-error"></div><div class="survey-modal-actions"><button class="btn ghost" onclick="closeSurveyModal()">Cerrar</button><button class="btn primary" onclick="reviewSurveyAnswers()">Revisar respuestas</button></div></div>
+    <div id="surveyPreviewView" style="display:none"><div class="survey-preview-intro"><h3>Revisión de tus respuestas</h3><p>Verificá especialmente las valoraciones numéricas. La encuesta todavía no fue enviada.</p></div><div id="surveyPreviewList" class="survey-preview-list"></div><div id="surveyPreviewComments" class="survey-preview-comments"></div><div id="surveySubmitError" class="survey-error"></div><div class="survey-modal-actions"><button class="btn ghost" onclick="backToSurveyEdit()">← Volver y corregir</button><button id="surveySubmitBtn" class="btn primary" onclick="confirmSurveySubmit()">Confirmar y enviar encuesta</button></div></div>
+    <div id="surveyThankYouView" class="survey-thanks" style="display:none"><div class="survey-thanks-icon">✓</div><h2>Gracias por tu participación</h2><p>Tus respuestas fueron registradas correctamente.</p><button class="btn primary" onclick="finishSurveyFlow()">Continuar</button></div>
+  </div>
+</div>
+
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.9 · Examen final nativo · banco unificado</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -2686,6 +2772,8 @@ function setPage(id){
   $$('.teacher-hub-tab').forEach(b=>b.classList.toggle('active',b.dataset.hubPage===id));
   if(id==='course' && String(ITB_USER?.rol||'').toUpperCase()==='ALUMNO'){
     Promise.resolve().then(()=>loadIntegratorMyData(false)).catch(()=>{});
+    Promise.resolve().then(()=>loadFinalExamStatus(false)).catch(()=>{});
+    Promise.resolve().then(()=>loadSurveyMyStatus(false)).catch(()=>{});
   }
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -3352,6 +3440,8 @@ function logoutStudent(){
   HEADER_PROFILE_LOADING=null;
   ITB_PROGRESS=[];
   ITB_QUIZ_STATUS={};
+  resetFinalExamRuntime(false); FINAL_EXAM_STATUS=null;
+  if(typeof SURVEY_DATA!=='undefined'){SURVEY_DATA=null;SURVEY_ANSWERS={};SURVEY_COMMENTS={};SURVEY_POST_EXAM_CONTEXT=null;}
   TEACHER_DATA={cohorts:[],cohorte:'',students:[]};
   stopChatPolling();
   stopChatUnreadPolling();
@@ -3360,6 +3450,7 @@ function logoutStudent(){
   setAlertAppBadge(0);
   ALERT_QUEUE=[]; ALERT_CURRENT=null; ALERT_STAFF_DATA={cohorts:[],cohorte:'',alerts:[]};
   $('#alertModal')?.classList.remove('open');
+  $('#surveyInviteModal')?.classList.remove('open');$('#surveyModal')?.classList.remove('open');$('#finalExamModal')?.classList.remove('open');
   CHAT_DATA={cohorts:[],cohorte:'',messages:[]};
   ADMIN_REG_ALL={courses:[],registrations:[]};
   ADMIN_REG_DATA={courses:[],counts:{},registrations:[]};
@@ -6252,6 +6343,7 @@ function decorateUnitCardsWithProgress(){
 
 function refreshCourseProgressUI(){
   renderCourseProgressCard();
+  renderFinalExamStudentCard();
   renderCourseDashboard();
   renderDashboardBadges('#homeBadgesMount');
   renderDashboardBadges('#courseBadgesMount');
@@ -7626,6 +7718,361 @@ function initPWA(){
 }
 initPWA();
 boot();
+
+
+
+/* ===== v0.44.9 · Examen teórico final nativo ===== */
+let FINAL_EXAM_STATUS=null;
+let FINAL_EXAM=null;
+let FINAL_EXAM_TIMER=null;
+let FINAL_EXAM_SAVE_TIMER=null;
+let FINAL_EXAM_SYNCING=false;
+let FINAL_EXAM_SUBMITTING=false;
+
+function finalExamUserKey(){return String(ITB_USER?.alumno_id||ITB_USER?.usuario||'').trim();}
+function finalExamActiveKey(){const id=finalExamUserKey();return id?`itb_final_exam_active_${id}`:'';}
+function finalExamAttemptKey(id){return `itb_final_exam_${finalExamUserKey()}_${String(id||'')}`;}
+function finalExamReadLocal(){
+  try{const k=finalExamActiveKey(),id=k?localStorage.getItem(k):'';if(!id)return null;const raw=localStorage.getItem(finalExamAttemptKey(id));return raw?JSON.parse(raw):null;}catch(_){return null;}
+}
+function finalExamWriteLocal(){
+  if(!FINAL_EXAM?.attemptId)return;
+  try{localStorage.setItem(finalExamActiveKey(),FINAL_EXAM.attemptId);localStorage.setItem(finalExamAttemptKey(FINAL_EXAM.attemptId),JSON.stringify({attemptId:FINAL_EXAM.attemptId,instancia:FINAL_EXAM.instancia,questions:FINAL_EXAM.questions||[],answers:FINAL_EXAM.answers||{},deadlineIso:FINAL_EXAM.deadlineIso||'',remainingSeconds:finalExamRemainingSeconds()}));}catch(_){}
+}
+function finalExamClearLocal(id){
+  try{const k=finalExamActiveKey(),active=k?localStorage.getItem(k):'';localStorage.removeItem(finalExamAttemptKey(id||active));if(!id||String(active)===String(id))localStorage.removeItem(k);}catch(_){}
+}
+function finalExamPercentText(v){const n=Number(v);if(!Number.isFinite(n))return '—';return n.toFixed(2).replace(/\.00$/,'').replace(/(,|\.)0$/,'').replace('.',',')+'%';}
+function finalExamStatusLabel(st){
+  const map={PENDIENTE_HABILITACION:'Pendiente de habilitación',HABILITADO_ORDINARIO:'Examen habilitado',ORDINARIO_EN_CURSO:'Examen en curso',RECUPERATORIO_PENDIENTE:'Recuperatorio pendiente',HABILITADO_RECUPERATORIO:'Recuperatorio habilitado',RECUPERATORIO_EN_CURSO:'Recuperatorio en curso',FINALIZADO:'Finalizado'};return map[String(st||'').toUpperCase()]||'Pendiente de habilitación';
+}
+function renderFinalExamStudentCard(){
+  const sec=$('#studentFinalExamSection'),mount=$('#studentFinalExamMount');if(!sec||!mount)return;
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO'){sec.classList.remove('visible');return;}
+  sec.classList.add('visible');
+  if(!FINAL_EXAM_STATUS){mount.innerHTML=`<div class="final-student-head"><div><div class="kicker">Evaluación final</div><h2>Examen teórico final</h2><p>70 preguntas · 45 minutos · aprobación con 70%.</p></div><button class="btn ghost" onclick="loadFinalExamStatus(true)">Consultar estado</button></div><div class="final-student-meta">El examen requiere habilitación administrativa una vez completado el 100% del curso.</div>`;return;}
+  const d=FINAL_EXAM_STATUS,st=String(d.estado||'PENDIENTE_HABILITACION').toUpperCase(),pct=d.porcentaje==null?'':finalExamPercentText(d.porcentaje),correct=d.correctas==null?'':`${d.correctas}/70`;
+  let cls='',action='',msg='';
+  if(st==='HABILITADO_ORDINARIO'){cls='ready';msg='La instancia ordinaria está habilitada. El tiempo comienza al iniciar el examen.';action='<button class="btn primary" onclick="startOrResumeFinalExam()">Iniciar examen final</button>';}
+  else if(st==='ORDINARIO_EN_CURSO'){cls='ready';msg='Tenés un intento en curso. El reloj sigue corriendo aunque cierres esta pantalla.';action='<button class="btn primary" onclick="startOrResumeFinalExam()">Continuar examen</button>';}
+  else if(st==='RECUPERATORIO_PENDIENTE'){cls='failed';msg=`Resultado del ordinario: ${pct||'desaprobado'}${correct?' · '+correct:''}. El recuperatorio debe ser habilitado por el ADMIN.`;}
+  else if(st==='HABILITADO_RECUPERATORIO'){cls='ready';msg='El recuperatorio fue habilitado. Se generará una nueva selección aleatoria de 70 preguntas.';action='<button class="btn primary" onclick="startOrResumeFinalExam()">Iniciar recuperatorio</button>';}
+  else if(st==='RECUPERATORIO_EN_CURSO'){cls='ready';msg='Tenés un recuperatorio en curso. El tiempo continúa aunque cierres la pantalla.';action='<button class="btn primary" onclick="startOrResumeFinalExam()">Continuar recuperatorio</button>';}
+  else if(st==='FINALIZADO'){cls=String(d.porcentaje||0)>=70?'ok':'failed';msg=`Resultado final: ${pct||'—'}${correct?' · '+correct+' respuestas correctas':''}.`;}
+  else{msg='El examen todavía no fue habilitado. La habilitación se realiza administrativamente para alumnos con el 100% del curso.';}
+  mount.innerHTML=`<div class="final-student-head"><div><div class="kicker">Evaluación final</div><h2>Examen teórico final</h2><p>70 preguntas · 45 minutos · aprobación con 70%.</p></div>${action}</div><div class="final-student-state"><span class="final-student-pill ${cls}">${esc(finalExamStatusLabel(st))}</span>${pct?`<span class="final-student-pill ${cls}">${esc(pct)}</span>`:''}</div><div class="final-student-meta">${esc(msg)}</div>`;
+}
+async function loadFinalExamStatus(force=false){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO'||!ITB_PRIVATE_DATA_READY)return FINAL_EXAM_STATUS;
+  if(FINAL_EXAM_STATUS&&!force){renderFinalExamStudentCard();return FINAL_EXAM_STATUS;}
+  const s=getSession();if(!s?.token)return null;
+  try{FINAL_EXAM_STATUS=await retryTransient(()=>apiJsonp({action:'finalExamStatus',token:s.token}),1,450);renderFinalExamStudentCard();return FINAL_EXAM_STATUS;}
+  catch(e){console.warn('No se pudo consultar el examen final.',e);renderFinalExamStudentCard();return null;}
+}
+function finalExamRemainingSeconds(){
+  if(!FINAL_EXAM)return 0;
+  if(Number.isFinite(FINAL_EXAM.endPerf))return Math.max(0,Math.ceil((FINAL_EXAM.endPerf-performance.now())/1000));
+  if(FINAL_EXAM.deadlineIso){const ms=new Date(FINAL_EXAM.deadlineIso).getTime()-Date.now();return Math.max(0,Math.ceil(ms/1000));}
+  return Number(FINAL_EXAM.remainingSeconds||0);
+}
+function formatExamClock(sec){sec=Math.max(0,Math.floor(Number(sec)||0));return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');}
+function renderFinalExamTimer(){
+  const el=$('#finalExamTimer');if(!el||!FINAL_EXAM)return;const sec=finalExamRemainingSeconds();el.textContent=formatExamClock(sec);el.classList.toggle('warning',sec<=600&&sec>120);el.classList.toggle('danger',sec<=120);
+  if(sec<=0&&!FINAL_EXAM.locked){FINAL_EXAM.locked=true;finalExamWriteLocal();forceFinalExamSubmit('TIEMPO_AGOTADO');}
+}
+function startFinalExamClock(seconds){
+  if(FINAL_EXAM_TIMER)clearInterval(FINAL_EXAM_TIMER);if(!FINAL_EXAM)return;
+  FINAL_EXAM.remainingSeconds=Math.max(0,Number(seconds||0));FINAL_EXAM.endPerf=performance.now()+FINAL_EXAM.remainingSeconds*1000;renderFinalExamTimer();FINAL_EXAM_TIMER=setInterval(renderFinalExamTimer,250);
+}
+function setFinalExamSync(text,cls=''){const el=$('#finalExamSync');if(!el)return;el.textContent=text;el.className='final-exam-sync '+cls;}
+function updateFinalExamAnswered(){
+  if(!FINAL_EXAM)return;const total=FINAL_EXAM.questions.length,count=FINAL_EXAM.questions.filter(q=>FINAL_EXAM.answers[q.pregunta_id]).length;const el=$('#finalExamAnswered');if(el)el.textContent=`${count} de ${total} respondidas`;if($('#studentFinalExamMount')&&FINAL_EXAM_STATUS){FINAL_EXAM_STATUS.respondidas=count;}
+}
+function groupFinalExamQuestions(){
+  const groups=[];(FINAL_EXAM?.questions||[]).forEach((q,i)=>{let g=groups.find(x=>Number(x.numero)===Number(q.unidad_numero));if(!g){g={numero:q.unidad_numero,titulo:q.unidad_titulo||'',items:[]};groups.push(g);}g.items.push({q,i});});return groups;
+}
+function finalExamOptionText(q,letter){return String(q?.['opcion_'+String(letter||'').toLowerCase()]||'');}
+function renderFinalExamQuestions(){
+  if(!FINAL_EXAM)return;const body=$('#finalExamBody');if(!body)return;
+  body.innerHTML=groupFinalExamQuestions().map(g=>`<section class="final-exam-unit"><div class="final-exam-unit-title">Unidad ${g.numero}${g.titulo?' · '+esc(g.titulo):''}<small>${g.items.length} pregunta${g.items.length===1?'':'s'} en esta unidad</small></div>${g.items.map(({q,i})=>{const ans=FINAL_EXAM.answers[q.pregunta_id]||'';const opts=['A','B','C','D'].filter(l=>finalExamOptionText(q,l)).map(l=>`<button type="button" class="final-exam-option ${ans===l?'selected':''}" data-q="${esc(q.pregunta_id)}" data-letter="${l}" onclick="selectFinalExamAnswer(this.dataset.q,this.dataset.letter)"><span class="final-exam-letter">${l}</span><span class="final-exam-option-text">${esc(finalExamOptionText(q,l))}</span></button>`).join('');return `<article id="finalQ_${esc(q.pregunta_id)}" class="final-exam-question"><div class="final-exam-qnum">Pregunta ${i+1} de 70</div><div class="final-exam-qtext">${esc(q.enunciado)}</div><div class="final-exam-options">${opts}</div></article>`;}).join('')}</section>`).join('');
+  $('#finalExamFoot').style.display='flex';updateFinalExamAnswered();
+}
+function selectFinalExamAnswer(questionId,letter){
+  if(!FINAL_EXAM||FINAL_EXAM.locked)return;FINAL_EXAM.answers[String(questionId)]=String(letter).toUpperCase();finalExamWriteLocal();updateFinalExamAnswered();
+  const card=document.getElementById('finalQ_'+String(questionId));if(card){card.classList.remove('missing');card.querySelectorAll('.final-exam-option').forEach(b=>b.classList.toggle('selected',b.dataset.letter===String(letter).toUpperCase()));}
+  scheduleFinalExamSync();
+}
+function scheduleFinalExamSync(){if(FINAL_EXAM_SAVE_TIMER)clearTimeout(FINAL_EXAM_SAVE_TIMER);setFinalExamSync(navigator.onLine===false?'Sin conexión · guardado en este dispositivo':'Guardando…',navigator.onLine===false?'offline':'');if(navigator.onLine===false)return;FINAL_EXAM_SAVE_TIMER=setTimeout(()=>syncFinalExamAnswers(false),900);}
+async function syncFinalExamAnswers(force=false){
+  if(!FINAL_EXAM?.attemptId||FINAL_EXAM_SUBMITTING||FINAL_EXAM_SYNCING||navigator.onLine===false)return false;FINAL_EXAM_SYNCING=true;
+  try{const s=getSession();if(!s?.token)return false;const r=await apiJsonpLong({action:'finalExamSave',token:s.token,intento_id:FINAL_EXAM.attemptId,respuestas:JSON.stringify(FINAL_EXAM.answers||{})},45000);if(r.expired){FINAL_EXAM.locked=true;forceFinalExamSubmit('TIEMPO_AGOTADO');return false;}setFinalExamSync('Respuestas guardadas','ok');return true;}
+  catch(e){setFinalExamSync('Sin sincronizar · guardado en este dispositivo','offline');if(force)throw e;return false;}finally{FINAL_EXAM_SYNCING=false;}
+}
+function finalExamLoadRuntimeFromResponse(r){
+  const local=finalExamReadLocal();let answers={...(r.answers||{})};if(local&&String(local.attemptId)===String(r.intento_id))answers={...answers,...(local.answers||{})};
+  FINAL_EXAM={attemptId:String(r.intento_id||''),instancia:String(r.instancia||'ORDINARIO'),questions:r.questions||[],answers,deadlineIso:r.fecha_limite||'',remainingSeconds:Number(r.remaining_seconds||0),locked:false,endPerf:null};finalExamWriteLocal();
+}
+async function startOrResumeFinalExam(){
+  const modal=$('#finalExamModal'),body=$('#finalExamBody');if(!modal||!body)return;modal.classList.add('open');document.body.style.overflow='hidden';body.innerHTML='<div class="final-exam-loading">Preparando el examen final…</div>';$('#finalExamFoot').style.display='none';setFinalExamSync(navigator.onLine===false?'Sin conexión':'Consultando…',navigator.onLine===false?'offline':'');
+  const local=finalExamReadLocal();
+  if(navigator.onLine===false){
+    if(local?.attemptId&&Array.isArray(local.questions)&&local.questions.length===70){FINAL_EXAM={attemptId:local.attemptId,instancia:local.instancia||'ORDINARIO',questions:local.questions,answers:local.answers||{},deadlineIso:local.deadlineIso||'',remainingSeconds:Number(local.remainingSeconds||0),locked:false,endPerf:null};const rem=FINAL_EXAM.deadlineIso?Math.max(0,Math.ceil((new Date(FINAL_EXAM.deadlineIso).getTime()-Date.now())/1000)):Number(local.remainingSeconds||0);startFinalExamClock(rem);renderFinalExamQuestions();setFinalExamSync('Sin conexión · respuestas guardadas en este dispositivo','offline');if(rem<=0){FINAL_EXAM.locked=true;body.innerHTML='<div class="final-exam-loading">Tiempo finalizado. El examen se enviará automáticamente cuando vuelva la conexión.</div>';$('#finalExamFoot').style.display='none';}return;}body.innerHTML='<div class="final-exam-loading">Necesitás conexión para iniciar o recuperar el examen.</div>';return;
+  }
+  try{
+    const s=getSession();if(!s?.token)throw new Error('Sesión vencida.');const r=await apiJsonpLong({action:'finalExamStart',token:s.token,local_attempt_id:local?.attemptId||'',local_answers:local?.attemptId?JSON.stringify(local.answers||{}):''},90000);
+    if(r.finished&&r.result){finalExamClearLocal(local?.attemptId);FINAL_EXAM=null;await handleFinalExamResult(r.result);return;}
+    finalExamLoadRuntimeFromResponse(r);$('#finalExamKicker').textContent=FINAL_EXAM.instancia==='RECUPERATORIO'?'Instancia de recuperatorio':'Evaluación final';$('#finalExamTitle').textContent=FINAL_EXAM.instancia==='RECUPERATORIO'?'Recuperatorio · Examen teórico final':'Examen teórico final';$('#finalExamSubtitle').textContent='70 preguntas · 45 minutos · aprobación 70%';startFinalExamClock(r.remaining_seconds);renderFinalExamQuestions();setFinalExamSync(r.resumed?'Intento recuperado · respuestas sincronizadas':'Intento iniciado · respuestas guardadas','ok');FINAL_EXAM_STATUS={...(FINAL_EXAM_STATUS||{}),estado:FINAL_EXAM.instancia==='RECUPERATORIO'?'RECUPERATORIO_EN_CURSO':'ORDINARIO_EN_CURSO',instancia:FINAL_EXAM.instancia,intento_id:FINAL_EXAM.attemptId};renderFinalExamStudentCard();
+  }catch(e){body.innerHTML=`<div class="final-exam-loading">${esc(e.message||'No se pudo iniciar el examen final.')}</div>`;setFinalExamSync('No disponible','offline');}
+}
+function closeFinalExamView(){
+  if(!FINAL_EXAM){$('#finalExamModal')?.classList.remove('open');document.body.style.overflow='';return;}
+  if(FINAL_EXAM.locked){$('#finalExamModal')?.classList.remove('open');document.body.style.overflow='';return;}
+  if(!confirm('¿Cerrar la vista del examen?\n\nEl intento NO se cancela y el tiempo seguirá corriendo. Tus respuestas quedan guardadas.'))return;finalExamWriteLocal();syncFinalExamAnswers(false);$('#finalExamModal')?.classList.remove('open');document.body.style.overflow='';
+}
+function openFinalExamReview(){
+  if(!FINAL_EXAM||FINAL_EXAM.locked)return;const body=$('#finalExamBody'),groups=groupFinalExamQuestions(),missing=FINAL_EXAM.questions.filter(q=>!FINAL_EXAM.answers[q.pregunta_id]);
+  body.innerHTML=`<div class="final-exam-review-warning ${missing.length?'':'ok'}">${missing.length?`Tenés <b>${missing.length}</b> pregunta${missing.length===1?'':'s'} sin responder. Si enviás el examen así, se computarán como incorrectas.`:'Respondiste las 70 preguntas. Revisá las opciones elegidas antes de confirmar el envío.'}</div><div class="final-exam-review-list">${groups.map(g=>`<section class="final-exam-review-unit"><h3>Unidad ${g.numero}${g.titulo?' · '+esc(g.titulo):''}</h3>${g.items.map(({q,i})=>{const a=FINAL_EXAM.answers[q.pregunta_id]||'',txt=a?finalExamOptionText(q,a):'Sin responder';return `<div class="final-exam-review-row ${a?'':'missing'}"><div class="final-exam-review-n">${i+1}.</div><div class="final-exam-review-answer">${a?`<b>${a}.</b> ${esc(txt)}`:'<b>Sin responder</b>'}</div></div>`;}).join('')}</section>`).join('')}</div><div style="display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:16px"><button class="btn ghost" onclick="backToFinalExam()">← Volver al examen</button><button class="btn primary" onclick="confirmFinalExamSubmit()">Enviar examen</button></div>`;$('#finalExamFoot').style.display='none';body.scrollTop=0;
+  // Marcamos visualmente las faltantes para cuando vuelva.
+  FINAL_EXAM.missingIds=new Set(missing.map(q=>q.pregunta_id));
+}
+function backToFinalExam(){renderFinalExamQuestions();(FINAL_EXAM?.missingIds||new Set()).forEach(id=>document.getElementById('finalQ_'+id)?.classList.add('missing'));$('#finalExamBody').scrollTop=0;}
+async function confirmFinalExamSubmit(){if(!FINAL_EXAM||FINAL_EXAM.locked)return;if(!confirm('¿Confirmás el envío definitivo del examen?\n\nUna vez enviado no podrás modificar las respuestas.'))return;FINAL_EXAM.locked=true;await forceFinalExamSubmit('ENVIO_ALUMNO');}
+async function forceFinalExamSubmit(reason){
+  if(!FINAL_EXAM?.attemptId||FINAL_EXAM_SUBMITTING)return;FINAL_EXAM_SUBMITTING=true;if(FINAL_EXAM_TIMER){clearInterval(FINAL_EXAM_TIMER);FINAL_EXAM_TIMER=null;}if(FINAL_EXAM_SAVE_TIMER){clearTimeout(FINAL_EXAM_SAVE_TIMER);FINAL_EXAM_SAVE_TIMER=null;}
+  const body=$('#finalExamBody');if($('#finalExamModal'))$('#finalExamModal').classList.add('open');document.body.style.overflow='hidden';if(body)body.innerHTML=`<div class="final-exam-loading">${reason==='TIEMPO_AGOTADO'?'Tiempo finalizado. Enviando las respuestas seleccionadas…':'Enviando examen…'}</div>`;$('#finalExamFoot').style.display='none';setFinalExamSync(navigator.onLine===false?'Esperando conexión para enviar…':'Enviando…',navigator.onLine===false?'offline':'');
+  if(navigator.onLine===false){FINAL_EXAM_SUBMITTING=false;return;}
+  try{const s=getSession();if(!s?.token)throw new Error('Sesión vencida.');const id=FINAL_EXAM.attemptId;const r=await apiJsonpLong({action:'finalExamSubmit',token:s.token,intento_id:id,respuestas:JSON.stringify(FINAL_EXAM.answers||{}),motivo:reason},90000);finalExamClearLocal(id);FINAL_EXAM=null;await handleFinalExamResult(r);}
+  catch(e){FINAL_EXAM_SUBMITTING=false;setFinalExamSync('No se pudo enviar · se reintentará al recuperar conexión','offline');if(body)body.innerHTML=`<div class="final-exam-loading">No se pudo enviar todavía. Tus respuestas permanecen guardadas.<br><br>${esc(e.message||'')}</div>`;}
+}
+async function handleFinalExamResult(r){
+  FINAL_EXAM_SUBMITTING=false;FINAL_EXAM_STATUS={estado:r.estado||'FINALIZADO',instancia:r.instancia||'',porcentaje:Number(r.porcentaje||0),correctas:Number(r.correctas||0),total:70};renderFinalExamStudentCard();
+  if(r.aprobado&&typeof ITBSurveyBeforeFinalGrade==='function')await ITBSurveyBeforeFinalGrade(r,renderFinalExamResult);else renderFinalExamResult(r);
+}
+function renderFinalExamResult(r){
+  const modal=$('#finalExamModal'),body=$('#finalExamBody');if(!modal||!body)return;modal.classList.add('open');document.body.style.overflow='hidden';$('#finalExamFoot').style.display='none';$('#finalExamTimer').textContent='00:00';setFinalExamSync('Examen enviado','ok');const approved=!!r.aprobado,pct=finalExamPercentText(r.porcentaje),detail=`${Number(r.correctas||0)} de 70 respuestas correctas`;
+  body.innerHTML=`<div class="final-exam-result ${approved?'approved':'failed'}"><div class="final-exam-result-score">${esc(pct)}</div><h2>${approved?'APROBADO':'DESAPROBADO'}</h2><p>${approved?'El examen teórico final fue aprobado y quedó registrado correctamente.':(String(r.instancia||'').toUpperCase()==='ORDINARIO'?'La instancia ordinaria fue desaprobada. El recuperatorio sólo estará disponible cuando sea habilitado por el ADMIN.':'El recuperatorio fue desaprobado y el resultado quedó registrado.')}</p><div class="final-exam-result-detail">${esc(detail)}</div><div style="margin-top:20px"><button class="btn primary" onclick="finishFinalExamResult()">Cerrar</button></div></div>`;
+}
+function finishFinalExamResult(){$('#finalExamModal')?.classList.remove('open');document.body.style.overflow='';loadFinalExamStatus(true).catch(()=>{});}
+function resetFinalExamRuntime(clearLocal=false){if(FINAL_EXAM_TIMER)clearInterval(FINAL_EXAM_TIMER);if(FINAL_EXAM_SAVE_TIMER)clearTimeout(FINAL_EXAM_SAVE_TIMER);if(clearLocal&&FINAL_EXAM?.attemptId)finalExamClearLocal(FINAL_EXAM.attemptId);FINAL_EXAM_TIMER=null;FINAL_EXAM_SAVE_TIMER=null;FINAL_EXAM_SYNCING=false;FINAL_EXAM_SUBMITTING=false;FINAL_EXAM=null;}
+window.addEventListener('offline',()=>{if(FINAL_EXAM)setFinalExamSync('Sin conexión · guardado en este dispositivo','offline');});
+window.addEventListener('online',()=>{if(!FINAL_EXAM)return;setFinalExamSync('Conexión restablecida · sincronizando…','ok');if(FINAL_EXAM.locked||finalExamRemainingSeconds()<=0)forceFinalExamSubmit('TIEMPO_AGOTADO');else syncFinalExamAnswers(false);});
+window.startOrResumeFinalExam=startOrResumeFinalExam;window.loadFinalExamStatus=loadFinalExamStatus;window.selectFinalExamAnswer=selectFinalExamAnswer;window.openFinalExamReview=openFinalExamReview;window.backToFinalExam=backToFinalExam;window.confirmFinalExamSubmit=confirmFinalExamSubmit;window.closeFinalExamView=closeFinalExamView;window.finishFinalExamResult=finishFinalExamResult;
+
+
+/* ===== v0.43.0 · Encuesta de satisfacción ===== */
+let SURVEY_DATA=null;
+let SURVEY_ANSWERS={};
+let SURVEY_COMMENTS={};
+let SURVEY_NOTICE_CHECKED=false;
+let SURVEY_NOTICE_LOADING=false;
+let SURVEY_NOTICE_TIMER=null;
+let SURVEY_STAFF_DATA=null;
+let SURVEY_POST_EXAM_CONTEXT=null;
+
+function surveyDismissKey(){
+  const s=getSession(),sid=String(ITB_USER?.alumno_id||'');
+  return `itb_survey_dismissed_${sid}_${String(s?.token||'').slice(0,12)}`;
+}
+function surveyQuestionById(id){return (SURVEY_DATA?.questions||[]).find(q=>q.id===id)||null;}
+function surveyValueLabel(q,val){
+  const n=Number(val);
+  if(!q)return String(val);
+  if(Array.isArray(q.labels)){
+    const idx=n-Number(q.min||0);
+    return q.labels[idx]||String(n);
+  }
+  if(q.id==='q21'){
+    if(n<=6)return 'Baja probabilidad de recomendación';
+    if(n<=8)return 'Probabilidad media de recomendación';
+    return 'Alta probabilidad de recomendación';
+  }
+  return String(n);
+}
+function renderSurveyCourseCard(){
+  const sec=$('#studentSurveySection'),mount=$('#studentSurveyMount'),btn=$('#studentSurveyAction');
+  if(!sec||!mount||String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO')return;
+  const st=String(SURVEY_DATA?.status||'NO_HABILITADA').toUpperCase();
+  if(st==='NO_HABILITADA'){sec.style.display='none';return;}
+  sec.style.display='';
+  if(st==='COMPLETADA'){
+    mount.innerHTML=`<b>Encuesta completada ✓</b><br>Gracias por haber compartido tu experiencia. Las respuestas ya fueron registradas y no pueden modificarse.`;
+    if(btn){btn.style.display='none';}
+  }else{
+    mount.innerHTML=`<b>Encuesta pendiente</b><br>Podés completarla cuando quieras. Es voluntaria y tus respuestas no tienen incidencia sobre las calificaciones.`;
+    if(btn){btn.style.display='';btn.textContent='Completar encuesta';}
+  }
+}
+async function loadSurveyMyStatus(force=false){
+  if(String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO'||!ITB_PRIVATE_DATA_READY)return SURVEY_DATA;
+  if(SURVEY_DATA&&!force){renderSurveyCourseCard();return SURVEY_DATA;}
+  const s=getSession();if(!s?.token)return null;
+  try{
+    SURVEY_DATA=await retryTransient(()=>apiJsonp({action:'surveyMyStatus',token:s.token}),1,500);
+    renderSurveyCourseCard();
+    return SURVEY_DATA;
+  }catch(e){
+    console.warn('Encuesta no disponible.',e);
+    return null;
+  }
+}
+function maybeShowSurveyNotice(){
+  if(String(SURVEY_DATA?.status||'').toUpperCase()!=='PENDIENTE')return;
+  try{if(sessionStorage.getItem(surveyDismissKey())==='1')return;}catch(_){}
+  if($('#alertModal')?.classList.contains('open')){
+    SURVEY_NOTICE_TIMER=setTimeout(maybeShowSurveyNotice,1800);
+    return;
+  }
+  openSurveyInvite(false);
+}
+function scheduleSurveyPendingNotice(){
+  if(SURVEY_NOTICE_CHECKED||SURVEY_NOTICE_LOADING||String(ITB_USER?.rol||'').toUpperCase()!=='ALUMNO'||!ITB_PRIVATE_DATA_READY)return;
+  SURVEY_NOTICE_LOADING=true;
+  setTimeout(async()=>{
+    try{
+      await loadSurveyMyStatus(true);
+      SURVEY_NOTICE_CHECKED=true;
+      maybeShowSurveyNotice();
+    }finally{SURVEY_NOTICE_LOADING=false;}
+  },1500);
+}
+function openSurveyInvite(postExam=false){
+  const modal=$('#surveyInviteModal');if(!modal)return;
+  const isPost=!!postExam;
+  $('#surveyInviteKicker').textContent=isPost?'Examen teórico final entregado':'Encuesta de satisfacción';
+  $('#surveyInviteTitle').textContent=isPost?'Antes de mostrarte la nota…':'Tenés una encuesta de satisfacción pendiente';
+  $('#surveyInviteText').textContent=isPost
+    ? 'Tu examen fue registrado correctamente. Antes de mostrarte el resultado, te invitamos a completar una breve encuesta sobre tu experiencia en el curso. Es voluntaria y no tiene ninguna incidencia sobre tu calificación.'
+    : 'Tu opinión nos ayuda a mejorar las próximas ediciones del curso. La encuesta es breve, voluntaria y no tiene ninguna incidencia sobre tus calificaciones.';
+  $('#surveyInviteLaterBtn').textContent=isPost?'Hacerla en otro momento':'Cerrar';
+  modal.classList.add('open');document.body.style.overflow='hidden';
+}
+function closeSurveyInvite(skipReveal=false){
+  $('#surveyInviteModal')?.classList.remove('open');document.body.style.overflow='';
+  if(!skipReveal)revealPostExamGrade();
+}
+function deferSurveyInvite(){
+  try{sessionStorage.setItem(surveyDismissKey(),'1');}catch(_){}
+  closeSurveyInvite(true);
+  revealPostExamGrade();
+}
+function startSurveyFromInvite(){closeSurveyInvite(true);openSurveyModal();}
+async function openSurveyFromCourse(){
+  const d=await loadSurveyMyStatus(false);
+  if(String(d?.status||'').toUpperCase()==='PENDIENTE')openSurveyModal();
+}
+function surveyInputMarkup(q,index){
+  const answered=Object.prototype.hasOwnProperty.call(SURVEY_ANSWERS,q.id),val=answered?SURVEY_ANSWERS[q.id]:q.min;
+  const label=answered?surveyValueLabel(q,val):'Sin responder';
+  return `<article id="surveyCard_${q.id}" class="survey-question-card ${answered?'answered':'unanswered'}">
+    <div class="survey-q-head"><div><div class="survey-q-number">Pregunta ${index+1} de ${SURVEY_DATA.questions.length}</div><div class="survey-q-text">${esc(q.text)}</div></div>
+    <div class="survey-q-value" id="surveyValue_${q.id}">${answered?`${val} / ${q.max}`:'—'}<span>${esc(label)}</span></div></div>
+    <div class="survey-range-wrap">
+      <input class="survey-range ${answered?'':'unanswered'}" id="surveyRange_${q.id}" type="range" min="${q.min}" max="${q.max}" step="1" value="${val}" oninput="surveySetAnswer('${q.id}',this.value)">
+      <div class="survey-range-labels"><span>${q.min} · ${esc(q.low)}</span><span>${q.max} · ${esc(q.high)}</span></div>
+      <div class="survey-selected-label" id="surveySelected_${q.id}">${answered?esc(label):'Tocá o deslizá sobre la escala para responder'}</div>
+    </div>
+  </article>`;
+}
+function renderSurveyForm(){
+  const qs=SURVEY_DATA?.questions||[],groups=[];
+  qs.forEach((q,i)=>{
+    let g=groups.find(x=>x.section===q.section);
+    if(!g){g={section:q.section,items:[]};groups.push(g);}
+    g.items.push({q,i});
+  });
+  $('#surveyQuestions').innerHTML=groups.map(g=>`<section class="survey-section-block"><div class="survey-section-title"><span>${esc(g.section)}</span><small>${g.items.length} preguntas</small></div>${g.items.map(x=>surveyInputMarkup(x.q,x.i)).join('')}</section>`).join('');
+  $('#surveyOpenQuestions').innerHTML=(SURVEY_DATA?.open_questions||[]).map((q,i)=>`<div class="survey-open-q"><label for="surveyOpen_${q.id}">${i+1}. ${esc(q.text)}</label><textarea id="surveyOpen_${q.id}" maxlength="1800" placeholder="Respuesta opcional…" oninput="SURVEY_COMMENTS['${q.id}']=this.value">${esc(SURVEY_COMMENTS[q.id]||'')}</textarea></div>`).join('');
+  updateSurveyAnsweredCount();
+}
+function openSurveyModal(){
+  if(!SURVEY_DATA||String(SURVEY_DATA.status||'').toUpperCase()!=='PENDIENTE')return;
+  $('#surveyCourseLabel').textContent=SURVEY_DATA?.course?.nombre||'Curso de Instructores de Tiro';
+  $('#surveyFormView').style.display='';
+  $('#surveyPreviewView').style.display='none';
+  $('#surveyThankYouView').style.display='none';
+  $('#surveyFormError').textContent='';
+  renderSurveyForm();
+  $('#surveyModal').classList.add('open');document.body.style.overflow='hidden';
+}
+function closeSurveyModal(){
+  $('#surveyModal')?.classList.remove('open');document.body.style.overflow='';
+  revealPostExamGrade();
+}
+function surveySetAnswer(id,value){
+  const q=surveyQuestionById(id),n=Number(value);if(!q)return;
+  SURVEY_ANSWERS[id]=n;
+  const card=$('#surveyCard_'+id),range=$('#surveyRange_'+id),valueEl=$('#surveyValue_'+id),sel=$('#surveySelected_'+id),label=surveyValueLabel(q,n);
+  card?.classList.remove('unanswered');card?.classList.add('answered');range?.classList.remove('unanswered');
+  if(valueEl)valueEl.innerHTML=`${n} / ${q.max}<span>${esc(label)}</span>`;
+  if(sel)sel.textContent=label;
+  updateSurveyAnsweredCount();
+}
+function updateSurveyAnsweredCount(){
+  const total=SURVEY_DATA?.questions?.length||0,count=(SURVEY_DATA?.questions||[]).filter(q=>Object.prototype.hasOwnProperty.call(SURVEY_ANSWERS,q.id)).length;
+  if($('#surveyAnsweredCount'))$('#surveyAnsweredCount').textContent=`${count} de ${total} valoraciones respondidas`;
+}
+function reviewSurveyAnswers(){
+  const qs=SURVEY_DATA?.questions||[],missing=qs.filter(q=>!Object.prototype.hasOwnProperty.call(SURVEY_ANSWERS,q.id));
+  if(missing.length){
+    $('#surveyFormError').textContent=`Todavía quedan ${missing.length} ${missing.length===1?'valoración sin responder':'valoraciones sin responder'}.`;
+    $('#surveyCard_'+missing[0].id)?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  $('#surveyFormError').textContent='';
+  $('#surveyPreviewList').innerHTML=qs.map((q,i)=>{
+    const v=SURVEY_ANSWERS[q.id],label=surveyValueLabel(q,v);
+    return `<div class="survey-preview-item"><div class="text"><b>${i+1}.</b> ${esc(q.text)}</div><div class="answer"><b>${v} / ${q.max}</b><span>${esc(label)}</span><button onclick="editSurveyQuestion('${q.id}')">Editar</button></div></div>`;
+  }).join('');
+  $('#surveyPreviewComments').innerHTML=(SURVEY_DATA?.open_questions||[]).map(q=>`<div class="survey-preview-comment"><b>${esc(q.text)}</b><p>${esc((SURVEY_COMMENTS[q.id]||'').trim()||'Sin respuesta')}</p></div>`).join('');
+  $('#surveyFormView').style.display='none';$('#surveyPreviewView').style.display='';$('#surveyThankYouView').style.display='none';
+  $('#surveyDialogTop')?.scrollIntoView({block:'start'});
+  $('#surveyModal').scrollTop=0;
+}
+function editSurveyQuestion(id){
+  $('#surveyPreviewView').style.display='none';$('#surveyFormView').style.display='';
+  setTimeout(()=>$('#surveyCard_'+id)?.scrollIntoView({behavior:'smooth',block:'center'}),30);
+}
+function backToSurveyEdit(){$('#surveyPreviewView').style.display='none';$('#surveyFormView').style.display='';$('#surveyModal').scrollTop=0;}
+async function confirmSurveySubmit(){
+  if(!confirm('¿Confirmás el envío de la encuesta?\n\nUna vez enviada, las respuestas no podrán modificarse.'))return;
+  const btn=$('#surveySubmitBtn'),err=$('#surveySubmitError'),s=getSession();if(!s?.token)return;
+  btn.disabled=true;err.textContent='Enviando encuesta…';
+  try{
+    await apiJsonpLong({action:'surveySubmit',token:s.token,answers_json:JSON.stringify(SURVEY_ANSWERS),comments_json:JSON.stringify(SURVEY_COMMENTS)},60000);
+    SURVEY_DATA={...(SURVEY_DATA||{}),status:'COMPLETADA'};
+    try{sessionStorage.removeItem(surveyDismissKey());}catch(_){}
+    renderSurveyCourseCard();
+    $('#surveyPreviewView').style.display='none';$('#surveyFormView').style.display='none';$('#surveyThankYouView').style.display='';
+    err.textContent='';
+  }catch(e){err.textContent=e.message||'No se pudo enviar la encuesta.';}
+  finally{btn.disabled=false;}
+}
+function finishSurveyFlow(){
+  $('#surveyModal')?.classList.remove('open');document.body.style.overflow='';
+  revealPostExamGrade();
+}
+
+/**
+ * Hook frontend para el futuro examen teórico final.
+ * El submit del examen deberá llamar:
+ *   ITBSurveyBeforeFinalGrade(resultado, fnQueMuestraLaNota)
+ * después de que el backend active surveyActivateAfterFinalExam_().
+ * Si la encuesta falla, la nota se muestra igualmente.
+ */
+async function ITBSurveyBeforeFinalGrade(result,renderGrade){
+  SURVEY_POST_EXAM_CONTEXT={result,render:typeof renderGrade==='function'?renderGrade:null,shown:false};
+  try{
+    const d=await loadSurveyMyStatus(true);
+    if(String(d?.status||'').toUpperCase()==='PENDIENTE'){openSurveyInvite(true);return;}
+  }catch(_){}
+  revealPostExamGrade();
+}
+function revealPostExamGrade(){
+  const ctx=SURVEY_POST_EXAM_CONTEXT;if(!ctx||ctx.shown)return;
+  ctx.shown=true;SURVEY_POST_EXAM_CONTEXT=null;
+  try{ctx.render?.(ctx.result);}catch(e){console.error(e);}
+}
+
 
 </script>
 
