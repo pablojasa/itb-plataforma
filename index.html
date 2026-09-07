@@ -413,6 +413,49 @@ footer{border-top:1px solid var(--line);padding:28px 24px;color:var(--muted);fon
  .activity-weather-temperature{grid-column:1 / -1}
 }
 
+/* ===== Ajuste fino del pronóstico dentro de Curso ===== */
+#course .course-next-clone .activity-weather{
+  padding:12px;
+}
+#course .course-next-clone .activity-weather-head{
+  align-items:flex-start;
+}
+#course .course-next-clone .activity-weather-title{
+  font-size:11px;
+  line-height:1.25;
+}
+#course .course-next-clone .activity-weather-source{
+  font-size:9px;
+  white-space:nowrap;
+}
+#course .course-next-clone .activity-weather-condition{
+  align-items:flex-start;
+}
+#course .course-next-clone .activity-weather-condition-copy b{
+  font-size:13px;
+  line-height:1.2;
+}
+#course .course-next-clone .activity-weather-condition-copy span{
+  display:block;
+  line-height:1.35;
+}
+#course .course-next-clone .activity-weather-grid{
+  grid-template-columns:1fr 1fr;
+}
+#course .course-next-clone .activity-weather-temperature{
+  grid-column:1 / -1;
+}
+#course .course-next-clone .activity-weather-item,
+#course .course-next-clone .activity-weather-item > div,
+#course .course-next-clone .activity-weather-temp-values,
+#course .course-next-clone .activity-weather-temp-value{
+  min-width:0;
+}
+#course .course-next-clone .activity-weather-item span,
+#course .course-next-clone .activity-weather-temp-value span{
+  display:block;
+  overflow-wrap:anywhere;
+}
 
 #activityActions{align-items:center}
 
