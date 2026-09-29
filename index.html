@@ -2912,7 +2912,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8-p1 · Recursos completos por unidad · Práctica semanal restaurada</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8-p2 · Progreso académico sincronizado · Práctica semanal</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3032,7 +3032,7 @@ function renderCourseDashboard(){
         <div class="course-progress-top">
           <div><div class="course-progress-title">Mi progreso en el curso</div>
           <div class="course-progress-sub">${esc(ITB_USER.nombre||'Alumno')} · ${esc(ITB_USER.cohorte||'')}</div></div>
-          <div class="course-progress-value">${cp.percent}%</div>
+          <div class="course-progress-value">${ITB_ACADEMIC_READY?cp.percent+'%':'Cargando…'}</div>
         </div>
         <div class="course-progress-bar"><span style="width:${cp.percent}%"></span></div>
         <div class="course-progress-stats">
@@ -3121,7 +3121,7 @@ function renderUnits(filter=''){
     const pi=typeof unitProgressInfo==='function' ? unitProgressInfo(u.id) : {total:0,completed:0,percent:0};
     const progressHtml=ITB_USER && !locked ? `
         <div class="unit-progress-badge ${pi.total>0&&pi.percent===100?'done':''}">
-          ${pi.total ? (pi.percent===100?'✓ Unidad completada':`${pi.percent}% completado`) : 'Sin recursos evaluables'}
+          ${!ITB_ACADEMIC_READY?'Progreso pendiente de carga':pi.total ? (pi.percent===100?'✓ Unidad completada':`${pi.percent}% completado`) : 'Sin recursos evaluables'}
         </div>
         ${pi.total?`<div class="unit-progress-mini"><span style="width:${pi.percent}%"></span></div>`:''}` : '';
     const lockHtml=locked
@@ -3391,6 +3391,7 @@ window.videoModalBackdrop=videoModalBackdrop;
 
 let ITB_USER=null;
 let ITB_PROGRESS=[];
+let ITB_ACADEMIC_READY=false;
 let ITB_QUIZ_STATUS={};
 
 function apiJsonp(params,timeoutMs){
@@ -3685,6 +3686,7 @@ async function confirmPinReset(){
 window.openPinReset=openPinReset;window.closePinReset=closePinReset;window.pinResetBackdrop=pinResetBackdrop;window.requestPinReset=requestPinReset;window.confirmPinReset=confirmPinReset;
 
 function logoutStudent(){
+  ITB_ACADEMIC_READY=false;
   resetPracticeSession();
   ITB_PRIVATE_DATA_READY=false;
   ITB_HYDRATE_PROMISE=null;
@@ -3752,7 +3754,7 @@ async function loadMyProgress(){
   const s=getSession(); if(!s?.token){ITB_PROGRESS=[];ITB_QUIZ_STATUS={};return;}
   try{
     const r=await retryTransient(()=>apiJsonp({action:'myProgress',token:s.token}),2,700);
-    ITB_PROGRESS=r.progress||[]; ITB_QUIZ_STATUS=r.quiz_status||{}; ITB_USER=r.user||s.user;
+    ITB_PROGRESS=r.progress||[]; ITB_QUIZ_STATUS=r.quiz_status||{}; ITB_USER=r.user||s.user; ITB_ACADEMIC_READY=true;
   }catch(e){
     const msg=String(e?.message||e||'');
     // Sólo eliminamos la sesión ante errores reales de autenticación.
@@ -6839,7 +6841,7 @@ function renderCourseProgressCard(){
     card.innerHTML=`<div class="course-progress-top">
       <div><div class="course-progress-title">Mi progreso en el curso</div>
       <div class="course-progress-sub">${esc(ITB_USER.nombre||'Alumno')} · ${esc(ITB_USER.cohorte||'')}</div></div>
-      <div class="course-progress-value">${cp.percent}%</div>
+      <div class="course-progress-value">${ITB_ACADEMIC_READY?cp.percent+'%':'Cargando…'}</div>
     </div>
     <div class="course-progress-bar"><span style="width:${cp.percent}%"></span></div>
     <div class="course-progress-stats">
@@ -7180,7 +7182,7 @@ function openUnit(uid){
     <div><div class="unitws-back" onclick="setPage('course')">← Volver a Unidades</div><h1>Unidad ${esc(u.numero||'')}</h1><div class="unitws-title">${esc(u.titulo||'')}</div><div class="unitws-desc">${esc(u.descripcion||'Contenidos y recursos correspondientes a esta unidad.')}</div>
      <div class="unitws-chips"><span class="unitws-chip">${c.cartillas.length} materiales</span><span class="unitws-chip">${requiredVideos.length} videos obligatorios</span>${optionalVideos.length?`<span class="unitws-chip">${optionalVideos.length} complementarios</span>`:''}<span class="unitws-chip">${c.juegos.length} actividades</span><span class="unitws-chip">${classes.length} clases vinculadas</span></div>
     </div>
-    <aside class="unitws-progress"><h3>Mi progreso en la unidad</h3>${ITB_USER?'':'<div class="note" style="margin-bottom:8px">Ingresá para registrar tu progreso.</div>'}<div class="unitws-ring" style="background:conic-gradient(#438ddd 0 ${progress}%,#253342 ${progress}% 100%)"><b>${progress}%</b></div><div class="unitws-checks"><div><span>Material teórico</span><span>${c.cartillas.filter(x=>progressRecord(uid,'MATERIAL',x.id||x.name||x.nombre)).length}/${c.cartillas.length}</span></div><div><span>Videos obligatorios</span><span>${requiredVideos.filter(x=>progressRecord(uid,'VIDEO',x.id||x.name||x.nombre)).length}/${requiredVideos.length}</span></div>${optionalVideos.length?`<div><span>Complementarios vistos</span><span>${optionalVideos.filter(x=>progressRecord(uid,'VIDEO',x.id||x.name||x.nombre)).length}/${optionalVideos.length}</span></div>`:''}<div><span>Actividades</span><span>${c.juegos.filter(x=>progressRecord(uid,'ACTIVIDAD',x.id||x.name||x.nombre)).length}/${c.juegos.length}</span></div><div><span>Autoevaluación</span><span class="${quizStatus(uid).approved?'uw-ok':'uw-no'}">${quizStatus(uid).available?(quizStatus(uid).approved?`✓ ${quizStatus(uid).best_score}/10`:`${quizStatus(uid).best_score===null?'Pendiente':quizStatus(uid).best_score+'/10'}`):'—'}</span></div></div></aside>
+    <aside class="unitws-progress"><h3>Mi progreso en la unidad</h3>${ITB_USER?'':'<div class="note" style="margin-bottom:8px">Ingresá para registrar tu progreso.</div>'}<div class="unitws-ring" style="background:conic-gradient(#438ddd 0 ${progress}%,#253342 ${progress}% 100%)"><b>${ITB_ACADEMIC_READY?progress+'%':'…'}</b></div><div class="unitws-checks"><div><span>Material teórico</span><span>${c.cartillas.filter(x=>progressRecord(uid,'MATERIAL',x.id||x.name||x.nombre)).length}/${c.cartillas.length}</span></div><div><span>Videos obligatorios</span><span>${requiredVideos.filter(x=>progressRecord(uid,'VIDEO',x.id||x.name||x.nombre)).length}/${requiredVideos.length}</span></div>${optionalVideos.length?`<div><span>Complementarios vistos</span><span>${optionalVideos.filter(x=>progressRecord(uid,'VIDEO',x.id||x.name||x.nombre)).length}/${optionalVideos.length}</span></div>`:''}<div><span>Actividades</span><span>${c.juegos.filter(x=>progressRecord(uid,'ACTIVIDAD',x.id||x.name||x.nombre)).length}/${c.juegos.length}</span></div><div><span>Autoevaluación</span><span class="${quizStatus(uid).approved?'uw-ok':'uw-no'}">${quizStatus(uid).available?(quizStatus(uid).approved?`✓ ${quizStatus(uid).best_score}/10`:`${quizStatus(uid).best_score===null?'Pendiente':quizStatus(uid).best_score+'/10'}`):'—'}</span></div></div></aside>
    </div>
    <div class="unitws-strip"><div><b>Clases vinculadas a esta unidad</b><div class="note">${classes.length} en el cronograma</div></div><div class="unitws-stripmeta"><span>${past.length} pasada${past.length===1?'':'s'}</span><span>${next?'Próxima: '+next.fecha+' · '+next.hora:'Sin próxima clase'}</span><span>${future.length} futura${future.length===1?'':'s'}</span></div><button class="btn ghost" onclick="setPage('schedulePage')">Ver cronograma</button></div>
    <div class="unitws-cols"><div class="unitws-col"><h3>1. Material teórico</h3>${items(c.cartillas,'Material de estudio')}</div><div class="unitws-col"><h3>2. Videos de la unidad</h3>
@@ -7956,7 +7958,7 @@ async function refreshUnitAccessAtSchedule(){
       openMandatoryPinChange(r);
       return;
     }
-    applyInitResponse(r,false);
+    applyInitResponse(await completeAcademicPayload(r,s.token),false);
     renderApp();
     refreshCourseProgressUI();
     if(window.__currentUnitId && !unitIsLocked(window.__currentUnitId)) openUnit(window.__currentUnitId);
@@ -8006,9 +8008,13 @@ function applyBootstrapPayload(remote){
 
 function applyInitResponse(r,storeToken=true){
   if(!r?.user) throw new Error('Respuesta de acceso incompleta.');
+  if(String(ITB_USER?.alumno_id||'')!==String(r.user.alumno_id||'')){
+    ITB_PROGRESS=[];ITB_QUIZ_STATUS={};ITB_ACADEMIC_READY=false;
+  }
   ITB_USER=r.user;
-  ITB_PROGRESS=r.progress||[];
-  ITB_QUIZ_STATUS=r.quiz_status||{};
+  if(Array.isArray(r.progress))ITB_PROGRESS=r.progress;
+  if(r.quiz_status && typeof r.quiz_status==='object')ITB_QUIZ_STATUS=r.quiz_status;
+  if(Array.isArray(r.progress) && r.quiz_status && typeof r.quiz_status==='object')ITB_ACADEMIC_READY=true;
   if(storeToken && r.token){
     localStorage.setItem('itb_session',JSON.stringify({token:r.token,user:r.user}));
   }else{
@@ -8016,6 +8022,19 @@ function applyInitResponse(r,storeToken=true){
     if(sess?.token) localStorage.setItem('itb_session',JSON.stringify({token:sess.token,user:r.user}));
   }
   if(r.bootstrap) applyBootstrapPayload(r.bootstrap);
+}
+
+// sessionInit v0.46.8+ entrega los datos académicos por separado.
+async function completeAcademicPayload(init,token){
+  if(!init?.academic_pending || init.must_change_pin)return init;
+  const status=$('#dataStatus');
+  if(status){status.textContent='Cargando progreso y autoevaluaciones…';status.classList.remove('online');}
+  const academic=await retryTransient(()=>apiJsonp({action:'sessionAcademic',token},45000),1,700);
+  if(getSession()?.token!==token)throw new Error('La sesión cambió durante la carga del progreso.');
+  if(academic?.ok===false || !Array.isArray(academic?.progress) || !academic?.quiz_status || typeof academic.quiz_status!=='object'){
+    throw new Error(academic?.error||'No se pudo obtener el progreso académico. Intentá actualizar la página.');
+  }
+  return {...init,progress:academic.progress,quiz_status:academic.quiz_status,academic_pending:false};
 }
 
 function privateHydrationFatal_(err){
@@ -8033,7 +8052,7 @@ function hydratePrivateSession(token,logoutOnAuthFail=false){
   // Una sola llamada completa y SIN reintentos automáticos de 30 s. El ingreso ya
   // ocurrió: si Sheets está lento, la interfaz permanece disponible y puede reintentarse.
   ITB_HYDRATE_PROMISE=apiJsonp({action:'sessionInit',token:t},45000)
-    .then(init=>{
+    .then(async init=>{
       if(init?.must_change_pin){
         localStorage.removeItem('itb_session');
         ITB_PRIVATE_DATA_READY=false;
@@ -8041,7 +8060,9 @@ function hydratePrivateSession(token,logoutOnAuthFail=false){
         refreshUserUI();applyRoleUI();showGuestGate();openMandatoryPinChange(init);
         return init;
       }
-      applyInitResponse(init,false);
+      const complete=await completeAcademicPayload(init,t);
+      if(getSession()?.token!==t)return init;
+      applyInitResponse(complete,false);
       ITB_PRIVATE_DATA_READY=true;
       if(status){status.textContent='Datos conectados a Google Sheets';status.classList.add('online');}
       refreshUserUI();
