@@ -1979,6 +1979,30 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 }
 .practice-student-only,.practice-staff-only{display:none}.student-mode .practice-student-only{display:block}.teacher-mode .practice-staff-only,.admin-mode .practice-staff-only{display:block}
 
+
+/* v0.44.8-p3 · Video completo y navegación dentro del ancho disponible. */
+.teacher-hub-tabs{width:100%;min-width:0;max-width:100%}
+.desktop-nav{min-width:0;flex-wrap:wrap;justify-content:flex-end}
+.practice-review-grid{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);align-items:start}
+.practice-preview,.practice-record-live{
+  aspect-ratio:auto;min-width:0;max-width:100%;margin-inline:auto;
+  display:grid;place-items:center;
+}
+.practice-video-stage{min-height:160px}
+.practice-preview video,.practice-video-stage video,.practice-record-live video{
+  width:auto;height:auto;max-width:100%;max-height:65vh;max-height:65dvh;
+  object-fit:contain;margin-inline:auto;
+}
+.practice-record-live{max-height:none}
+@media(max-width:820px){
+  .practice-dialog,.practice-dialog.wide{width:100%!important;max-width:100%!important}
+  .practice-modal-body{padding-bottom:max(12px,env(safe-area-inset-bottom))}
+}
+@media(max-width:720px){
+  .teacher-hub-tabs{flex-wrap:wrap;overflow-x:visible}
+  .teacher-hub-tab{flex:1 1 auto;min-width:0;white-space:normal;overflow-wrap:anywhere}
+}
+
 </style></head>
 <body class="guest-mode app-loading">
 <div id="pwaLaunchSplash" class="pwa-launch-splash" aria-label="Iniciando Academia TED">
@@ -2912,7 +2936,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8-p2 · Progreso académico sincronizado · Práctica semanal</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8-p3 · Video adaptable · Práctica semanal</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
