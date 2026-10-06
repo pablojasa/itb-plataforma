@@ -2936,7 +2936,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8-p3 · Video adaptable · Práctica semanal</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8-p4 · Carga de video con recuperación · Práctica semanal</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -8577,10 +8577,26 @@ function practiceB64Bytes(b64){
   for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
   return arr;
 }
+async function practiceReadVideoPart(params){
+  if(!['practiceVideoOpen','practiceVideoChunk'].includes(params.action))throw new Error('Lectura de video inválida.');
+  for(let attempt=0;attempt<3;attempt++){
+    if(getSession()?.token!==params.token)throw new Error('La sesión cambió. Volvé a abrir el video.');
+    try{
+      const result=await apiJsonp(params,120000);
+      if(getSession()?.token!==params.token)throw new Error('La sesión cambió. Volvé a abrir el video.');
+      return result;
+    }catch(err){
+      const message=String(err?.message||'');
+      const transient=/Tiempo agotado|No se pudo conectar|respuesta inválida \(HTTP (?:200|404|408|429|500|502|503|504)\)|Acción GET no admitida|Error del almacenamiento de videos \(HTTP (?:408|429|500|502|503|504)\)/i.test(message);
+      if(!transient||attempt===2)throw err;
+      await new Promise(resolve=>setTimeout(resolve,800*(attempt+1)));
+    }
+  }
+}
 async function practiceBuildPrivateVideo(deliveryId,onProgress){
   const token=getSession()?.token;
   if(!token)throw new Error('Sesión no disponible.');
-  const meta=await apiJsonp({action:'practiceVideoOpen',token,entrega_id:deliveryId},60000);
+  const meta=await practiceReadVideoPart({action:'practiceVideoOpen',token,entrega_id:deliveryId});
   const total=Math.max(1,Number(meta?.chunks||0));
   const parts=new Array(total);
   let completed=0;
@@ -8589,19 +8605,13 @@ async function practiceBuildPrivateVideo(deliveryId,onProgress){
   for(let start=0;start<total;start+=parallel){
     const ids=[];
     for(let i=start;i<Math.min(total,start+parallel);i++)ids.push(i);
-    const rows=await Promise.all(ids.map(i=>apiJsonp({
-      action:'practiceVideoChunk',
-      token,
-      entrega_id:deliveryId,
-      index:String(i)
-    },60000)));
-    rows.forEach((r,k)=>{
-      const idx=ids[k];
+    await Promise.all(ids.map(async idx=>{
+      const r=await practiceReadVideoPart({action:'practiceVideoChunk',token,entrega_id:deliveryId,index:String(idx)});
       if(!r||r.ok===false||!r.data)throw new Error(r?.error||'No se pudo descargar una parte del video.');
       parts[idx]=practiceB64Bytes(r.data);
       completed++;
       if(onProgress)onProgress(completed,total);
-    });
+    }));
   }
 
   const blob=new Blob(parts,{type:String(meta?.mime_type||'video/webm')});
