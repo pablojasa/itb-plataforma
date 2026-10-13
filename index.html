@@ -2003,6 +2003,13 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   .teacher-hub-tab{flex:1 1 auto;min-width:0;white-space:normal;overflow-wrap:anywhere}
 }
 
+.ef-modal{display:none;position:fixed;inset:0;z-index:19000;background:rgba(2,6,10,.92);padding:16px;align-items:center;justify-content:center}
+.ef-modal.open{display:flex}.ef-dialog{width:min(960px,100%);max-height:94vh;max-height:94dvh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;color:var(--text)}
+.ef-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--line)}.ef-head h2{margin:0;font-size:21px}.ef-head button{flex-shrink:0}#efBody{padding:16px;line-height:1.5;overflow-wrap:anywhere}
+.ef-units{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:16px 0}.ef-units>div{display:grid;padding:10px;border:1px solid var(--line);border-radius:10px}.ef-units span{font-size:12px;color:var(--muted)}
+.ef-clock{position:sticky;top:0;z-index:2;display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:12px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}.ef-clock strong{font-size:25px;font-variant-numeric:tabular-nums}.ef-clock button{margin-left:auto}.ef-question{min-width:0;margin:16px 0;border:1px solid var(--line);border-radius:12px;padding:15px}.ef-question legend{max-width:100%;padding:0 6px;font-weight:700}.ef-question label{display:flex;gap:10px;padding:12px 8px;align-items:flex-start;cursor:pointer}.ef-question input{margin-top:5px;flex-shrink:0}.ef-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.ef-results>div{padding:14px;border:1px solid var(--line);border-radius:12px}.ef-results b{display:block;font-size:26px}.ef-error{color:#ffb6bd}
+@media(max-width:600px){.ef-modal{padding:0}.ef-dialog{max-height:100vh;max-height:100dvh;height:100%;border-radius:0;width:100%}.ef-units{grid-template-columns:1fr}.ef-results{grid-template-columns:1fr}.ef-head h2{font-size:18px}}
+
 </style></head>
 <body class="guest-mode app-loading">
 <div id="pwaLaunchSplash" class="pwa-launch-splash" aria-label="Iniciando Academia TED">
@@ -2160,6 +2167,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
       <div class="course-side-card">
         <h3>Accesos rápidos</h3>
         <div class="quick-links">
+          <button onclick="openExerciseFinal()">✓ Ejercicio para Examen Final</button>
           <button onclick="setPage('schedulePage')">▣ Ver cronograma</button>
           <button onclick="setPage('library')">▤ Biblioteca digital</button>
           <button onclick="setPage('videosPage')">▻ Videos del curso</button>
@@ -2936,7 +2944,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   </div>
 </div>
 
-<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8-p4 · Carga de video con recuperación · Práctica semanal</footer>
+<footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8-p5 · Ejercicio para Examen Final · Práctica semanal</footer>
 </div><script src="app-config.js"></script>
 <script>
 let DB = {
@@ -3710,6 +3718,7 @@ async function confirmPinReset(){
 window.openPinReset=openPinReset;window.closePinReset=closePinReset;window.pinResetBackdrop=pinResetBackdrop;window.requestPinReset=requestPinReset;window.confirmPinReset=confirmPinReset;
 
 function logoutStudent(){
+  efReset();
   ITB_ACADEMIC_READY=false;
   resetPracticeSession();
   ITB_PRIVATE_DATA_READY=false;
@@ -9007,4 +9016,93 @@ function resetPracticeSession(){
   </div>
 </div>
 
+<div id="exerciseFinalModal" class="ef-modal" role="dialog" aria-modal="true" aria-labelledby="efTitle">
+  <div class="ef-dialog"><div class="ef-head"><h2 id="efTitle">Ejercicio para Examen Final</h2><button class="btn" onclick="closeExerciseFinal()" aria-label="Cerrar ejercicio">×</button></div><div id="efBody"></div></div>
+</div>
+
+<script>
+let EF_STATE=null,EF_TIMER=null,EF_SAVE_TIMER=null,EF_BUSY=false,EF_CLOSED=false,EF_GENERATION=0,EF_OWNER='';
+function efTime(seconds){const n=Math.max(0,Math.ceil(seconds));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');}
+function efReset(){EF_GENERATION++;clearInterval(EF_TIMER);clearTimeout(EF_SAVE_TIMER);EF_STATE=null;EF_BUSY=false;EF_CLOSED=false;document.getElementById('exerciseFinalModal')?.classList.remove('open');}
+async function efApi(action,extra={}){
+  const token=getSession()?.token;if(!token)throw new Error('Ingresá nuevamente para continuar.');
+  const r=await apiJsonp({action,token,...extra},90000);
+  if(getSession()?.token!==token)throw new Error('La sesión cambió.');return r;
+}
+function efMessage(text){const el=document.getElementById('efMessage');if(el)el.textContent=text;}
+async function openExerciseFinal(){
+  if(!ITB_USER){showGuestGate();return;}
+  if(EF_OWNER&&EF_OWNER!==getSession()?.token)efReset();
+  EF_OWNER=getSession()?.token||'';
+  document.getElementById('exerciseFinalModal').classList.add('open');
+  if(EF_STATE){efTick();return;}
+  const generation=EF_GENERATION;
+  document.getElementById('efBody').innerHTML='<p>Cargando unidades habilitadas…</p>';
+  try{const r=await efApi('exerciseFinalStatus');if(generation!==EF_GENERATION)return;efReceive(r);}
+  catch(e){document.getElementById('efBody').innerHTML='<p>'+esc(e.message)+'</p><button class="btn" onclick="openExerciseFinal()">Reintentar</button>';}
+}
+function efReceive(r){
+  if(r.result){efResult(r.result);return;}
+  if(r.attempt){
+    EF_STATE={...r.attempt,answers:{...r.attempt.answers},preview:r.preview,offset:Date.parse(r.attempt.server_now)-Date.now(),savedRevision:Number(r.attempt.revision||0)};
+    EF_CLOSED=false;efRenderQuestions();clearInterval(EF_TIMER);EF_TIMER=setInterval(efTick,250);efTick();return;
+  }
+  EF_STATE=null;EF_CLOSED=false;
+  const units=r.units||[],blocked=(r.issues||[]).length>0;
+  document.getElementById('efBody').innerHTML=`${r.preview?'<p class="note">Vista previa docente: incluye las unidades con banco de preguntas disponible.</p>':''}<p>Practicá todas las veces que quieras, incluso después de finalizar el curso. Este resultado no modifica tus notas oficiales.</p><p><b>${r.total} preguntas · ${efTime(r.seconds)}</b> · 40 segundos por pregunta.</p><p>Aprobado con 70 % o más. Las preguntas sin responder cuentan como incorrectas. Al agotarse el tiempo, el ejercicio se cierra automáticamente.</p><div class="ef-units">${units.map(u=>`<div><b>Unidad ${u.numero}</b><span>${u.cantidad} preguntas · ${u.habilitada?'Habilitada':r.preview?'Banco de preguntas pendiente':'Autoevaluación pendiente de aprobación'}</span></div>`).join('')}</div>${blocked?'<p class="ef-error">El banco no tiene suficientes preguntas en las unidades '+r.issues.join(', ')+'. Avisá al docente.</p>':''}${!r.total?'<p>Primero debés aprobar una de las autoevaluaciones incluidas.</p>':''}<p id="efMessage" role="status"></p><button id="efStart" class="btn primary" onclick="efStart()" ${!r.total||blocked?'disabled':''}>Comenzar ejercicio</button>`;
+}
+async function efStart(){
+  const btn=document.getElementById('efStart');if(btn)btn.disabled=true;efMessage('Preparando preguntas…');const generation=EF_GENERATION;
+  try{const r=await efApi('exerciseFinalStart');if(generation===EF_GENERATION)efReceive(r);}catch(e){efMessage(e.message);if(btn)btn.disabled=false;}
+}
+function efRenderQuestions(){
+  const s=EF_STATE;
+  document.getElementById('efBody').innerHTML=`<div class="ef-clock"><strong id="efClock" role="timer"></strong><span id="efAnswered"></span><button class="btn primary" id="efSubmit" onclick="efSubmit(false)">Entregar</button></div><p id="efMessage" role="status">Las respuestas se guardan automáticamente. Mantené la conexión.</p><div id="efQuestions">${s.questions.map((q,i)=>`<fieldset class="ef-question"><legend>${i+1}. Unidad ${q.unidad_numero} · ${esc(q.enunciado)}</legend>${['a','b','c','d','e'].filter(k=>q['opcion_'+k]).map(k=>`<label><input type="radio" name="efq_${i}" value="${k.toUpperCase()}" ${s.answers[q.pregunta_id]===k.toUpperCase()?'checked':''} onchange="efAnswer(${i},this.value)"><span>${k.toUpperCase()}. ${esc(q['opcion_'+k])}</span></label>`).join('')}</fieldset>`).join('')}</div>`;
+}
+function efRemaining(){return EF_STATE?Math.max(0,(Date.parse(EF_STATE.fecha_limite)-Date.now()-EF_STATE.offset)/1000):0;}
+function efTick(){
+  if(!EF_STATE||EF_CLOSED)return;
+  if(getSession()?.token!==EF_OWNER){efReset();return;}
+  const left=efRemaining();document.getElementById('efClock').textContent=efTime(left);
+  document.getElementById('efAnswered').textContent=Object.keys(EF_STATE.answers).length+'/'+EF_STATE.questions.length+' respondidas';
+  if(left<=0)efSubmit(true);
+}
+function efAnswer(index,value){
+  if(!EF_STATE||EF_CLOSED||efRemaining()<=0){efTick();return;}
+  EF_STATE.answers[EF_STATE.questions[index].pregunta_id]=value;EF_STATE.revision=Number(EF_STATE.revision||0)+1;
+  efMessage('Guardando respuestas…');clearTimeout(EF_SAVE_TIMER);EF_SAVE_TIMER=setTimeout(efSave,300);efTick();
+}
+async function efSave(){
+  if(!EF_STATE||EF_CLOSED||EF_BUSY)return;
+  EF_BUSY=true;const state=EF_STATE,revision=state.revision,generation=EF_GENERATION;
+  try{
+    const r=await efApi('exerciseFinalSave',{intento_id:state.intento_id,answers:JSON.stringify(state.answers),revision});
+    if(generation!==EF_GENERATION||EF_STATE!==state||EF_CLOSED)return;
+    if(r.result){efResult(r.result);return;}
+    state.savedRevision=Math.max(state.savedRevision,Number(r.revision||0));
+    efMessage(state.savedRevision===state.revision?'Respuestas guardadas.':'Guardando respuestas…');
+  }catch(e){if(generation===EF_GENERATION&&!EF_CLOSED)efMessage('No se pudieron guardar las últimas respuestas. Revisá tu conexión.');}
+  finally{if(generation===EF_GENERATION){EF_BUSY=false;if(EF_STATE===state&&!EF_CLOSED&&state.savedRevision<state.revision)EF_SAVE_TIMER=setTimeout(efSave,2000);}}
+}
+async function efSubmit(automatic){
+  if(!EF_STATE||EF_CLOSED)return;
+  if(!automatic&&!confirm('¿Entregar el ejercicio? Las preguntas sin responder contarán como incorrectas.'))return;
+  EF_CLOSED=true;clearInterval(EF_TIMER);clearTimeout(EF_SAVE_TIMER);
+  document.querySelectorAll('#efQuestions input').forEach(e=>e.disabled=true);document.getElementById('efSubmit').disabled=true;
+  if(automatic)document.getElementById('efClock').textContent='00:00';
+  efMessage(automatic?'Tiempo agotado. Calculando resultado…':'Calculando resultado…');await efSendResult();
+}
+async function efSendResult(){
+  const state=EF_STATE,generation=EF_GENERATION;if(!state)return;
+  try{const r=await efApi('exerciseFinalSubmit',{intento_id:state.intento_id,answers:JSON.stringify(state.answers),revision:Number(state.revision||0)+1});if(generation===EF_GENERATION&&EF_STATE===state)efResult(r.result);}
+  catch(e){if(generation===EF_GENERATION){efMessage('No se pudo obtener el resultado: '+e.message);const btn=document.getElementById('efSubmit');btn.textContent='Reintentar resultado';btn.disabled=false;btn.onclick=efSendResult;}}
+}
+function efResult(result){
+  clearInterval(EF_TIMER);clearTimeout(EF_SAVE_TIMER);EF_STATE=null;EF_CLOSED=true;
+  document.getElementById('efBody').innerHTML=`<h3>${result.aprobado?'Aprobado':'Desaprobado'}</h3><div class="ef-results"><div><b>${result.correctas}</b>Correctas</div><div><b>${result.incorrectas}</b>Incorrectas</div><div><b>${Number(result.porcentaje).toLocaleString('es-AR')} %</b>Porcentaje de acierto</div></div><p>${result.motivo==='TIEMPO_AGOTADO'?'El tiempo se agotó. ':''}Aprobado con 70 % o más. Las preguntas sin responder se cuentan como incorrectas.</p><p class="note">Ejercicio de práctica. No modifica tus notas oficiales.</p><button class="btn primary" onclick="openExerciseFinal()">Hacer otro ejercicio</button>`;
+}
+function closeExerciseFinal(){document.getElementById('exerciseFinalModal').classList.remove('open');}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&EF_STATE)efTick();});
+
+</script>
 </body></html>
