@@ -2116,7 +2116,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
   <div class="actions"><button class="btn primary" onclick="setPage('course')">Ingresar al curso →</button>
   <a id="zoomBtn" class="btn ghost" href="#" target="_blank" rel="noopener">Clase por Zoom</a></div>
  </div></div>
- <div id="notificationOptIn" class="notification-optin"><div><strong>Activá las notificaciones</strong><span>Recibí avisos del equipo docente mientras usás la app instalada.</span></div><button class="btn ghost" onclick="enableSystemNotifications()">Activar notificaciones</button></div>
+ <div id="notificationOptIn" class="notification-optin"><div><strong>Activá las notificaciones</strong><span>Recibí los mensajes del chat y los avisos del curso, incluso con la app cerrada. En iPhone, agregá la app a la pantalla de inicio.</span></div><button class="btn ghost" onclick="enableSystemNotifications()">Activar notificaciones</button></div>
  <div id="homeBadgesMount" class="dashboard-badges-mount"></div>
  <div class="two-col">
   <div><div class="section-head"><div><h2>Unidades del curso</h2><p>Acceso directo a la estructura académica.</p></div><button class="btn ghost" onclick="setPage('course')">Ver todas</button></div><div id="featuredUnits" class="grid"></div></div>
@@ -2945,7 +2945,7 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 </div>
 
 <footer>Curso de Instructores de Tiro en Armas Cortas y Largas (ITB) · Academia TED · v0.44.8-p5 · Ejercicio para Examen Final · Práctica semanal</footer>
-</div><script src="app-config.js"></script>
+</div><script src="app-config.js"></script><script src="firebase-config.js"></script>
 <script>
 let DB = {
   units:[], classes:[], videos:[], library:[], staff:[], downloads:[],
@@ -3717,7 +3717,8 @@ async function confirmPinReset(){
 }
 window.openPinReset=openPinReset;window.closePinReset=closePinReset;window.pinResetBackdrop=pinResetBackdrop;window.requestPinReset=requestPinReset;window.confirmPinReset=confirmPinReset;
 
-function logoutStudent(){
+async function logoutStudent(){
+  await disconnectSystemPush();
   efReset();
   ITB_ACADEMIC_READY=false;
   resetPracticeSession();
@@ -5202,20 +5203,61 @@ function setAlertAppBadge(count){
     else if(!n&&'clearAppBadge' in navigator)navigator.clearAppBadge().catch(()=>{});
   }catch(_){}
 }
+let ITB_PUSH_OPEN_CHAT_PENDING=new URLSearchParams(location.search).get('open')==='chat';
+let ITB_PUSH_SDK=null,ITB_PUSH_TASK=null,ITB_PUSH_REGISTERED='',ITB_PUSH_RETRY_AT=0;
+function pushSupported(){return 'Notification' in window&&'serviceWorker' in navigator&&'PushManager' in window;}
 function syncNotificationOptIn(){
   const box=$('#notificationOptIn');if(!box)return;
-  const supported='Notification' in window && 'serviceWorker' in navigator;
-  const show=!!ITB_USER&&isStudentUser()&&supported&&Notification.permission==='default';
+  const show=!!ITB_USER&&pushSupported()&&Notification.permission!=='denied'&&!ITB_PUSH_REGISTERED;
   box.classList.toggle('show',show);
+  if(ITB_USER&&pushSupported()&&Notification.permission==='granted'&&Date.now()>ITB_PUSH_RETRY_AT)registerSystemPush().catch(()=>{});
+}
+async function loadPushSdk(){
+  if(!ITB_PUSH_SDK)ITB_PUSH_SDK=(async()=>{
+    const [app,sdk]=await Promise.all([import('https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js'),import('https://www.gstatic.com/firebasejs/13.0.0/firebase-messaging.js')]);
+    if(!await sdk.isSupported())throw new Error('Este navegador no admite notificaciones push.');
+    const messaging=sdk.getMessaging(app.initializeApp(window.ITB_FIREBASE_CONFIG,'itb-push'));
+    sdk.onMessage(messaging,async payload=>{
+      const d=payload.data||{};if(!ITB_USER||Notification.permission!=='granted')return;
+      const reg=await navigator.serviceWorker.ready;
+      await reg.showNotification(d.title||'Academia TED',{body:d.body||'Tenés un nuevo aviso.',icon:'assets/ted-app-icon-192-v0281.png',badge:'assets/ted-app-icon-192-v0281.png',tag:d.tag||undefined,data:{url:d.target==='chatPage'?'./?open=chat':'./'}});
+    });
+    return {sdk,messaging};
+  })().catch(e=>{ITB_PUSH_SDK=null;throw e;});
+  return ITB_PUSH_SDK;
+}
+async function registerSystemPush(){
+  const session=getSession();if(!session?.token||!ITB_USER||!pushSupported()||Notification.permission!=='granted')return false;
+  if(ITB_PUSH_REGISTERED===session.token)return true;
+  if(ITB_PUSH_TASK)return ITB_PUSH_TASK;
+  ITB_PUSH_TASK=(async()=>{
+    const {sdk,messaging}=await loadPushSdk();
+    const reg=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
+    await navigator.serviceWorker.ready;
+    const fcmToken=await sdk.getToken(messaging,{vapidKey:window.ITB_FIREBASE_VAPID_KEY,serviceWorkerRegistration:reg});
+    if(!fcmToken)throw new Error('No se pudo registrar este dispositivo.');
+    if(getSession()?.token!==session.token)return false;
+    const result=await apiJsonpLong({action:'pushRegister',token:session.token,fcm_token:fcmToken,user_agent:navigator.userAgent},60000);
+    if(!result?.registered)throw new Error('El servidor no pudo registrar las notificaciones.');
+    if(getSession()?.token!==session.token)return false;
+    if(!result.configured)throw new Error('Dispositivo registrado. Falta configurar el servicio de envío en la plataforma.');
+    ITB_PUSH_REGISTERED=session.token;$('#notificationOptIn')?.classList.remove('show');
+    return true;
+  })().catch(e=>{ITB_PUSH_RETRY_AT=Date.now()+60000;throw e;}).finally(()=>{ITB_PUSH_TASK=null;});
+  return ITB_PUSH_TASK;
 }
 async function enableSystemNotifications(){
-  if(!('Notification' in window)){showITBToast('Este dispositivo no admite notificaciones web.');return;}
+  if(!pushSupported()){showITBToast('Para recibir notificaciones en iPhone, agregá la app a la pantalla de inicio y abrila desde su ícono.');return;}
   try{
     const permission=await Notification.requestPermission();
+    if(permission==='granted'){await registerSystemPush();showITBToast('Notificaciones del chat activadas en este dispositivo.');}
+    else if(permission==='denied')showITBToast('Las notificaciones quedaron bloqueadas. Podés habilitarlas en los ajustes del navegador.');
     syncNotificationOptIn();
-    if(permission==='granted')showITBToast('Notificaciones activadas.');
-    else if(permission==='denied')showITBToast('Las notificaciones quedaron bloqueadas en el navegador.');
-  }catch(e){showITBToast('No se pudieron activar las notificaciones.');}
+  }catch(e){showITBToast(e.message||'No se pudieron activar las notificaciones.');}
+}
+async function disconnectSystemPush(){
+  ITB_PUSH_REGISTERED='';ITB_PUSH_RETRY_AT=0;
+  try{if(ITB_PUSH_SDK){const {sdk,messaging}=await ITB_PUSH_SDK;await sdk.deleteToken(messaging);}}catch(e){console.warn('No se pudo desconectar el dispositivo de notificaciones.');}
 }
 async function showSystemAlertNotification(alert){
   if(!alert||!('Notification' in window)||Notification.permission!=='granted'||!('serviceWorker' in navigator))return;
@@ -5809,7 +5851,7 @@ function applyRoleUI(){
     ADMIN_ATT_REVIEW_NOTICE_CHECKED=false;ADMIN_ATT_REVIEW_NOTICE_DATA=null;
     closeAdminAttendanceReviewNotice();
   }
-  if(ITB_PRIVATE_DATA_READY)syncNotificationOptIn();
+  if(ITB_PRIVATE_DATA_READY){syncNotificationOptIn();if(ITB_PUSH_OPEN_CHAT_PENDING&&ITB_USER){ITB_PUSH_OPEN_CHAT_PENDING=false;setTimeout(()=>openChat(),0);}}
 }
 
 function teacherStudentMetrics(student){
@@ -8413,7 +8455,7 @@ function initPWA(){
   const standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;
   document.body.classList.toggle('pwa-standalone',!!standalone);
   if('serviceWorker' in navigator){
-    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('Service Worker no disponible.',e)),{once:true});
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(e=>console.warn('Service Worker no disponible.',e)),{once:true});
   }
 }
 initPWA();
