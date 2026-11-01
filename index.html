@@ -1997,6 +1997,28 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
 .ef-clock{position:sticky;top:0;z-index:2;display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:12px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}.ef-clock strong{font-size:25px;font-variant-numeric:tabular-nums}.ef-clock button{margin-left:auto}.ef-question{min-width:0;margin:16px 0;border:1px solid var(--line);border-radius:12px;padding:15px}.ef-question legend{max-width:100%;padding:0 6px;font-weight:700}.ef-question label{display:flex;gap:10px;padding:12px 8px;align-items:flex-start;cursor:pointer}.ef-question input{margin-top:5px;flex-shrink:0}.ef-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.ef-results>div{padding:14px;border:1px solid var(--line);border-radius:12px}.ef-results b{display:block;font-size:26px}.ef-error{color:#ffb6bd}
 @media(max-width:600px){.ef-modal{padding:0}.ef-dialog{max-height:100vh;max-height:100dvh;height:100%;border-radius:0;width:100%}.ef-units{grid-template-columns:1fr}.ef-results{grid-template-columns:1fr}.ef-head h2{font-size:18px}}
 
+
+/* Accesos rápidos · mosaico con evaluación destacada */
+#course .course-quick-card{align-self:start}
+#course .course-quick-card h3{margin-bottom:6px}
+#course .course-quick-intro{margin:0 0 15px;color:var(--muted);font-size:11px;line-height:1.5}
+#course .course-quick-mosaic{display:grid;gap:10px}
+#course .course-shortcut-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#course .course-quick-mosaic .course-shortcut{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0;width:100%;min-height:121px;padding:12px;border:1px solid #344251;border-radius:11px;background:#1c2632;color:#f2f5f8;text-align:left;text-decoration:none;cursor:pointer;font-family:inherit}
+#course .course-quick-mosaic .course-shortcut:hover{background:#253447;border-color:#6d829b}
+#course .course-quick-mosaic .course-shortcut:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+#course .course-shortcut-icon{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border-radius:9px;background:#2b3a4b;color:#b5d8fa}
+#course .course-shortcut-icon svg{display:block;width:18px;height:18px}
+#course .course-shortcut-copy{display:block;min-width:0}
+#course .course-shortcut-copy strong{display:block;color:inherit;font-size:12px;font-weight:750;line-height:1.45;overflow-wrap:anywhere}
+#course .course-shortcut-copy small{display:block;margin-top:4px;color:#b7c3d1;font-size:11px;line-height:1.45;overflow-wrap:anywhere}
+#course .course-quick-mosaic .course-shortcut-featured{flex-direction:row;min-height:130px;padding:16px;gap:11px;background:#3a1c23;border-color:#84424b}
+#course .course-shortcut-featured .course-shortcut-copy{flex:1}
+#course .course-shortcut-featured .course-shortcut-copy strong{font-size:15px;line-height:1.4}
+#course .course-shortcut-featured .course-shortcut-copy small{margin-top:7px}
+#course .course-shortcut-featured .course-shortcut-icon{background:var(--red);color:#fff}
+#course .course-quick-mosaic .course-shortcut-featured:hover{background:#4a242d;border-color:#b95a67}
+
 </style></head>
 <body class="guest-mode app-loading">
 <div id="pwaLaunchSplash" class="pwa-launch-splash" aria-label="Iniciando Academia TED">
@@ -2151,14 +2173,17 @@ html.itb-launch-standalone.itb-launch-ready .pwa-launch-splash{opacity:0;visibil
         <div id="courseNextActivity"></div>
       </div>
 
-      <div class="course-side-card">
+      <div class="course-side-card course-quick-card">
         <h3>Accesos rápidos</h3>
-        <div class="quick-links">
-          <button onclick="openExerciseFinal()">✓ Ejercicio para Examen Final</button>
-          <button onclick="setPage('schedulePage')">▣ Ver cronograma</button>
-          <button onclick="setPage('library')">▤ Biblioteca digital</button>
-          <button onclick="setPage('videosPage')">▻ Videos del curso</button>
-          <button onclick="setPage('team')">♙ Equipo de instructores</button>
+        <p class="course-quick-intro">Elegí qué querés hacer.</p>
+        <div class="quick-links course-quick-mosaic">
+          <button type="button" class="course-shortcut course-shortcut-featured" onclick="openExerciseFinal()"><span class="course-shortcut-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 12l2 2 4-4"/></svg></span><span class="course-shortcut-copy"><strong>Ejercicio para Examen Final</strong><small>Entrená con las unidades habilitadas</small></span></button>
+          <div class="course-shortcut-grid">
+            <button type="button" class="course-shortcut" onclick="setPage('schedulePage')"><span class="course-shortcut-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span><span class="course-shortcut-copy"><strong>Ver cronograma</strong><small>Clases y entrenamientos</small></span></button>
+            <button type="button" class="course-shortcut" onclick="setPage('library')"><span class="course-shortcut-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14M3 3h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5v16h-5a4 4 0 0 0-4 2 4 4 0 0 0-4-2H3z"/></svg></span><span class="course-shortcut-copy"><strong>Biblioteca digital</strong><small>Material de consulta</small></span></button>
+            <button type="button" class="course-shortcut" onclick="setPage('videosPage')"><span class="course-shortcut-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m10 8 6 4-6 4z"/></svg></span><span class="course-shortcut-copy"><strong>Videos del curso</strong><small>Contenido audiovisual</small></span></button>
+            <button type="button" class="course-shortcut" onclick="setPage('team')"><span class="course-shortcut-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 4a3 3 0 0 1 0 6M21 21v-3a6 6 0 0 0-3-5"/></svg></span><span class="course-shortcut-copy"><strong>Equipo de instructores</strong><small>Conocé al equipo TED</small></span></button>
+          </div>
         </div>
       </div>
 
