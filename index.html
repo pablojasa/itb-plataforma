@@ -3147,6 +3147,7 @@ function renderCourseDashboard(){
 
 function unitImageAsset(unit){
   const n=Number(unit?.numero);
+  if(n===11)return 'assets/units/unit-11-blindajes.png';
   if(Number.isInteger(n) && n>=1 && n<=21){
     return `assets/units/unit-${String(n).padStart(2,'0')}.png`;
   }
